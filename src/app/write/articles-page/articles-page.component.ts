@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs/operators';
+
+const articleIdentifierParameterName = 'articleIdentifier';
 
 @Component({
   selector: 'app-articles-page',
@@ -7,7 +11,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ArticlesPageComponent implements OnInit {
 
-  constructor() { }
+  public readonly showEditor$ = this.activatedRoute.paramMap.pipe(
+    map(paramMap => paramMap.has(articleIdentifierParameterName))
+  );
+
+  constructor(
+    private readonly activatedRoute: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
   }

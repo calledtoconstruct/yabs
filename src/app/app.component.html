@@ -7,8 +7,4 @@
   <button (click)='userService.signOut()'>Sign Out</button>
 </div>
 
-<div *ngFor="let testData of testData$ | async">
-  {{ testData.name }}
-</div>
-
 <router-outlet></router-outlet>

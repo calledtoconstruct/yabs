@@ -1,3 +1,5 @@
-<div *ngIf="showEditor$ | async">
-    <input name='title' />
+<div *ngIf='userService.loggedIn$ | async'>
+    <div *ngIf="showEditor$ | async">
+        <input name='title' />
+    </div>
 </div>

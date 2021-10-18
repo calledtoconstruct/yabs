@@ -3,35 +3,12 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { User } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ReplaySubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AppComponent } from './app.component';
+import { FakeUserService } from './FakeUserService';
 import { UserService } from './user.service';
 
 interface clickable { click: () => void };
-
-class FakeUserService {
-  public signInWithGoogleCalled = 0;
-  public signInWithGitHubCalled = 0;
-  public signOutCalled = 0;
-  public readonly user$ = new ReplaySubject<User | null>(1);
-  public readonly loggedIn$ = new ReplaySubject<boolean>(1);
-  public readonly notLoggedIn$ = new ReplaySubject<boolean>(1);
-  public signInWithGoogle(): void {
-    this.signInWithGoogleCalled++;
-  }
-  public signInWithGitHub(): void {
-    this.signInWithGitHubCalled++;
-  }
-  public signOut(): void {
-    this.signOutCalled++;
-  }
-  public tearDown(): void {
-    this.user$.complete();
-    this.loggedIn$.complete();
-    this.notLoggedIn$.complete();
-  }
-}
 
 function buttonWithText(buttons: NodeList, text: string) {
   return Array
@@ -39,11 +16,11 @@ function buttonWithText(buttons: NodeList, text: string) {
     .map(node => <HTMLButtonElement>node)
     .filter(button => button.innerText === text)
     .pop() || {
-      click: () => {}
-    };
+    click: () => { }
+  };
 };
 
-let userService: FakeUserService;
+export let userService: FakeUserService;
 
 describe('AppComponent', () => {
 
@@ -86,14 +63,19 @@ describe('AppComponent', () => {
 
   describe(`when user is not logged in`, () => {
 
+    beforeEach(() => {
+      userService.setUpNotLoggedIn();
+    });
+
+    afterEach(() => {
+      userService.tearDown();
+    });
+
     let buttons: NodeList;
     let signInWithGoogleButton: HTMLButtonElement | clickable;
     let signInWithGitHubButton: HTMLButtonElement | clickable;
 
     beforeEach(() => {
-      userService.user$.next(null);
-      userService.loggedIn$.next(false);
-      userService.notLoggedIn$.next(true);
       fixture.detectChanges();
       buttons = fixture.debugElement.nativeElement.querySelectorAll('button');
       signInWithGoogleButton = buttonWithText(buttons, 'Sign In w/ Google');
@@ -141,15 +123,22 @@ describe('AppComponent', () => {
   describe(`when user is logged in`, () => {
 
     const displayName = 'wiefusdjksvn';
+    const user = <User>{
+      displayName: displayName
+    };
+
+    beforeEach(() => {
+      userService.setUpLoggedInAs(user);
+    });
+
+    afterEach(() => {
+      userService.tearDown();
+    });
+
     let button: HTMLButtonElement;
     let paragraph: HTMLParagraphElement;
 
     beforeEach(() => {
-      userService.user$.next(<User>{
-        displayName: displayName
-      });
-      userService.loggedIn$.next(true);
-      userService.notLoggedIn$.next(false);
       fixture.detectChanges();
       const element = fixture.debugElement.nativeElement;
       button = element.querySelector('button');

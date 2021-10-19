@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { User } from '@firebase/auth';
 import { ReplaySubject, Subject } from 'rxjs';
@@ -48,6 +50,7 @@ describe('ArticlesPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
       declarations: [ArticlesPageComponent],
       providers: [
         { provide: UserService, useValue: userService },
@@ -84,10 +87,37 @@ describe('ArticlesPageComponent', () => {
 
     describe('when passed article identifier "new"', () => {
 
+      const title = 'byauvdhygdyf';
+      let titleInput: DebugElement;
+
       beforeEach(() => {
         timesHasWasCalledCount = 0;
         paramMapSubject.next(paramMap);
         fixture.detectChanges();
+        const element = fixture.debugElement;
+        titleInput = element.query(element =>
+          element.name === 'input'
+          && !!element.attributes['name']
+          && element.attributes['name'] === 'title'
+        );
+      });
+
+      it('should expose form group', () => {
+        expect(component.formGroup).toBeTruthy();
+      });
+
+      describe('form group', () => {
+
+        let formControlNames: Array<string>;
+
+        beforeEach(() => {
+          formControlNames = Object.keys(component.formGroup.value);
+        });
+
+        it('should contain title', () => {
+          expect(formControlNames).toContain('title');
+        });
+
       });
 
       it('should call has', () => {
@@ -95,9 +125,23 @@ describe('ArticlesPageComponent', () => {
       });
 
       it('should display title edit field', () => {
-        const element = fixture.debugElement.nativeElement;
-        const titleInput = element.querySelector('input[name="title"]');
         expect(titleInput).toBeTruthy();
+      });
+
+      describe('when user enters a title', () => {
+
+        let titleValue: string;
+
+        beforeEach(fakeAsync(() => {
+          titleInput.nativeElement.value = title;
+          titleInput.nativeElement.dispatchEvent(new Event('input'));
+          titleValue = component.formGroup.value['title'];
+        }));
+
+        it('should update form group', () => {
+          expect(titleValue).toBe(title);
+        });
+
       });
 
     });

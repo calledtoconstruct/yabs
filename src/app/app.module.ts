@@ -8,10 +8,9 @@ import { WelcomePageComponent } from './welcome-page/welcome-page.component';
 import { environment } from 'src/environments/environment';
 import { CommonModule } from '@angular/common';
 import { UserService } from './user.service';
-import { Auth, authState, User } from '@angular/fire/auth';
+import { Auth, User } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { getAuth } from '@firebase/auth';
-import { getApp } from '@firebase/app';
 
 @NgModule({
   declarations: [

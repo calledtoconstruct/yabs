@@ -209,6 +209,12 @@ describe('ArticlesPageComponent', () => {
         expect(titleInput).toBeFalsy();
       });
 
+      it('should not display text edit field', () => {
+        const element = fixture.debugElement;
+        const textInput = element.query(howToFindTextEditField);
+        expect(textInput).toBeFalsy();
+      });
+
     });
 
   });

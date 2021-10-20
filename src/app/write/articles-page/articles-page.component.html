@@ -1,5 +1,6 @@
 <div *ngIf='userService.loggedIn$ | async'>
     <form *ngIf="showEditor$ | async" [formGroup]='formGroup'>
         <input name='title' formControlName='title' />
+        <textarea name='text' formControlName='text'></textarea>
     </form>
 </div>

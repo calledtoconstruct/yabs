@@ -14,7 +14,8 @@ const articleIdentifierParameterName = 'articleIdentifier';
 export class ArticlesPageComponent implements OnInit {
 
   public readonly formGroup = this.formBuilder.group({
-    title: this.formBuilder.control('')
+    title: this.formBuilder.control(''),
+    text: this.formBuilder.control('')
   });
 
   public readonly showEditor$ = this.activatedRoute.paramMap.pipe(

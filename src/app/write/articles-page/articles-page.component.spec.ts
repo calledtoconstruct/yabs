@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { User } from '@firebase/auth';
 import { ReplaySubject, Subject } from 'rxjs';
@@ -29,6 +29,16 @@ const paramMap = <ParamMap>{
     return name === 'articleIdentifier';
   }
 };
+
+const howToFindTitleEditField = (element: DebugElement) =>
+  element.name === 'input'
+  && !!element.attributes['name']
+  && element.attributes['name'] === 'title';
+
+const howToFindTextEditField = (element: DebugElement) =>
+  element.name === 'textarea'
+  && !!element.attributes['name']
+  && element.attributes['name'] === 'text';
 
 describe('ArticlesPageComponent', () => {
 
@@ -87,19 +97,16 @@ describe('ArticlesPageComponent', () => {
 
     describe('when passed article identifier "new"', () => {
 
-      const title = 'byauvdhygdyf';
       let titleInput: DebugElement;
+      let textInput: DebugElement;
 
       beforeEach(() => {
         timesHasWasCalledCount = 0;
         paramMapSubject.next(paramMap);
         fixture.detectChanges();
         const element = fixture.debugElement;
-        titleInput = element.query(element =>
-          element.name === 'input'
-          && !!element.attributes['name']
-          && element.attributes['name'] === 'title'
-        );
+        titleInput = element.query(howToFindTitleEditField);
+        textInput = element.query(howToFindTextEditField);
       });
 
       it('should expose form group', () => {
@@ -118,6 +125,10 @@ describe('ArticlesPageComponent', () => {
           expect(formControlNames).toContain('title');
         });
 
+        it('should contain text', () => {
+          expect(formControlNames).toContain('text');
+        });
+
       });
 
       it('should call has', () => {
@@ -128,18 +139,40 @@ describe('ArticlesPageComponent', () => {
         expect(titleInput).toBeTruthy();
       });
 
+      it('should display text edit field', () => {
+        expect(textInput).toBeTruthy();
+      });
+
       describe('when user enters a title', () => {
 
+        const title = 'byauvdhygdyf';
         let titleValue: string;
 
-        beforeEach(fakeAsync(() => {
+        beforeEach(() => {
           titleInput.nativeElement.value = title;
           titleInput.nativeElement.dispatchEvent(new Event('input'));
           titleValue = component.formGroup.value['title'];
-        }));
+        });
 
-        it('should update form group', () => {
+        it('should update form group value', () => {
           expect(titleValue).toBe(title);
+        });
+
+      });
+
+      describe('when user enters text', () => {
+
+        const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
+        let textValue: string;
+
+        beforeEach(() => {
+          textInput.nativeElement.value = text;
+          textInput.nativeElement.dispatchEvent(new Event('input'));
+          textValue = component.formGroup.value['text'];
+        });
+
+        it('should update form group value', () => {
+          expect(textValue).toBe(text);
         });
 
       });
@@ -171,8 +204,8 @@ describe('ArticlesPageComponent', () => {
       });
 
       it('should not display title edit field', () => {
-        const element = fixture.debugElement.nativeElement;
-        const titleInput = element.querySelector('input[name="title"]');
+        const element = fixture.debugElement;
+        const titleInput = element.query(howToFindTitleEditField);
         expect(titleInput).toBeFalsy();
       });
 

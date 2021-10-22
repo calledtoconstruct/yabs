@@ -1,6 +1,9 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { User } from '@angular/fire/auth';
+import { FakeUserService } from 'src/app/fake-user-service';
+import { UserService } from 'src/app/user.service';
 import { DashboardComponent } from './dashboard.component';
 
 const howToFindTable = (element: DebugElement): boolean =>
@@ -30,13 +33,21 @@ const howToFindTableFooter = (element: DebugElement): boolean =>
 
 describe('DashboardComponent', () => {
 
+  let userService: FakeUserService;
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
+
+  beforeEach(() => {
+    userService = new FakeUserService();
+  })
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent],
-      imports: [CdkTableModule]
+      imports: [CdkTableModule],
+      providers: [
+        { provide: UserService, useValue: userService }
+      ]
     })
       .compileComponents();
   });
@@ -52,6 +63,20 @@ describe('DashboardComponent', () => {
   });
 
   describe('when user is logged in', () => {
+
+    const displayName = 'abvsunvj';
+    const user = <User>{
+      displayName: displayName
+    };
+
+    beforeEach(() => {
+      userService.setUpLoggedInAs(user);
+      fixture.detectChanges();
+    });
+
+    afterEach(() => {
+      userService.tearDown();
+    });
 
     describe('display', () => {
 
@@ -91,6 +116,33 @@ describe('DashboardComponent', () => {
           expect(tfoot).toBeTruthy();
         });
 
+      });
+
+    });
+
+  });
+
+  describe('when user is not logged in', () => {
+
+    beforeEach(() => {
+      userService.setUpNotLoggedIn();
+    });
+
+    afterEach(() => {
+      userService.tearDown();
+    });
+
+    describe('display', () => {
+
+      let element: DebugElement;
+
+      beforeEach(() => {
+        element = fixture.debugElement;
+      });
+
+      it('should not include table', () => {
+        const table = element.query(howToFindTable);
+        expect(table).toBeFalsy();
       });
 
     });

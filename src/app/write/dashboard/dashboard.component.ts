@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from 'src/app/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,9 +11,11 @@ export class DashboardComponent implements OnInit {
   public readonly data = [{test: 'data'}];
   public readonly columns = ['test'];
 
-  constructor() { }
+  constructor(
+    public readonly userService: UserService
+  ) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 
 }

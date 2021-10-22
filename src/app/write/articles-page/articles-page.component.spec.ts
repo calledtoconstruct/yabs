@@ -1,10 +1,10 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { User } from '@angular/fire/auth';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { User } from '@firebase/auth';
 import { ReplaySubject, Subject } from 'rxjs';
-import { FakeUserService } from 'src/app/FakeUserService';
+import { FakeUserService } from 'src/app/fake-user-service';
 import { UserService } from 'src/app/user.service';
 import { ArticlesPageComponent } from './articles-page.component';
 
@@ -92,14 +92,14 @@ describe('ArticlesPageComponent', () => {
 
   let userService: FakeUserService;
   let paramMapSubject: Subject<ParamMap>;
-  let fakeActivatedRoute: FakeActivatedRoute;
+  let activatedRoute: FakeActivatedRoute;
   let component: ArticlesPageComponent;
   let fixture: ComponentFixture<ArticlesPageComponent>;
 
   beforeEach(() => {
     userService = new FakeUserService();
     paramMapSubject = new ReplaySubject<ParamMap>(1);
-    fakeActivatedRoute = new FakeActivatedRoute(paramMapSubject);
+    activatedRoute = new FakeActivatedRoute(paramMapSubject);
   });
 
   afterEach(() => {
@@ -112,7 +112,7 @@ describe('ArticlesPageComponent', () => {
       declarations: [ArticlesPageComponent],
       providers: [
         { provide: UserService, useValue: userService },
-        { provide: ActivatedRoute, useValue: fakeActivatedRoute }
+        { provide: ActivatedRoute, useValue: activatedRoute }
       ]
     })
       .compileComponents();

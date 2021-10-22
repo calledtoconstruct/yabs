@@ -15,7 +15,8 @@ export class ArticlesPageComponent implements OnInit {
 
   public readonly formGroup = this.formBuilder.group({
     title: this.formBuilder.control(''),
-    text: this.formBuilder.control('')
+    text: this.formBuilder.control(''),
+    operation: this.formBuilder.control('saveOnly')
   });
 
   public readonly showEditor$ = this.activatedRoute.paramMap.pipe(

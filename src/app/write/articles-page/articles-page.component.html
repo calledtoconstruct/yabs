@@ -2,5 +2,7 @@
     <form *ngIf="showEditor$ | async" [formGroup]='formGroup'>
         <input name='title' formControlName='title' />
         <textarea name='text' formControlName='text'></textarea>
+        <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />
+        <label for='saveOnlyOperation'>Save Article and Return to List</label>
     </form>
 </div>

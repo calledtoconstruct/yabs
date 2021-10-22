@@ -30,15 +30,31 @@ const paramMap = <ParamMap>{
   }
 };
 
-const howToFindTitleEditField = (element: DebugElement) =>
+const howToFindTitleInput = (element: DebugElement) =>
   element.name === 'input'
   && !!element.attributes['name']
   && element.attributes['name'] === 'title';
 
-const howToFindTextEditField = (element: DebugElement) =>
+const howToFindTextInput = (element: DebugElement) =>
   element.name === 'textarea'
   && !!element.attributes['name']
   && element.attributes['name'] === 'text';
+
+const howToFindSaveOnlyRadio = (element: DebugElement) =>
+  element.name === 'input'
+  && !!element.attributes['type']
+  && element.attributes['type'] === 'radio'
+  && !!element.attributes['name']
+  && element.attributes['name'] === 'operation'
+  && !!element.attributes['value']
+  && element.attributes['value'] === 'saveOnly'
+  && !!element.attributes['id']
+  && element.attributes['id'] === 'saveOnlyOperation';
+
+const howToFindSaveOnlyLabel = (element: DebugElement) =>
+  element.name === 'label'
+  && !!element.attributes['for']
+  && element.attributes['for'] === 'saveOnlyOperation';
 
 describe('ArticlesPageComponent', () => {
 
@@ -99,14 +115,16 @@ describe('ArticlesPageComponent', () => {
 
       let titleInput: DebugElement;
       let textInput: DebugElement;
+      let saveOnlyRadio: DebugElement;
 
       beforeEach(() => {
         timesHasWasCalledCount = 0;
         paramMapSubject.next(paramMap);
         fixture.detectChanges();
         const element = fixture.debugElement;
-        titleInput = element.query(howToFindTitleEditField);
-        textInput = element.query(howToFindTextEditField);
+        titleInput = element.query(howToFindTitleInput);
+        textInput = element.query(howToFindTextInput);
+        saveOnlyRadio = element.query(howToFindSaveOnlyRadio);
       });
 
       it('should expose form group', () => {
@@ -129,6 +147,10 @@ describe('ArticlesPageComponent', () => {
           expect(formControlNames).toContain('text');
         });
 
+        it('should contain operation', () => {
+          expect(formControlNames).toContain('operation');
+        });
+
       });
 
       it('should call has', () => {
@@ -141,6 +163,10 @@ describe('ArticlesPageComponent', () => {
 
       it('should display text edit field', () => {
         expect(textInput).toBeTruthy();
+      });
+
+      it('should display save only radio button', () => {
+        expect(saveOnlyRadio).toBeTruthy();
       });
 
       describe('when user enters a title', () => {
@@ -205,14 +231,20 @@ describe('ArticlesPageComponent', () => {
 
       it('should not display title edit field', () => {
         const element = fixture.debugElement;
-        const titleInput = element.query(howToFindTitleEditField);
-        expect(titleInput).toBeFalsy();
+        const target = element.query(howToFindTitleInput);
+        expect(target).toBeFalsy();
       });
 
       it('should not display text edit field', () => {
         const element = fixture.debugElement;
-        const textInput = element.query(howToFindTextEditField);
-        expect(textInput).toBeFalsy();
+        const target = element.query(howToFindTextInput);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not display save only radio button', () => {
+        const element = fixture.debugElement;
+        const target = element.query(howToFindSaveOnlyRadio);
+        expect(target).toBeFalsy();
       });
 
     });

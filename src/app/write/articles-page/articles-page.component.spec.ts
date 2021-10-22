@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { User } from '@firebase/auth';
@@ -55,6 +55,22 @@ const howToFindSaveOnlyLabel = (element: DebugElement) =>
   element.name === 'label'
   && !!element.attributes['for']
   && element.attributes['for'] === 'saveOnlyOperation';
+
+const howToFindSaveAndRequestEditRadio = (element: DebugElement) =>
+  element.name === 'input'
+  && !!element.attributes['type']
+  && element.attributes['type'] === 'radio'
+  && !!element.attributes['name']
+  && element.attributes['name'] === 'operation'
+  && !!element.attributes['value']
+  && element.attributes['value'] === 'saveAndRequestEdit'
+  && !!element.attributes['id']
+  && element.attributes['id'] === 'saveAndRequestEditOperation';
+
+const howToFindSaveAndRequestEditLabel = (element: DebugElement) =>
+  element.name === 'label'
+  && !!element.attributes['for']
+  && element.attributes['for'] === 'saveAndRequestEditOperation';
 
 describe('ArticlesPageComponent', () => {
 
@@ -117,6 +133,8 @@ describe('ArticlesPageComponent', () => {
       let textInput: DebugElement;
       let saveOnlyRadio: DebugElement;
       let saveOnlyLabel: DebugElement;
+      let saveAndRequestEditRadio: DebugElement;
+      let saveAndRequestEditLabel: DebugElement;
 
       beforeEach(() => {
         timesHasWasCalledCount = 0;
@@ -127,6 +145,8 @@ describe('ArticlesPageComponent', () => {
         textInput = element.query(howToFindTextInput);
         saveOnlyRadio = element.query(howToFindSaveOnlyRadio);
         saveOnlyLabel = element.query(howToFindSaveOnlyLabel);
+        saveAndRequestEditRadio = element.query(howToFindSaveAndRequestEditRadio);
+        saveAndRequestEditLabel = element.query(howToFindSaveAndRequestEditLabel);
       });
 
       it('should expose form group', () => {
@@ -173,6 +193,47 @@ describe('ArticlesPageComponent', () => {
 
       it('should display save only label', () => {
         expect(saveOnlyLabel).toBeTruthy();
+      });
+
+      it('should display save and request edit radio button', () => {
+        expect(saveAndRequestEditRadio).toBeTruthy();
+      });
+
+      it('should display save and request edit label', () => {
+        expect(saveAndRequestEditLabel).toBeTruthy();
+      });
+
+      describe('save only radio button', () => {
+
+        it('should default to checked', () => {
+          const value = saveOnlyRadio.nativeElement['checked'];
+          expect(value).toBeTruthy();
+        });
+
+      });
+
+      describe('save and request edit radio button', () => {
+
+        it('should default to not-checked', () => {
+          const value = saveAndRequestEditRadio.nativeElement['checked'];
+          expect(value).toBeFalsy();
+        });
+
+        describe('when clicked', () => {
+
+          let operationValue: string;
+
+          beforeEach(() => {
+            saveAndRequestEditRadio.nativeElement.click();
+            operationValue = component.formGroup.value['operation'];
+          });
+
+          it('should update form group', () => {
+            expect(operationValue).toBe('saveAndRequestEdit');
+          });
+
+        });
+
       });
 
       describe('when user enters a title', () => {
@@ -256,6 +317,18 @@ describe('ArticlesPageComponent', () => {
       it('should not display save only label', () => {
         const element = fixture.debugElement;
         const target = element.query(howToFindSaveOnlyLabel);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not display save only radio button', () => {
+        const element = fixture.debugElement;
+        const target = element.query(howToFindSaveAndRequestEditRadio);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not display save only radio button', () => {
+        const element = fixture.debugElement;
+        const target = element.query(howToFindSaveAndRequestEditLabel);
         expect(target).toBeFalsy();
       });
 

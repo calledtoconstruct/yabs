@@ -1,3 +1,10 @@
-<table>
-    
+<table cdk-table [dataSource]='data'>
+    <ng-container cdkColumnDef='test'>
+        <th cdk-header-cell *cdkHeaderCellDef> Test </th>
+        <td cdk-cell *cdkCellDef='let element'> {{ element.test }} </td>
+        <td cdk-footer-cell *cdkFooterCellDef></td>
+    </ng-container>
+    <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
+    <tr cdk-row *cdkRowDef="let row; columns: columns;"></tr>
+    <tr cdk-footer-row *cdkFooterRowDef="columns"></tr>
 </table>

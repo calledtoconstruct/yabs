@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
 
+  public readonly data = [{test: 'data'}];
+  public readonly columns = ['test'];
+
   constructor() { }
 
   ngOnInit(): void {

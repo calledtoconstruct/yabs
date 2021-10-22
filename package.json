@@ -10,9 +10,10 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/architect": "^0.1202.10",
-    "@angular-devkit/schematics": "~12.0.0",
+    "@angular-devkit/architect": "^0.1202.11",
+    "@angular-devkit/schematics": "~12.2.0",
     "@angular/animations": "~12.2.0",
+    "@angular/cdk": "~12.2.0",
     "@angular/common": "~12.2.0",
     "@angular/compiler": "~12.2.0",
     "@angular/core": "~12.2.0",

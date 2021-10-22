@@ -72,6 +72,22 @@ const howToFindSaveAndRequestEditLabel = (element: DebugElement) =>
   && !!element.attributes['for']
   && element.attributes['for'] === 'saveAndRequestEditOperation';
 
+const howToFindSaveAndRequestCheckRadio = (element: DebugElement) =>
+  element.name === 'input'
+  && !!element.attributes['type']
+  && element.attributes['type'] === 'radio'
+  && !!element.attributes['name']
+  && element.attributes['name'] === 'operation'
+  && !!element.attributes['value']
+  && element.attributes['value'] === 'saveAndRequestCheck'
+  && !!element.attributes['id']
+  && element.attributes['id'] === 'saveAndRequestCheckOperation';
+
+const howToFindSaveAndRequestCheckLabel = (element: DebugElement) =>
+  element.name === 'label'
+  && !!element.attributes['for']
+  && element.attributes['for'] === 'saveAndRequestEditOperation';
+
 describe('ArticlesPageComponent', () => {
 
   let userService: FakeUserService;
@@ -135,6 +151,8 @@ describe('ArticlesPageComponent', () => {
       let saveOnlyLabel: DebugElement;
       let saveAndRequestEditRadio: DebugElement;
       let saveAndRequestEditLabel: DebugElement;
+      let saveAndRequestCheckRadio: DebugElement;
+      let saveAndRequestCheckLabel: DebugElement;
 
       beforeEach(() => {
         timesHasWasCalledCount = 0;
@@ -147,6 +165,8 @@ describe('ArticlesPageComponent', () => {
         saveOnlyLabel = element.query(howToFindSaveOnlyLabel);
         saveAndRequestEditRadio = element.query(howToFindSaveAndRequestEditRadio);
         saveAndRequestEditLabel = element.query(howToFindSaveAndRequestEditLabel);
+        saveAndRequestCheckRadio = element.query(howToFindSaveAndRequestCheckRadio);
+        saveAndRequestCheckLabel = element.query(howToFindSaveAndRequestCheckLabel);
       });
 
       it('should expose form group', () => {
@@ -203,6 +223,14 @@ describe('ArticlesPageComponent', () => {
         expect(saveAndRequestEditLabel).toBeTruthy();
       });
 
+      it('should display save and request check radio button', () => {
+        expect(saveAndRequestCheckRadio).toBeTruthy();
+      });
+
+      it('should display save and request check label', () => {
+        expect(saveAndRequestCheckLabel).toBeTruthy();
+      });
+
       describe('save only radio button', () => {
 
         it('should default to checked', () => {
@@ -230,6 +258,30 @@ describe('ArticlesPageComponent', () => {
 
           it('should update form group', () => {
             expect(operationValue).toBe('saveAndRequestEdit');
+          });
+
+        });
+
+      });
+
+      describe('save and request check radio button', () => {
+
+        it('should default to not-checked', () => {
+          const value = saveAndRequestCheckRadio.nativeElement['checked'];
+          expect(value).toBeFalsy();
+        });
+
+        describe('when clicked', () => {
+
+          let operationValue: string;
+
+          beforeEach(() => {
+            saveAndRequestCheckRadio.nativeElement.click();
+            operationValue = component.formGroup.value['operation'];
+          });
+
+          it('should update form group', () => {
+            expect(operationValue).toBe('saveAndRequestCheck');
           });
 
         });
@@ -320,15 +372,27 @@ describe('ArticlesPageComponent', () => {
         expect(target).toBeFalsy();
       });
 
-      it('should not display save only radio button', () => {
+      it('should not display save and request edit radio button', () => {
         const element = fixture.debugElement;
         const target = element.query(howToFindSaveAndRequestEditRadio);
         expect(target).toBeFalsy();
       });
 
-      it('should not display save only radio button', () => {
+      it('should not display save and request edit radio button', () => {
         const element = fixture.debugElement;
         const target = element.query(howToFindSaveAndRequestEditLabel);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not display save and request check radio button', () => {
+        const element = fixture.debugElement;
+        const target = element.query(howToFindSaveAndRequestCheckRadio);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not display save and request check radio button', () => {
+        const element = fixture.debugElement;
+        const target = element.query(howToFindSaveAndRequestCheckLabel);
         expect(target).toBeFalsy();
       });
 

@@ -116,6 +116,7 @@ describe('ArticlesPageComponent', () => {
       let titleInput: DebugElement;
       let textInput: DebugElement;
       let saveOnlyRadio: DebugElement;
+      let saveOnlyLabel: DebugElement;
 
       beforeEach(() => {
         timesHasWasCalledCount = 0;
@@ -125,6 +126,7 @@ describe('ArticlesPageComponent', () => {
         titleInput = element.query(howToFindTitleInput);
         textInput = element.query(howToFindTextInput);
         saveOnlyRadio = element.query(howToFindSaveOnlyRadio);
+        saveOnlyLabel = element.query(howToFindSaveOnlyLabel);
       });
 
       it('should expose form group', () => {
@@ -167,6 +169,10 @@ describe('ArticlesPageComponent', () => {
 
       it('should display save only radio button', () => {
         expect(saveOnlyRadio).toBeTruthy();
+      });
+
+      it('should display save only label', () => {
+        expect(saveOnlyLabel).toBeTruthy();
       });
 
       describe('when user enters a title', () => {
@@ -244,6 +250,12 @@ describe('ArticlesPageComponent', () => {
       it('should not display save only radio button', () => {
         const element = fixture.debugElement;
         const target = element.query(howToFindSaveOnlyRadio);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not display save only label', () => {
+        const element = fixture.debugElement;
+        const target = element.query(howToFindSaveOnlyLabel);
         expect(target).toBeFalsy();
       });
 

@@ -81,6 +81,15 @@ const howToFindPublishedTab = (element: DebugElement): boolean =>
   && !!element.children[0].nativeElement.innerText
   && element.children[0].nativeElement.innerText === 'Published';
 
+const tabs = [
+  { name: 'draft tab', howToFind: howToFindDraftTab },
+  { name: 'request tab', howToFind: howToFindRequestTab },
+  { name: 'edit tab', howToFind: howToFindOutForEditTab },
+  { name: 'check tab', howToFind: howToFindOutForCheckTab },
+  { name: 'ready tab', howToFind: howToFindReadyTab },
+  { name: 'published tab', howToFind: howToFindPublishedTab }
+];
+
 describe('DashboardComponent', () => {
 
   let userService: FakeUserService;
@@ -138,44 +147,13 @@ describe('DashboardComponent', () => {
 
       describe('tab group', () => {
 
-        let draftTab: DebugElement;
-        let requestTab: DebugElement;
-        let outForEditTab: DebugElement;
-        let outForCheckTab: DebugElement;
-        let readyTab: DebugElement;
-        let publishedTab: DebugElement;
+        tabs.forEach(item => {
 
-        beforeEach(() => {
-          draftTab = element.query(howToFindDraftTab);
-          requestTab = element.query(howToFindRequestTab);
-          outForEditTab = element.query(howToFindOutForEditTab);
-          outForCheckTab = element.query(howToFindOutForCheckTab);
-          readyTab = element.query(howToFindReadyTab);
-          publishedTab = element.query(howToFindPublishedTab);
-        });
+          it(`should include ${item.name}`, () => {
+            const target = element.query(item.howToFind);
+            expect(target).toBeTruthy();
+          });
 
-        it('should include draft tab', () => {
-          expect(draftTab).toBeTruthy();
-        });
-
-        it('should include request tab', () => {
-          expect(requestTab).toBeTruthy();
-        });
-
-        it('should include out for edit tab', () => {
-          expect(outForEditTab).toBeTruthy();
-        });
-
-        it('should include out for check tab', () => {
-          expect(outForCheckTab).toBeTruthy();
-        });
-
-        it('should include ready tab', () => {
-          expect(readyTab).toBeTruthy();
-        });
-
-        it('should include published tab', () => {
-          expect(publishedTab).toBeTruthy();
         });
 
       });
@@ -234,39 +212,17 @@ describe('DashboardComponent', () => {
         element = fixture.debugElement;
       });
 
-      it('should not include table', () => {
-        const target = element.query(howToFindTable);
-        expect(target).toBeFalsy();
-      });
+      describe('tab group', () => {
 
-      it('should not include draft tab', () => {
-        const target = element.query(howToFindDraftTab);
-        expect(target).toBeFalsy();
-      });
+        tabs.forEach(item => {
+  
+          it(`should not include ${item.name}`, () => {
+            const target = element.query(item.howToFind);
+            expect(target).toBeFalsy();
+          });
+  
+        });
 
-      it('should not include request tab', () => {
-        const target = element.query(howToFindRequestTab);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not include out for edit tab', () => {
-        const target = element.query(howToFindOutForEditTab);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not include out for check tab', () => {
-        const target = element.query(howToFindOutForCheckTab);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not include ready tab', () => {
-        const target = element.query(howToFindReadyTab);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not include published tab', () => {
-        const target = element.query(howToFindPublishedTab);
-        expect(target).toBeFalsy();
       });
 
     });

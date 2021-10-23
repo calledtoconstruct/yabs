@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest, Observable, of } from 'rxjs';
+import { flatMap, map, switchMap, tap } from 'rxjs/operators';
 import { UserService } from 'src/app/user.service';
-import { ArticleService } from '../article.service';
+import { Article, ArticleService } from '../article.service';
+
+type TabDefinition = [string, Array<string>];
+type TabsDefinition = Array<TabDefinition>;
 
 @Component({
   selector: 'app-dashboard',
@@ -11,26 +15,38 @@ import { ArticleService } from '../article.service';
 })
 export class DashboardComponent implements OnInit {
 
-  private readonly columns: { [key: string]: Array<string> } = {
-    'Draft': new Array<string>('title')
-  };
+  private readonly tabs: TabsDefinition = [
+    ['Draft', new Array<string>('title')],
+    ['Request Pending', new Array<string>('text')],
+    ['Out For Edit', new Array<string>('title')],
+    ['Out For Fact Check', new Array<string>('text')],
+    ['Ready', new Array<string>('title')],
+    ['Published', new Array<string>('text')]
+  ];
 
-  public readonly tab$ = this.activatedRoute.queryParamMap.pipe(
-    map(queryParamMap => queryParamMap.get('tab') || 'Draft')
+  public readonly tabIndex$: Observable<number> = this.activatedRoute.queryParamMap.pipe(
+    map((queryParamMap): string => queryParamMap.has('tab') ? queryParamMap.get('tab') || '0' : '0'),
+    map(tabIndexString => parseInt(tabIndexString, 10)),
+    map(tabIndex => isNaN(tabIndex) ? 0 : tabIndex)
   );
 
-  public readonly columns$ = this.tab$.pipe(
-    map(tab => this.columns[tab])
+  public readonly tabDefinition$: Observable<TabDefinition> = this.tabIndex$.pipe(
+    map(tabIndex => this.tabs[tabIndex])
   );
 
-  public readonly data$ = this.tab$.pipe(
-    map(tab => this.articleService.collection(tab))
+  public readonly columns$: Observable<Array<string>> = this.tabDefinition$.pipe(
+    map(tabDefinition => tabDefinition[1])
+  );
+
+  public readonly data$: Observable<Array<Article>> = combineLatest([this.userService.loggedIn$, this.tabDefinition$]).pipe(
+    switchMap(([loggedIn, tabDefinition]) => loggedIn ? this.articleService.collection(tabDefinition[0]) : of([]))
   );
 
   constructor(
     private readonly articleService: ArticleService,
     public readonly userService: UserService,
-    private readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly router: Router
   ) { }
 
   public ngOnInit(): void {

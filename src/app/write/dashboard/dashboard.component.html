@@ -1,16 +1,61 @@
 <div *ngIf='userService.loggedIn$ | async'>
 
-    <mat-tab-group>
+    <mat-tab-group [selectedIndex]='tabIndex$ | async'
+        (selectedTabChange)='router.navigate([], { relativeTo: activatedRoute, queryParams: {tab: $event.index}, queryParamsHandling: "merge"})'>
         <mat-tab label="Draft">
             <ng-template matTabContent>
-                <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'></ng-container>
+                <h1>Draft Articles</h1>
+                <h5></h5>
+                <ng-container
+                    *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
+                </ng-container>
             </ng-template>
         </mat-tab>
-        <mat-tab label="Request"> Article List waiting for Editorial Review or Fact Check </mat-tab>
-        <mat-tab label="Out For Edit"> Article List pending Editorial Review </mat-tab>
-        <mat-tab label='Out For Check'> Article List pending Fact Check </mat-tab>
-        <mat-tab label='Ready'> Ready Article List </mat-tab>
-        <mat-tab label='Published'> Published Article List </mat-tab>
+        <mat-tab label="Request Pending">
+            <ng-template matTabContent>
+                <h1>Articles with a Request Pending</h1>
+                <h5>(waiting for an Editor or Fact Checker)</h5>
+                <ng-container
+                    *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
+                </ng-container>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Out For Edit">
+            <ng-template matTabContent>
+                <h1>Articles which are Out For Edit</h1>
+                <h5>(edit is in progress)</h5>
+                <ng-container
+                    *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
+                </ng-container>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label='Out For Fact Check'>
+            <ng-template matTabContent>
+                <h1>Articles which are Out For Fact Check</h1>
+                <h5>(fact check is in progress)</h5>
+                <ng-container
+                    *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
+                </ng-container>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label='Ready'>
+            <ng-template matTabContent>
+                <h1>Articles which are Ready for Revision</h1>
+                <h5>(review the editorial or fact check results)</h5>
+                <ng-container
+                    *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
+                </ng-container>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label='Published'>
+            <ng-template matTabContent>
+                <h1>Published Articles</h1>
+                <h5></h5>
+                <ng-container
+                    *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
+                </ng-container>
+            </ng-template>
+        </mat-tab>
     </mat-tab-group>
 
     <ng-template #articleTable let-data='data' let-columns='columns'>
@@ -18,6 +63,11 @@
             <ng-container cdkColumnDef='title'>
                 <th cdk-header-cell *cdkHeaderCellDef> Title </th>
                 <td cdk-cell *cdkCellDef='let element'> {{ element.title }} </td>
+                <td cdk-footer-cell *cdkFooterCellDef></td>
+            </ng-container>
+            <ng-container cdkColumnDef='text'>
+                <th cdk-header-cell *cdkHeaderCellDef> Text </th>
+                <td cdk-cell *cdkCellDef='let element'> {{ element.text }} </td>
                 <td cdk-footer-cell *cdkFooterCellDef></td>
             </ng-container>
             <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>

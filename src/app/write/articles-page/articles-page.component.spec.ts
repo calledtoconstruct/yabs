@@ -88,6 +88,11 @@ const howToFindSaveAndRequestCheckLabel = (element: DebugElement) =>
   && !!element.attributes['for']
   && element.attributes['for'] === 'saveAndRequestEditOperation';
 
+const howToFindDoneButton = (element: DebugElement): boolean =>
+  element.name === 'button'
+  && !!element.nativeElement.innerText
+  && element.nativeElement.innerText === 'Done';
+
 describe('ArticlesPageComponent', () => {
 
   let userService: FakeUserService;
@@ -153,6 +158,7 @@ describe('ArticlesPageComponent', () => {
       let saveAndRequestEditLabel: DebugElement;
       let saveAndRequestCheckRadio: DebugElement;
       let saveAndRequestCheckLabel: DebugElement;
+      let doneButton: DebugElement;
 
       beforeEach(() => {
         timesHasWasCalledCount = 0;
@@ -167,6 +173,7 @@ describe('ArticlesPageComponent', () => {
         saveAndRequestEditLabel = element.query(howToFindSaveAndRequestEditLabel);
         saveAndRequestCheckRadio = element.query(howToFindSaveAndRequestCheckRadio);
         saveAndRequestCheckLabel = element.query(howToFindSaveAndRequestCheckLabel);
+        doneButton = element.query(howToFindDoneButton);
       });
 
       it('should expose form group', () => {
@@ -229,6 +236,10 @@ describe('ArticlesPageComponent', () => {
 
       it('should display save and request check label', () => {
         expect(saveAndRequestCheckLabel).toBeTruthy();
+      });
+
+      it('should display done button', () => {
+        expect(doneButton).toBeTruthy();
       });
 
       describe('save only radio button', () => {

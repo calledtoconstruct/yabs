@@ -57,6 +57,30 @@ const howToFindOutForEditTab = (element: DebugElement): boolean =>
   && !!element.children[0].nativeElement.innerText
   && element.children[0].nativeElement.innerText === 'Out For Edit';
 
+const howToFindOutForCheckTab = (element: DebugElement): boolean =>
+  element.name === 'div'
+  && !!element.attributes['role']
+  && element.attributes['role'] === 'tab'
+  && element.children.length === 1
+  && !!element.children[0].nativeElement.innerText
+  && element.children[0].nativeElement.innerText === 'Out For Check';
+
+const howToFindReadyTab = (element: DebugElement): boolean =>
+  element.name === 'div'
+  && !!element.attributes['role']
+  && element.attributes['role'] === 'tab'
+  && element.children.length === 1
+  && !!element.children[0].nativeElement.innerText
+  && element.children[0].nativeElement.innerText === 'Ready';
+
+const howToFindPublishedTab = (element: DebugElement): boolean =>
+  element.name === 'div'
+  && !!element.attributes['role']
+  && element.attributes['role'] === 'tab'
+  && element.children.length === 1
+  && !!element.children[0].nativeElement.innerText
+  && element.children[0].nativeElement.innerText === 'Published';
+
 describe('DashboardComponent', () => {
 
   let userService: FakeUserService;
@@ -117,11 +141,17 @@ describe('DashboardComponent', () => {
         let draftTab: DebugElement;
         let requestTab: DebugElement;
         let outForEditTab: DebugElement;
+        let outForCheckTab: DebugElement;
+        let readyTab: DebugElement;
+        let publishedTab: DebugElement;
 
         beforeEach(() => {
           draftTab = element.query(howToFindDraftTab);
           requestTab = element.query(howToFindRequestTab);
           outForEditTab = element.query(howToFindOutForEditTab);
+          outForCheckTab = element.query(howToFindOutForCheckTab);
+          readyTab = element.query(howToFindReadyTab);
+          publishedTab = element.query(howToFindPublishedTab);
         });
 
         it('should include draft tab', () => {
@@ -134,6 +164,18 @@ describe('DashboardComponent', () => {
 
         it('should include out for edit tab', () => {
           expect(outForEditTab).toBeTruthy();
+        });
+
+        it('should include out for check tab', () => {
+          expect(outForCheckTab).toBeTruthy();
+        });
+
+        it('should include ready tab', () => {
+          expect(readyTab).toBeTruthy();
+        });
+
+        it('should include published tab', () => {
+          expect(publishedTab).toBeTruthy();
         });
 
       });
@@ -209,6 +251,21 @@ describe('DashboardComponent', () => {
 
       it('should not include out for edit tab', () => {
         const target = element.query(howToFindOutForEditTab);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not include out for check tab', () => {
+        const target = element.query(howToFindOutForCheckTab);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not include ready tab', () => {
+        const target = element.query(howToFindReadyTab);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not include published tab', () => {
+        const target = element.query(howToFindPublishedTab);
         expect(target).toBeFalsy();
       });
 

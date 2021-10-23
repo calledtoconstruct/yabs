@@ -49,6 +49,14 @@ const howToFindRequestTab = (element: DebugElement): boolean =>
   && !!element.children[0].nativeElement.innerText
   && element.children[0].nativeElement.innerText === 'Request';
 
+const howToFindOutForEditTab = (element: DebugElement): boolean =>
+  element.name === 'div'
+  && !!element.attributes['role']
+  && element.attributes['role'] === 'tab'
+  && element.children.length === 1
+  && !!element.children[0].nativeElement.innerText
+  && element.children[0].nativeElement.innerText === 'Out For Edit';
+
 describe('DashboardComponent', () => {
 
   let userService: FakeUserService;
@@ -108,10 +116,12 @@ describe('DashboardComponent', () => {
 
         let draftTab: DebugElement;
         let requestTab: DebugElement;
+        let outForEditTab: DebugElement;
 
         beforeEach(() => {
           draftTab = element.query(howToFindDraftTab);
           requestTab = element.query(howToFindRequestTab);
+          outForEditTab = element.query(howToFindOutForEditTab);
         });
 
         it('should include draft tab', () => {
@@ -120,6 +130,10 @@ describe('DashboardComponent', () => {
 
         it('should include request tab', () => {
           expect(requestTab).toBeTruthy();
+        });
+
+        it('should include out for edit tab', () => {
+          expect(outForEditTab).toBeTruthy();
         });
 
       });
@@ -179,18 +193,23 @@ describe('DashboardComponent', () => {
       });
 
       it('should not include table', () => {
-        const table = element.query(howToFindTable);
-        expect(table).toBeFalsy();
+        const target = element.query(howToFindTable);
+        expect(target).toBeFalsy();
       });
 
       it('should not include draft tab', () => {
-        const draftTab = element.query(howToFindDraftTab);
-        expect(draftTab).toBeFalsy();
+        const target = element.query(howToFindDraftTab);
+        expect(target).toBeFalsy();
       });
 
       it('should not include request tab', () => {
-        const requestTab = element.query(howToFindRequestTab);
-        expect(requestTab).toBeFalsy();
+        const target = element.query(howToFindRequestTab);
+        expect(target).toBeFalsy();
+      });
+
+      it('should not include out for edit tab', () => {
+        const target = element.query(howToFindOutForEditTab);
+        expect(target).toBeFalsy();
       });
 
     });

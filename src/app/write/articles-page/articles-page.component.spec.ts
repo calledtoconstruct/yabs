@@ -2,42 +2,15 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { User } from '@angular/fire/auth';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { ReplaySubject, Subject } from 'rxjs';
-import { FakeUserService } from 'src/app/fake-user-service';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { FakeUserService } from 'src/app/user-service.fake';
 import { UserService } from 'src/app/user.service';
 import { ArticleService } from '../article.service';
 import { ArticlesPageComponent } from './articles-page.component';
-
-class FakeActivatedRoute {
-  public readonly paramMap = this.paramMapSubject.asObservable();
-  constructor(
-    private readonly paramMapSubject: Subject<ParamMap>
-  ) {
-  }
-}
-
-let timesHasWasCalledCount: number;
-
-const paramMap = <ParamMap>{
-  get: (name: string): string | null => {
-    return name === 'articleIdentifier'
-      ? 'new'
-      : null
-  },
-  has: (name: string): boolean => {
-    timesHasWasCalledCount++;
-    return name === 'articleIdentifier';
-  }
-};
-
-class FakeArticleService {
-  public saveArticleCalled = 0;
-
-  public saveArticle(): void {
-    this.saveArticleCalled++;
-  }
-}
+import { CountContainer } from '../../count-container.type';
+import { FakeActivatedRoute } from '../../activated-route.fake';
+import { FakeArticleService } from '../../article-service.fake';
 
 const howToFindTitleInput = (element: DebugElement) =>
   element.name === 'input'
@@ -102,11 +75,10 @@ const howToFindDoneButton = (element: DebugElement): boolean =>
   && !!element.nativeElement.innerText
   && element.nativeElement.innerText === 'Done';
 
-describe('ArticlesPageComponent', () => {
+describe('Write -> Articles Page', () => {
 
   let userService: FakeUserService;
   let articleService: FakeArticleService;
-  let paramMapSubject: Subject<ParamMap>;
   let activatedRoute: FakeActivatedRoute;
   let component: ArticlesPageComponent;
   let fixture: ComponentFixture<ArticlesPageComponent>;
@@ -114,12 +86,13 @@ describe('ArticlesPageComponent', () => {
   beforeEach(() => {
     userService = new FakeUserService();
     articleService = new FakeArticleService();
-    paramMapSubject = new ReplaySubject<ParamMap>(1);
-    activatedRoute = new FakeActivatedRoute(paramMapSubject);
+    activatedRoute = new FakeActivatedRoute();
   });
 
   afterEach(() => {
-    paramMapSubject.complete();
+    articleService.tearDown();
+    activatedRoute.tearDown();
+    userService.tearDown();
   });
 
   beforeEach(async () => {
@@ -156,10 +129,6 @@ describe('ArticlesPageComponent', () => {
       userService.setUpLoggedInAs(user);
     });
 
-    afterEach(() => {
-      userService.tearDown();
-    });
-
     describe('when passed article identifier "new"', () => {
 
       let titleInput: DebugElement;
@@ -171,10 +140,12 @@ describe('ArticlesPageComponent', () => {
       let saveAndRequestCheckRadio: DebugElement;
       let saveAndRequestCheckLabel: DebugElement;
       let doneButton: DebugElement;
+      let hasWasCalledFor: CountContainer;
 
       beforeEach(() => {
-        timesHasWasCalledCount = 0;
-        paramMapSubject.next(paramMap);
+        hasWasCalledFor = activatedRoute.nextParamMap({
+          articleIdentifier: 'new'
+        });
         fixture.detectChanges();
         const element = fixture.debugElement;
         titleInput = element.query(howToFindTitleInput);
@@ -215,7 +186,7 @@ describe('ArticlesPageComponent', () => {
       });
 
       it('should call has', () => {
-        expect(timesHasWasCalledCount).toBe(1);
+        expect(hasWasCalledFor['articleIdentifier']).toBe(1);
       });
 
       it('should display title edit field', () => {
@@ -367,20 +338,19 @@ describe('ArticlesPageComponent', () => {
       userService.setUpNotLoggedIn();
     });
 
-    afterEach(() => {
-      userService.tearDown();
-    });
-
     describe('when passed article identifier "new"', () => {
 
+      let hasWasCalledFor: CountContainer;
+
       beforeEach(() => {
-        timesHasWasCalledCount = 0;
-        paramMapSubject.next(paramMap);
+        hasWasCalledFor = activatedRoute.nextParamMap({
+          articleIdentifier: 'new'
+        });
         fixture.detectChanges();
       });
 
       it('should not call has', () => {
-        expect(timesHasWasCalledCount).toBe(0);
+        expect(hasWasCalledFor['articleIdentifier']).toBe(0);
       });
 
       it('should not display title edit field', () => {

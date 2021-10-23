@@ -4,8 +4,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { User } from '@angular/fire/auth';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FakeUserService } from 'src/app/fake-user-service';
+import { ActivatedRoute } from '@angular/router';
+import { FakeActivatedRoute } from 'src/app/activated-route.fake';
+import { FakeArticleService } from 'src/app/article-service.fake';
+import { FakeUserService } from 'src/app/user-service.fake';
 import { UserService } from 'src/app/user.service';
+import { Article, ArticleService } from '../article.service';
 import { DashboardComponent } from './dashboard.component';
 
 const howToFindTable = (element: DebugElement): boolean =>
@@ -90,21 +94,71 @@ const tabs = [
   { name: 'published tab', howToFind: howToFindPublishedTab }
 ];
 
-describe('DashboardComponent', () => {
+type TableContext = { container?: DebugElement, table?: DebugElement };
 
+const verifyTable = (context: TableContext, then: (tableContext: TableContext) => void) => {
+
+  let thead: DebugElement;
+  let tbody: DebugElement;
+  let tfoot: DebugElement;
+
+  beforeEach(() => {
+    expect(context.container).toBeTruthy();
+    if (context.container) {
+      context.table = context.container.query(howToFindTable);
+      thead = context.table.query(howToFindTableHeader);
+      tbody = context.table.query(howToFindTableBody);
+      tfoot = context.table.query(howToFindTableFooter);
+    }
+  });
+
+  it('should exist', () => {
+    expect(context.table).toBeTruthy();
+  });
+
+  it('should include a header', () => {
+    expect(thead).toBeTruthy();
+  });
+
+  it('should include a body', () => {
+    expect(tbody).toBeTruthy();
+  });
+
+  it('should include a footer', () => {
+    expect(tfoot).toBeTruthy();
+  });
+
+  then(context);
+
+};
+
+describe('Write -> Dashboard', () => {
+
+  let articleService: FakeArticleService;
+  let activatedRoute: FakeActivatedRoute;
   let userService: FakeUserService;
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
 
   beforeEach(() => {
+    articleService = new FakeArticleService();
+    activatedRoute = new FakeActivatedRoute();
     userService = new FakeUserService();
-  })
+  });
+
+  afterEach(() => {
+    userService.tearDown();
+    activatedRoute.tearDown();
+    articleService.tearDown();
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent],
       imports: [CdkTableModule, MatTabsModule, BrowserAnimationsModule],
       providers: [
+        { provide: ArticleService, useValue: articleService },
+        { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: UserService, useValue: userService }
       ]
     })
@@ -121,106 +175,144 @@ describe('DashboardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('when user is logged in', () => {
-
-    const displayName = 'abvsunvj';
-    const user = <User>{
-      displayName: displayName
-    };
+  describe('when route is activated', () => {
 
     beforeEach(() => {
-      userService.setUpLoggedInAs(user);
+      activatedRoute.nextQueryParamMap({ tab: 'Draft' });
       fixture.detectChanges();
     });
 
-    afterEach(() => {
-      userService.tearDown();
-    });
+    describe('when user is logged in', () => {
 
-    describe('display', () => {
-
-      let element: DebugElement;
+      const displayName = 'abvsunvj';
+      const user = <User>{
+        displayName: displayName
+      };
 
       beforeEach(() => {
-        element = fixture.debugElement;
+        userService.setUpLoggedInAs(user);
+        fixture.detectChanges();
       });
 
-      describe('tab group', () => {
+      describe('display', () => {
 
-        tabs.forEach(item => {
-
-          it(`should include ${item.name}`, () => {
-            const target = element.query(item.howToFind);
-            expect(target).toBeTruthy();
-          });
-
-        });
-
-      });
-
-      describe('table', () => {
-
-        let table: DebugElement;
-        let thead: DebugElement;
-        let tbody: DebugElement;
-        let tfoot: DebugElement;
+        let element: DebugElement;
 
         beforeEach(() => {
-          table = element.query(howToFindTable);
-          thead = table.query(howToFindTableHeader);
-          tbody = table.query(howToFindTableBody);
-          tfoot = table.query(howToFindTableFooter);
+          element = fixture.debugElement;
         });
 
-        it('should exist', () => {
-          expect(table).toBeTruthy();
-        });
+        describe('tab group', () => {
 
-        it('should include a header', () => {
-          expect(thead).toBeTruthy();
-        });
+          tabs.forEach(item => {
 
-        it('should include a body', () => {
-          expect(tbody).toBeTruthy();
-        });
+            it(`should include ${item.name}`, () => {
+              const target = element.query(item.howToFind);
+              expect(target).toBeTruthy();
+            });
 
-        it('should include a footer', () => {
-          expect(tfoot).toBeTruthy();
+          });
+
+          describe('when draft tab is selected', () => {
+
+            let selected: DebugElement;
+
+            beforeEach(() => {
+              selected = element.query(howToFindDraftTab);
+            });
+
+            describe('article service collection', () => {
+
+              it('should be called for Draft status', () => {
+                expect(articleService.collectionCalledFor['Draft']).toBe(1);
+              });
+
+              [{
+                label: 'an article is',
+                articles: new Array<Article>(<Article>{
+                  title: 'alsdjfa',
+                  text: 'uhfwiu'
+                })
+              }, {
+                label: 'three articles are',
+                articles: new Array<Article>(<Article>{
+                  title: 'alsdjfa',
+                  text: 'uhfwiu'
+                }, <Article>{
+                  title: 'vuybybwas',
+                  text: 'wyebf'
+                }, <Article>{
+                  title: 'qvasduf',
+                  text: 'pvasdf'
+                })
+              }].forEach(item => {
+
+                describe(`when ${item.label} returned`, () => {
+
+                  beforeEach(() => {
+                    articleService.nextCollection(item.articles);
+                  });
+
+                  describe('table', () => {
+
+                    const context: TableContext = {};
+
+                    beforeEach(() => {
+                      context.container = element;
+                    });
+
+                    verifyTable(context, (tableContext: TableContext) => {
+
+                      it(`should have a row count of ${item.articles.length}`, () => {
+                        expect(tableContext.table?.queryAll(howToFindTableBody).length).toBe(item.articles.length);
+                      });
+
+                    });
+
+                  });
+
+                });
+
+              });
+            });
+
+          });
+
         });
 
       });
 
     });
 
-  });
-
-  describe('when user is not logged in', () => {
-
-    beforeEach(() => {
-      userService.setUpNotLoggedIn();
-    });
-
-    afterEach(() => {
-      userService.tearDown();
-    });
-
-    describe('display', () => {
-
-      let element: DebugElement;
+    describe('when user is not logged in', () => {
 
       beforeEach(() => {
-        element = fixture.debugElement;
+        userService.setUpNotLoggedIn();
       });
 
-      describe('tab group', () => {
+      afterEach(() => {
+        userService.tearDown();
+      });
 
-        tabs.forEach(item => {
-  
-          it(`should not include ${item.name}`, () => {
-            const target = element.query(item.howToFind);
-            expect(target).toBeFalsy();
+      describe('display', () => {
+
+        let element: DebugElement;
+
+        beforeEach(() => {
+          element = fixture.debugElement;
+        });
+
+        describe('tab group', () => {
+
+          tabs.forEach(item => {
+
+            it(`should not include ${item.name}`, () => {
+              const target = element.query(item.howToFind);
+              expect(target).toBeFalsy();
+            });
+
           });
-  
+
         });
 
       });

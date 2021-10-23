@@ -6,6 +6,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { FakeUserService } from 'src/app/fake-user-service';
 import { UserService } from 'src/app/user.service';
+import { ArticleService } from '../article.service';
 import { ArticlesPageComponent } from './articles-page.component';
 
 class FakeActivatedRoute {
@@ -29,6 +30,14 @@ const paramMap = <ParamMap>{
     return name === 'articleIdentifier';
   }
 };
+
+class FakeArticleService {
+  public saveArticleCalled = 0;
+
+  public saveArticle(): void {
+    this.saveArticleCalled++;
+  }
+}
 
 const howToFindTitleInput = (element: DebugElement) =>
   element.name === 'input'
@@ -96,6 +105,7 @@ const howToFindDoneButton = (element: DebugElement): boolean =>
 describe('ArticlesPageComponent', () => {
 
   let userService: FakeUserService;
+  let articleService: FakeArticleService;
   let paramMapSubject: Subject<ParamMap>;
   let activatedRoute: FakeActivatedRoute;
   let component: ArticlesPageComponent;
@@ -103,6 +113,7 @@ describe('ArticlesPageComponent', () => {
 
   beforeEach(() => {
     userService = new FakeUserService();
+    articleService = new FakeArticleService();
     paramMapSubject = new ReplaySubject<ParamMap>(1);
     activatedRoute = new FakeActivatedRoute(paramMapSubject);
   });
@@ -117,6 +128,7 @@ describe('ArticlesPageComponent', () => {
       declarations: [ArticlesPageComponent],
       providers: [
         { provide: UserService, useValue: userService },
+        { provide: ArticleService, useValue: articleService},
         { provide: ActivatedRoute, useValue: activatedRoute }
       ]
     })
@@ -329,6 +341,18 @@ describe('ArticlesPageComponent', () => {
 
         it('should update form group value', () => {
           expect(textValue).toBe(text);
+        });
+
+      });
+
+      describe('when user clicks done button', () => {
+
+        beforeEach(() => {
+          doneButton.nativeElement.click();
+        });
+
+        it('should call aritcle service save article', () => {
+          expect(articleService.saveArticleCalled).toBe(1);
         });
 
       });

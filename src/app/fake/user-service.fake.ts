@@ -1,7 +1,5 @@
 import { User } from '@angular/fire/auth';
 import { ReplaySubject } from 'rxjs';
-import { userService } from './app.component.spec';
-
 
 export class FakeUserService {
   public signInWithGoogleCalled = 0;

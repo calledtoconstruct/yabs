@@ -41,6 +41,14 @@ const howToFindDraftTab = (element: DebugElement): boolean =>
   && !!element.children[0].nativeElement.innerText
   && element.children[0].nativeElement.innerText === 'Draft';
 
+const howToFindRequestTab = (element: DebugElement): boolean =>
+  element.name === 'div'
+  && !!element.attributes['role']
+  && element.attributes['role'] === 'tab'
+  && element.children.length === 1
+  && !!element.children[0].nativeElement.innerText
+  && element.children[0].nativeElement.innerText === 'Request';
+
 describe('DashboardComponent', () => {
 
   let userService: FakeUserService;
@@ -99,13 +107,19 @@ describe('DashboardComponent', () => {
       describe('tab group', () => {
 
         let draftTab: DebugElement;
+        let requestTab: DebugElement;
 
         beforeEach(() => {
           draftTab = element.query(howToFindDraftTab);
+          requestTab = element.query(howToFindRequestTab);
         });
 
         it('should include draft tab', () => {
-            expect(draftTab).toBeTruthy();
+          expect(draftTab).toBeTruthy();
+        });
+
+        it('should include request tab', () => {
+          expect(requestTab).toBeTruthy();
         });
 
       });
@@ -172,6 +186,11 @@ describe('DashboardComponent', () => {
       it('should not include draft tab', () => {
         const draftTab = element.query(howToFindDraftTab);
         expect(draftTab).toBeFalsy();
+      });
+
+      it('should not include request tab', () => {
+        const requestTab = element.query(howToFindRequestTab);
+        expect(requestTab).toBeFalsy();
       });
 
     });

@@ -5,7 +5,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'src/environments/environment';
 import { AppComponent } from './app.component';
-import { FakeUserService } from './user-service.fake';
+import { FakeUserService } from './fake/user-service.fake';
 import { UserService } from './user.service';
 
 interface clickable { click: () => void };

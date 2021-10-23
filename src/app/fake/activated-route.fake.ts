@@ -1,6 +1,6 @@
 import { convertToParamMap, ParamMap, Params } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
-import { CountContainer } from './count-container.type';
+import { CountContainer } from '../test/count-container.type';
 
 export class FakeActivatedRoute {
   private readonly paramMapSubject = new ReplaySubject<ParamMap>(1);

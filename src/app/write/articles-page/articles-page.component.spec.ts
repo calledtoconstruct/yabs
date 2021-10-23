@@ -3,14 +3,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { User } from '@angular/fire/auth';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
-import { FakeUserService } from 'src/app/user-service.fake';
-import { UserService } from 'src/app/user.service';
+import { FakeUserService } from '../../fake/user-service.fake';
+import { UserService } from '../../user.service';
 import { ArticleService } from '../article.service';
 import { ArticlesPageComponent } from './articles-page.component';
-import { CountContainer } from '../../count-container.type';
-import { FakeActivatedRoute } from '../../activated-route.fake';
-import { FakeArticleService } from '../../article-service.fake';
+import { CountContainer } from '../../test/count-container.type';
+import { FakeActivatedRoute } from '../../fake/activated-route.fake';
+import { FakeArticleService } from '../../fake/article-service.fake';
 
 const howToFindTitleInput = (element: DebugElement) =>
   element.name === 'input'

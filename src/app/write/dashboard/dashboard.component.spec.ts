@@ -5,16 +5,16 @@ import { User } from '@angular/fire/auth';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FakeActivatedRoute } from 'src/app/activated-route.fake';
-import { FakeArticleService } from 'src/app/article-service.fake';
-import { FakeUserService } from 'src/app/user-service.fake';
-import { UserService } from 'src/app/user.service';
+import { FakeActivatedRoute } from '../../fake/activated-route.fake';
+import { FakeArticleService } from '../../fake/article-service.fake';
+import { FakeUserService } from '../../fake/user-service.fake';
+import { UserService } from '../../user.service';
 import { Article, ArticleService } from '../article.service';
 import { DashboardComponent } from './dashboard.component';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { MatTabGroupHarness } from '@angular/material/tabs/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { FakeRouter } from 'src/app/router.fake';
+import { FakeRouter } from '../../fake/router.fake';
 
 const howToFindTable = (element: DebugElement): boolean =>
   element.name === 'table'

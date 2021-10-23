@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CdkTableModule } from '@angular/cdk/table';
+import { MatTabsModule } from '@angular/material/tabs';
 
 const routes: Routes = [
   { path: 'articles/:articleIdentifier', component: ArticlesPageComponent },
@@ -16,6 +17,7 @@ const routes: Routes = [
   imports: [
     CdkTableModule,
     CommonModule,
+    MatTabsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],

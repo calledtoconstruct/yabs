@@ -10,7 +10,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/architect": "^0.1202.11",
+    "@angular-devkit/architect": "^0.1202.10",
     "@angular-devkit/schematics": "~12.2.0",
     "@angular/animations": "~12.2.0",
     "@angular/cdk": "~12.2.0",
@@ -19,6 +19,7 @@
     "@angular/core": "~12.2.0",
     "@angular/fire": "~7.1.0",
     "@angular/forms": "~12.2.0",
+    "@angular/material": "~12.2.0",
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",

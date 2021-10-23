@@ -2,6 +2,8 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { User } from '@angular/fire/auth';
+import { MatTabsModule } from '@angular/material/tabs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FakeUserService } from 'src/app/fake-user-service';
 import { UserService } from 'src/app/user.service';
 import { DashboardComponent } from './dashboard.component';
@@ -31,6 +33,14 @@ const howToFindTableFooter = (element: DebugElement): boolean =>
   && !!element.attributes['role']
   && element.attributes['role'] === 'row';
 
+const howToFindDraftTab = (element: DebugElement): boolean =>
+  element.name === 'div'
+  && !!element.attributes['role']
+  && element.attributes['role'] === 'tab'
+  && element.children.length === 1
+  && !!element.children[0].nativeElement.innerText
+  && element.children[0].nativeElement.innerText === 'Draft';
+
 describe('DashboardComponent', () => {
 
   let userService: FakeUserService;
@@ -44,7 +54,7 @@ describe('DashboardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent],
-      imports: [CdkTableModule],
+      imports: [CdkTableModule, MatTabsModule, BrowserAnimationsModule],
       providers: [
         { provide: UserService, useValue: userService }
       ]
@@ -84,6 +94,20 @@ describe('DashboardComponent', () => {
 
       beforeEach(() => {
         element = fixture.debugElement;
+      });
+
+      describe('tab group', () => {
+
+        let draftTab: DebugElement;
+
+        beforeEach(() => {
+          draftTab = element.query(howToFindDraftTab);
+        });
+
+        it('should include draft tab', () => {
+            expect(draftTab).toBeTruthy();
+        });
+
       });
 
       describe('table', () => {
@@ -143,6 +167,11 @@ describe('DashboardComponent', () => {
       it('should not include table', () => {
         const table = element.query(howToFindTable);
         expect(table).toBeFalsy();
+      });
+
+      it('should not include draft tab', () => {
+        const draftTab = element.query(howToFindDraftTab);
+        expect(draftTab).toBeFalsy();
       });
 
     });

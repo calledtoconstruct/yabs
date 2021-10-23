@@ -11,6 +11,7 @@ import { UserService } from './user.service';
 import { Auth, User } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { getAuth } from '@firebase/auth';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { getAuth } from '@firebase/auth';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     AppRoutingModule,
+    BrowserAnimationsModule,
     BrowserModule,
     CommonModule
   ],

@@ -5,7 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { UserService } from '../../user.service';
-import { ArticleService } from '../article.service';
+import { Article, ArticleService } from '../article.service';
 import { ArticlesPageComponent } from './articles-page.component';
 import { CountContainer } from '../../test/count-container.type';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
@@ -100,7 +100,7 @@ describe('Write -> Articles Page', () => {
       declarations: [ArticlesPageComponent],
       providers: [
         { provide: UserService, useValue: userService },
-        { provide: ArticleService, useValue: articleService},
+        { provide: ArticleService, useValue: articleService },
         { provide: ActivatedRoute, useValue: activatedRoute }
       ]
     })
@@ -128,7 +128,32 @@ describe('Write -> Articles Page', () => {
       userService.setUpLoggedInAs(user);
     });
 
-    describe('when passed article identifier "new"', () => {
+    const regarlessOfArticleIdentifier = (
+      articleIdentifier: string,
+      thenTitleInput: (get: () => DebugElement) => void,
+      thenTextInput: (get: () => DebugElement) => void,
+      thenSaveOnly: (get: () => DebugElement) => void,
+      thenSaveAndRequestEdit: (get: () => DebugElement) => void,
+      thenSaveAndRequestCheck: (get: () => DebugElement) => void
+    ) => {
+
+      let hasWasCalledFor: CountContainer;
+      let getWasCalledFor: CountContainer;
+
+      beforeEach(() => {
+        [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({
+          articleIdentifier: articleIdentifier
+        });
+        fixture.detectChanges();
+      });
+
+      it('should call has', () => {
+        expect(hasWasCalledFor['articleIdentifier']).toBeGreaterThanOrEqual(1);
+      });
+
+      it('should call get', () => {
+        expect(getWasCalledFor['articleIdentifier']).toBeGreaterThanOrEqual(1);
+      });
 
       let titleInput: DebugElement;
       let textInput: DebugElement;
@@ -139,13 +164,8 @@ describe('Write -> Articles Page', () => {
       let saveAndRequestCheckRadio: DebugElement;
       let saveAndRequestCheckLabel: DebugElement;
       let doneButton: DebugElement;
-      let hasWasCalledFor: CountContainer;
 
       beforeEach(() => {
-        hasWasCalledFor = activatedRoute.nextParamMap({
-          articleIdentifier: 'new'
-        });
-        fixture.detectChanges();
         const element = fixture.debugElement;
         titleInput = element.query(howToFindTitleInput);
         textInput = element.query(howToFindTextInput);
@@ -182,10 +202,6 @@ describe('Write -> Articles Page', () => {
           expect(formControlNames).toContain('operation');
         });
 
-      });
-
-      it('should call has', () => {
-        expect(hasWasCalledFor['articleIdentifier']).toBe(1);
       });
 
       it('should display title edit field', () => {
@@ -226,19 +242,13 @@ describe('Write -> Articles Page', () => {
 
       describe('save only radio button', () => {
 
-        it('should default to checked', () => {
-          const value = saveOnlyRadio.nativeElement['checked'];
-          expect(value).toBeTruthy();
-        });
+        thenSaveOnly(() => saveOnlyRadio);
 
       });
 
       describe('save and request edit radio button', () => {
 
-        it('should default to not-checked', () => {
-          const value = saveAndRequestEditRadio.nativeElement['checked'];
-          expect(value).toBeFalsy();
-        });
+        thenSaveAndRequestEdit(() => saveAndRequestEditRadio);
 
         describe('when clicked', () => {
 
@@ -259,10 +269,7 @@ describe('Write -> Articles Page', () => {
 
       describe('save and request check radio button', () => {
 
-        it('should default to not-checked', () => {
-          const value = saveAndRequestCheckRadio.nativeElement['checked'];
-          expect(value).toBeFalsy();
-        });
+        thenSaveAndRequestCheck(() => saveAndRequestCheckRadio);
 
         describe('when clicked', () => {
 
@@ -281,36 +288,48 @@ describe('Write -> Articles Page', () => {
 
       });
 
-      describe('when user enters a title', () => {
+      describe('title input', () => {
 
-        const title = 'byauvdhygdyf';
-        let titleValue: string;
+        thenTitleInput(() => titleInput);
 
-        beforeEach(() => {
-          titleInput.nativeElement.value = title;
-          titleInput.nativeElement.dispatchEvent(new Event('input'));
-          titleValue = component.formGroup.value['title'];
-        });
+        describe('when the user enters text', () => {
 
-        it('should update form group value', () => {
-          expect(titleValue).toBe(title);
+          const title = 'byauvdhygdyf';
+          let titleValue: string;
+
+          beforeEach(() => {
+            titleInput.nativeElement.value = title;
+            titleInput.nativeElement.dispatchEvent(new Event('input'));
+            titleValue = component.formGroup.value['title'];
+          });
+
+          it('should update form group value', () => {
+            expect(titleValue).toBe(title);
+          });
+
         });
 
       });
 
-      describe('when user enters text', () => {
+      describe('text input', () => {
 
-        const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
-        let textValue: string;
+        thenTextInput(() => textInput);
 
-        beforeEach(() => {
-          textInput.nativeElement.value = text;
-          textInput.nativeElement.dispatchEvent(new Event('input'));
-          textValue = component.formGroup.value['text'];
-        });
+        describe('when user enters text', () => {
 
-        it('should update form group value', () => {
-          expect(textValue).toBe(text);
+          const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
+          let textValue: string;
+
+          beforeEach(() => {
+            textInput.nativeElement.value = text;
+            textInput.nativeElement.dispatchEvent(new Event('input'));
+            textValue = component.formGroup.value['text'];
+          });
+
+          it('should update form group value', () => {
+            expect(textValue).toBe(text);
+          });
+
         });
 
       });
@@ -327,6 +346,169 @@ describe('Write -> Articles Page', () => {
 
       });
 
+    };
+
+    describe('when passed article identifier "new"', () => {
+
+      it('should not call article service', () => {
+        const times = Object.keys(articleService.articleCalledFor)
+          .map((key: string) => articleService.articleCalledFor[key])
+          .reduce((accumulator, value) => accumulator + value, 0);
+        expect(times).toBe(0);
+      });
+
+      const thenTitleInput = (get: () => DebugElement): void => {
+
+        it('should default to empty', () => {
+          const titleInput = get();
+          const value = titleInput.nativeElement['value'];
+          expect(value).toBe('');
+        });
+
+      };
+
+      const thenTextInput = (get: () => DebugElement): void => {
+
+        it('should default to empty', () => {
+          const textInput = get();
+          const value = textInput.nativeElement['value'];
+          expect(value).toBe('');
+        });
+
+      };
+
+      const thenSaveOnly = (get: () => DebugElement): void => {
+
+        it('should default to checked', () => {
+          const saveOnlyRadio = get();
+          const value = saveOnlyRadio.nativeElement['checked'];
+          expect(value).toBeTruthy();
+        });
+
+      };
+
+      const thenSaveAndRequestEdit = (get: () => DebugElement): void => {
+
+        it('should default to not-checked', () => {
+          const saveAndRequestEditRadio = get();
+          const value = saveAndRequestEditRadio.nativeElement['checked'];
+          expect(value).toBeFalsy();
+        });
+
+      };
+
+      const thenSaveAndRequestCheck = (get: () => DebugElement): void => {
+
+        it('should default to not-checked', () => {
+          const saveAndRequestCheckRadio = get();
+          const value = saveAndRequestCheckRadio.nativeElement['checked'];
+          expect(value).toBeFalsy();
+        });
+
+      };
+
+      regarlessOfArticleIdentifier(
+        'new',
+        thenTitleInput,
+        thenTextInput,
+        thenSaveOnly,
+        thenSaveAndRequestEdit,
+        thenSaveAndRequestCheck
+      );
+
+    });
+
+    [
+      { articleIdentifier: 100, title: 'title-100', text: 'text-100', operation: 'saveOnly' },
+      { articleIdentifier: 200, title: 'title-200', text: 'text-200', operation: 'saveAndRequestEdit' },
+      { articleIdentifier: 300, title: 'title-300', text: 'text-300', operation: 'saveAndRequestCheck' },
+    ].forEach(scenario => {
+
+      const articleIdentifier = scenario.articleIdentifier;
+      const title = scenario.title;
+      const text = scenario.text;
+      const operation = scenario.operation;
+      const saveOnlyChecked = scenario.operation === 'saveOnly';
+      const saveAndRequestEditChecked = scenario.operation === 'saveAndRequestEdit';
+      const saveAndRequestCheckChecked = scenario.operation === 'saveAndRequestCheck';
+
+      describe(`when passed article identifier '${articleIdentifier}'`, () => {
+
+        beforeEach(() => {
+          articleService.nextArticle(<Article>{
+            articleIdentifier: articleIdentifier,
+            title: title,
+            text: text,
+            operation: operation
+          });
+          fixture.detectChanges();
+        });
+
+        it(`should call article service for ${articleIdentifier}`, () => {
+          expect(articleService.articleCalledFor[articleIdentifier]).toBe(1);
+        });
+
+        const thenTitleInput = (get: () => DebugElement): void => {
+
+          it(`should default to ${title}`, () => {
+            const titleInput = get();
+            const value = titleInput.nativeElement['value'];
+            expect(value).toBe(title);
+          });
+
+        };
+
+        const thenTextInput = (get: () => DebugElement): void => {
+
+          it(`should default to ${text}`, () => {
+            const textInput = get();
+            const value = textInput.nativeElement['value'];
+            expect(value).toBe(text);
+          });
+
+        };
+
+        const thenSaveOnly = (get: () => DebugElement): void => {
+
+          it(`should default to ${saveOnlyChecked ? 'checked' : 'not-checked'}`, () => {
+            const saveOnlyRadio = get();
+            const value = saveOnlyRadio.nativeElement['checked'];
+            expect(value).toBe(saveOnlyChecked);
+          });
+
+        };
+
+        const thenSaveAndRequestEdit = (get: () => DebugElement): void => {
+
+          it(`should default to ${saveAndRequestEditChecked ? 'checked' : 'not-checked'}`, () => {
+            const saveAndRequestEditRadio = get();
+            const value = saveAndRequestEditRadio.nativeElement['checked'];
+            expect(value).toBe(saveAndRequestEditChecked);
+          });
+
+        };
+
+        const thenSaveAndRequestCheck = (get: () => DebugElement): void => {
+
+          it(`should default to ${saveAndRequestCheckChecked ? 'checked' : 'not-checked'}`, () => {
+            const saveAndRequestCheckRadio = get();
+            const value = saveAndRequestCheckRadio.nativeElement['checked'];
+            expect(value).toBe(saveAndRequestCheckChecked);
+          });
+
+        };
+
+        regarlessOfArticleIdentifier(
+          articleIdentifier.toString(),
+          thenTitleInput,
+          thenTextInput,
+          thenSaveOnly,
+          thenSaveAndRequestEdit,
+          thenSaveAndRequestCheck
+        );
+
+      });
+
     });
 
   });
@@ -340,16 +522,28 @@ describe('Write -> Articles Page', () => {
     describe('when passed article identifier "new"', () => {
 
       let hasWasCalledFor: CountContainer;
+      let getWasCalledFor: CountContainer;
 
       beforeEach(() => {
-        hasWasCalledFor = activatedRoute.nextParamMap({
+        [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({
           articleIdentifier: 'new'
         });
         fixture.detectChanges();
       });
 
-      it('should not call has', () => {
-        expect(hasWasCalledFor['articleIdentifier']).toBe(0);
+      it('should call has', () => {
+        expect(hasWasCalledFor['articleIdentifier']).toBeGreaterThan(0);
+      });
+
+      it('should call get', () => {
+        expect(getWasCalledFor['articleIdentifier']).toBeGreaterThan(0);
+      });
+
+      it('should not call article service', () => {
+        const times = Object.keys(articleService.articleCalledFor)
+          .map((key: string) => articleService.articleCalledFor[key])
+          .reduce((accumulator, value) => accumulator + value, 0);
+        expect(times).toBe(0);
       });
 
       it('should not display title edit field', () => {

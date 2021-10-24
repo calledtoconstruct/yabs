@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '@angular/fire/auth';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/user.service';
-import { ArticleService } from '../article.service';
+import { Article, ArticleService } from '../article.service';
 
 const articleIdentifierParameterName = 'articleIdentifier';
 
@@ -20,8 +22,23 @@ export class ArticlesPageComponent implements OnInit {
     operation: this.formBuilder.control('saveOnly')
   });
 
-  public readonly showEditor$ = this.activatedRoute.paramMap.pipe(
-    map(paramMap => paramMap.has(articleIdentifierParameterName))
+  private readonly isNew$ = this.activatedRoute.paramMap.pipe(
+    map(paramMap => paramMap.get(articleIdentifierParameterName)),
+    filter(articleIdentifierString => !!articleIdentifierString),
+    map(articleIdentifierString => articleIdentifierString === 'new')
+  );
+
+  private readonly articleIdentifier$ = this.activatedRoute.paramMap.pipe(
+    map(paramMap => paramMap.get(articleIdentifierParameterName)),
+    filter(articleIdentifierString => !!articleIdentifierString),
+    map(articleIdentifierString => parseInt(articleIdentifierString || '0', 10))
+  );
+
+  private readonly article$ = combineLatest([this.userService.loggedIn$, this.isNew$, this.articleIdentifier$]).pipe(
+    filter(([loggedIn, _, __]) => loggedIn),
+    map(([_, isNew, articleIdentifier]): [boolean, number] => [isNew, articleIdentifier]),
+    filter(([isNew, _]) => !isNew),
+    switchMap(([_, articleIdentifier]: [boolean, number]) => this.articleService.article(articleIdentifier))
   );
 
   constructor(
@@ -29,7 +46,19 @@ export class ArticlesPageComponent implements OnInit {
     private readonly articleService: ArticleService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly formBuilder: FormBuilder
-  ) { }
+  ) {
+    this.article$.forEach((article: Article): void => {
+      const keys = Object.keys(article) as Array<keyof Article>;
+      keys.forEach(attribute => this.update(attribute, article));
+    });
+  }
+
+  private update(name: keyof Article, article: Article): void {
+    if (this.formGroup.get(name)?.value !== article[name]) {
+      const value = article[name];
+      this.formGroup.get(name)?.setValue(value);
+    }
+  }
 
   public ngOnInit(): void {
   }

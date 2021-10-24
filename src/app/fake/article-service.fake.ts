@@ -3,7 +3,8 @@ import { CountContainer } from "../test/count-container.type";
 import { Article } from "../write/article.service";
 
 export class FakeArticleService {
-  private readonly articleSubject = new ReplaySubject<Array<Article>>(1);
+  private readonly articlesSubject = new ReplaySubject<Array<Article>>(1);
+  private readonly articleSubject = new ReplaySubject<Article>(1);
 
   public readonly collectionCalledFor: CountContainer = {
     'Draft': 0,
@@ -14,6 +15,12 @@ export class FakeArticleService {
     'Published': 0
   };
 
+  public readonly articleCalledFor: CountContainer = {
+    100: 0,
+    200: 0,
+    300: 0
+  };
+
   public saveArticleCalled = 0;
 
   public saveArticle(): void {
@@ -22,14 +29,24 @@ export class FakeArticleService {
 
   public collection(name: string): Observable<Array<Article>> {
     this.collectionCalledFor[name]++;
+    return this.articlesSubject.asObservable();
+  }
+
+  public article(articleIdentifier: number): Observable<Article> {
+    this.articleCalledFor[articleIdentifier]++;
     return this.articleSubject.asObservable();
   }
 
   public nextCollection(articles: Array<Article>): void {
-    this.articleSubject.next(articles);
+    this.articlesSubject.next(articles);
+  }
+
+  public nextArticle(article: Article): void {
+    this.articleSubject.next(article);
   }
 
   public tearDown(): void {
+    this.articlesSubject.complete();
     this.articleSubject.complete();
   }
 }

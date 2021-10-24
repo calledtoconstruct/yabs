@@ -7,6 +7,7 @@ import { Observable, ReplaySubject } from 'rxjs';
 export class ArticleService implements OnDestroy {
 
   private readonly articlesSubject = new ReplaySubject<Array<Article>>(1);
+  private readonly articleSubject = new ReplaySubject<Article>(1);
 
   constructor() { }
 
@@ -14,8 +15,16 @@ export class ArticleService implements OnDestroy {
     setTimeout(() => this.articlesSubject.next(new Array<Article>(<Article>{
       title: 'sakldfjasdf',
       text: 'ghqauwnviuw'
-    })), 0);
+    })));
     return this.articlesSubject.asObservable();
+  }
+
+  public article(articleIdentifier: number): Observable<Article> {
+    setTimeout(() => this.articleSubject.next(<Article>{
+      title: 'vweydshyf',
+      text: 'qvpwuvhvd'
+    }));
+    return this.articleSubject.asObservable();
   }
 
   public saveArticle(): void {
@@ -23,6 +32,7 @@ export class ArticleService implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.articlesSubject.complete();
+    this.articleSubject.complete();
   }
 }
 

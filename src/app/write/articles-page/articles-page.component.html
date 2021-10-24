@@ -1,5 +1,8 @@
-<div *ngIf='userService.loggedIn$ | async'>
-    <form *ngIf="showEditor$ | async" [formGroup]='formGroup'>
+<ng-container *ngIf='userService.loggedIn$ | async; then loggedIn; else notLoggedIn;'>
+</ng-container>
+
+<ng-template #loggedIn>
+    <form [formGroup]='formGroup'>
         <input name='title' formControlName='title' />
         <textarea name='text' formControlName='text'></textarea>
         <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />
@@ -10,4 +13,7 @@
         <label for='saveAndRequestCheckOperation'>Save Article and Request a Fact Check</label>
         <button (click)='done()'>Done</button>
     </form>
-</div>
+</ng-template>
+
+<ng-template #notLoggedIn>
+</ng-template>

@@ -1,10 +1,16 @@
-<div *ngIf='userService.notLoggedIn$ | async'>
-  <button (click)='userService.signInWithGoogle()'>Sign In w/ Google</button>
-  <button (click)='userService.signInWithGitHub()'>Sign In w/ GitHub</button>
-</div>
-<div *ngIf='userService.user$ | async as user'>
-  <p>Welcome {{ user.displayName }}</p>
-  <button (click)='userService.signOut()'>Sign Out</button>
-</div>
+<ng-container *ngIf='userService.loggedIn$ | async; then loggedIn; else notLoggedIn;'>
+</ng-container>
 
 <router-outlet></router-outlet>
+
+<ng-template #loggedIn>
+  <ng-container *ngIf='userService.user$ | async as user;'>
+    <p>Welcome {{ user.displayName }}</p>
+  </ng-container>
+  <button (click)='userService.signOut()'>Sign Out</button>
+</ng-template>
+
+<ng-template #notLoggedIn>
+  <button (click)='userService.signInWithGoogle()'>Sign In w/ Google</button>
+  <button (click)='userService.signInWithGitHub()'>Sign In w/ GitHub</button>
+</ng-template>

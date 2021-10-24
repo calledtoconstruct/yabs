@@ -1,4 +1,4 @@
-<div *ngIf='userService.loggedIn$ | async'>
+<ng-template [ngIf]='userService.loggedIn$ | async'>
 
     <mat-tab-group [selectedIndex]='tabIndex$ | async'
         (selectedTabChange)='router.navigate([], { relativeTo: activatedRoute, queryParams: {tab: $event.index}, queryParamsHandling: "merge"})'>
@@ -58,21 +58,22 @@
         </mat-tab>
     </mat-tab-group>
 
-    <ng-template #articleTable let-data='data' let-columns='columns'>
-        <table cdk-table [dataSource]='data'>
-            <ng-container cdkColumnDef='title'>
-                <th cdk-header-cell *cdkHeaderCellDef> Title </th>
-                <td cdk-cell *cdkCellDef='let element'> {{ element.title }} </td>
-                <td cdk-footer-cell *cdkFooterCellDef></td>
-            </ng-container>
-            <ng-container cdkColumnDef='text'>
-                <th cdk-header-cell *cdkHeaderCellDef> Text </th>
-                <td cdk-cell *cdkCellDef='let element'> {{ element.text }} </td>
-                <td cdk-footer-cell *cdkFooterCellDef></td>
-            </ng-container>
-            <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
-            <tr cdk-row *cdkRowDef="let row; columns: columns;"></tr>
-            <tr cdk-footer-row *cdkFooterRowDef="columns"></tr>
-        </table>
-    </ng-template>
-</div>
+</ng-template>
+
+<ng-template #articleTable let-data='data' let-columns='columns'>
+    <table cdk-table [dataSource]='data'>
+        <ng-container cdkColumnDef='title'>
+            <th cdk-header-cell *cdkHeaderCellDef> Title </th>
+            <td cdk-cell *cdkCellDef='let element'> {{ element.title }} </td>
+            <td cdk-footer-cell *cdkFooterCellDef></td>
+        </ng-container>
+        <ng-container cdkColumnDef='text'>
+            <th cdk-header-cell *cdkHeaderCellDef> Text </th>
+            <td cdk-cell *cdkCellDef='let element'> {{ element.text }} </td>
+            <td cdk-footer-cell *cdkFooterCellDef></td>
+        </ng-container>
+        <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: columns;"></tr>
+        <tr cdk-footer-row *cdkFooterRowDef="columns"></tr>
+    </table>
+</ng-template>

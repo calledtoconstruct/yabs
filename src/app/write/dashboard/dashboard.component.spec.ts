@@ -6,10 +6,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
-import { FakeArticleService } from '../fake/article-service.fake';
+import { FakeWriteArticleService } from '../fake/write-article-service.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { UserService } from '../../user.service';
-import { Article, ArticleService } from '../article.service';
+import { Article, WriteArticleService } from '../write-article.service';
 import { DashboardComponent } from './dashboard.component';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { MatTabGroupHarness } from '@angular/material/tabs/testing';
@@ -103,13 +103,13 @@ const tabs: Array<TabDefinition> = [
 
 describe('Write -> Dashboard', () => {
 
-  let articleService: FakeArticleService;
+  let articleService: FakeWriteArticleService;
   let activatedRoute: FakeActivatedRoute;
   let userService: FakeUserService;
   let router: FakeRouter;
 
   beforeEach(() => {
-    articleService = new FakeArticleService();
+    articleService = new FakeWriteArticleService();
     activatedRoute = new FakeActivatedRoute();
     userService = new FakeUserService();
     router = new FakeRouter(activatedRoute);
@@ -127,7 +127,7 @@ describe('Write -> Dashboard', () => {
       declarations: [DashboardComponent],
       imports: [CdkTableModule, MatTabsModule, NoopAnimationsModule],
       providers: [
-        { provide: ArticleService, useValue: articleService },
+        { provide: WriteArticleService, useValue: articleService },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: UserService, useValue: userService },
         { provide: Router, useValue: router }

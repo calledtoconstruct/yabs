@@ -1,8 +1,8 @@
 import { Observable, ReplaySubject } from "rxjs";
 import { CountContainer } from "../../test/count-container.type";
-import { Article } from "../article.service";
+import { Article } from "../write-article.service";
 
-export class FakeArticleService {
+export class FakeWriteArticleService {
   private readonly articlesSubject = new ReplaySubject<Array<Article>>(1);
   private readonly articleSubject = new ReplaySubject<Article>(1);
 

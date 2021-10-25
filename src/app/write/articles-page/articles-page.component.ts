@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/user.service';
-import { Article, ArticleService } from '../article.service';
+import { Article, WriteArticleService } from '../write-article.service';
 
 const articleIdentifierParameterName = 'articleIdentifier';
 
@@ -47,7 +47,7 @@ export class ArticlesPageComponent {
 
   constructor(
     public readonly userService: UserService,
-    private readonly articleService: ArticleService,
+    private readonly articleService: WriteArticleService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly formBuilder: FormBuilder
   ) {

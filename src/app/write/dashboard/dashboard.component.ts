@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/user.service';
-import { Article, ArticleService } from '../article.service';
+import { Article, WriteArticleService } from '../write-article.service';
 
 type TabDefinition = [string, Array<string>];
 type TabsDefinition = Array<TabDefinition>;
@@ -49,7 +49,7 @@ export class DashboardComponent {
   );
 
   constructor(
-    private readonly articleService: ArticleService,
+    private readonly articleService: WriteArticleService,
     public readonly userService: UserService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router

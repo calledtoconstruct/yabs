@@ -5,11 +5,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { UserService } from '../../user.service';
-import { Article, ArticleService } from '../article.service';
+import { Article, WriteArticleService } from '../write-article.service';
 import { ArticlesPageComponent } from './articles-page.component';
 import { CountContainer } from '../../test/count-container.type';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
-import { FakeArticleService } from '../fake/article-service.fake';
+import { FakeWriteArticleService } from '../fake/write-article-service.fake';
 
 const howToFindTitleInput = (element: DebugElement) =>
   element.name === 'input'
@@ -77,14 +77,14 @@ const howToFindDoneButton = (element: DebugElement): boolean =>
 describe('Write -> Articles Page', () => {
 
   let userService: FakeUserService;
-  let articleService: FakeArticleService;
+  let articleService: FakeWriteArticleService;
   let activatedRoute: FakeActivatedRoute;
   let component: ArticlesPageComponent;
   let fixture: ComponentFixture<ArticlesPageComponent>;
 
   beforeEach(() => {
     userService = new FakeUserService();
-    articleService = new FakeArticleService();
+    articleService = new FakeWriteArticleService();
     activatedRoute = new FakeActivatedRoute();
   });
 
@@ -100,7 +100,7 @@ describe('Write -> Articles Page', () => {
       declarations: [ArticlesPageComponent],
       providers: [
         { provide: UserService, useValue: userService },
-        { provide: ArticleService, useValue: articleService },
+        { provide: WriteArticleService, useValue: articleService },
         { provide: ActivatedRoute, useValue: activatedRoute }
       ]
     })

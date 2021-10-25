@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/user.service';
 import { Article, ArticleService } from '../article.service';
 
@@ -21,15 +21,17 @@ export class ArticlesPageComponent {
     operation: this.formBuilder.control('saveOnly')
   });
 
-  private readonly isNew$ = this.activatedRoute.paramMap.pipe(
+  private readonly parameter$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get(articleIdentifierParameterName)),
     filter(articleIdentifierString => !!articleIdentifierString),
+    shareReplay(1)
+  );
+
+  private readonly isNew$ = this.parameter$.pipe(
     map(articleIdentifierString => articleIdentifierString === 'new')
   );
 
-  private readonly articleIdentifier$ = this.activatedRoute.paramMap.pipe(
-    map(paramMap => paramMap.get(articleIdentifierParameterName)),
-    filter(articleIdentifierString => !!articleIdentifierString),
+  private readonly articleIdentifier$ = this.parameter$.pipe(
     map(articleIdentifierString => parseInt(articleIdentifierString || '0', 10))
   );
 
@@ -37,7 +39,10 @@ export class ArticlesPageComponent {
     filter(([loggedIn, _, __]) => loggedIn),
     map(([_, isNew, articleIdentifier]): [boolean, number] => [isNew, articleIdentifier]),
     filter(([isNew, _]) => !isNew),
-    switchMap(([_, articleIdentifier]: [boolean, number]) => this.articleService.article(articleIdentifier))
+    map(([_, articleIdentifier]) => articleIdentifier),
+    distinctUntilChanged(),
+    switchMap(articleIdentifier => this.articleService.article(articleIdentifier)),
+    shareReplay(1)
   );
 
   constructor(

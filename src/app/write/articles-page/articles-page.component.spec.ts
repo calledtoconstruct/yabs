@@ -148,11 +148,11 @@ describe('Write -> Articles Page', () => {
       });
 
       it('should call has', () => {
-        expect(hasWasCalledFor['articleIdentifier']).toBeGreaterThanOrEqual(1);
+        expect(hasWasCalledFor['articleIdentifier']).toBe(1);
       });
 
       it('should call get', () => {
-        expect(getWasCalledFor['articleIdentifier']).toBeGreaterThanOrEqual(1);
+        expect(getWasCalledFor['articleIdentifier']).toBe(1);
       });
 
       let titleInput: DebugElement;

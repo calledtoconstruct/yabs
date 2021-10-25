@@ -15,6 +15,7 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { MatTabGroupHarness } from '@angular/material/tabs/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { FakeRouter } from '../../fake/router.fake';
+import { CountContainer } from 'src/app/test/count-container.type';
 
 const howToFindTable = (element: DebugElement): boolean =>
   element.name === 'table'
@@ -90,6 +91,7 @@ const howToFindPublishedTab = (element: DebugElement): boolean =>
   && element.children[0].nativeElement.innerText === 'Published';
 
 type TabDefinition = { name: string, howToFind: (element: DebugElement) => boolean, label: string, index: number };
+
 const tabs: Array<TabDefinition> = [
   { name: 'draft tab', howToFind: howToFindDraftTab, label: 'Draft', index: 0 },
   { name: 'request pending tab', howToFind: howToFindRequestPendingTab, label: 'Request Pending', index: 1 },
@@ -157,112 +159,122 @@ describe('Write -> Dashboard', () => {
 
     describe(`when route ${tab.label} is activated`, () => {
 
+      let hasWasCalledFor: CountContainer;
+      let getWasCalledFor: CountContainer;
+
       beforeEach(() => {
-        activatedRoute.nextQueryParamMap({ tab: tab.index });
+        [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextQueryParamMap({ tab: tab.index });
         fixture.detectChanges();
       });
 
-      describe('when user is logged in', () => {
+      it('should call query param map has', () => {
+        expect(hasWasCalledFor['tab']).toBe(1);
+      });
 
-        const displayName = 'abvsunvj';
-        const user = <User>{
-          displayName: displayName
-        };
+      it('should call query param map get', () => {
+        expect(getWasCalledFor['tab']).toBe(1);
+      });
 
-        beforeEach(() => {
-          userService.setUpLoggedInAs(user);
-          fixture.detectChanges();
+      describe('tab group', () => {
+
+        let tabGroups: Array<MatTabGroupHarness>;
+
+        beforeEach(async () => {
+          tabGroups = await loader.getAllHarnesses(MatTabGroupHarness);
         });
 
-        describe('tab group', () => {
+        it('should exist', () => {
+          expect(tabGroups.length).toBe(1);
+        });
 
-          let tabGroups: Array<MatTabGroupHarness>;
+        describe(`when ${tab.name} is selected`, () => {
+
+          let tabGroup: MatTabGroupHarness;
 
           beforeEach(async () => {
-            tabGroups = await loader.getAllHarnesses(MatTabGroupHarness);
+            const tabGroups = await loader.getAllHarnesses(MatTabGroupHarness);
+            tabGroup = tabGroups[0];
+            await tabGroup.selectTab({
+              label: tab.label
+            });
           });
 
           it('should exist', () => {
-            expect(tabGroups.length).toBe(1);
+            expect(tabGroup).toBeTruthy();
           });
 
-          describe(`when ${tab.name} is selected`, () => {
+          describe('article service collection', () => {
 
-            let tabGroup: MatTabGroupHarness;
+            describe('even when route is activated multiple times', () => {
 
-            beforeEach(async () => {
-              const tabGroups = await loader.getAllHarnesses(MatTabGroupHarness);
-              tabGroup = tabGroups[0];
-              await tabGroup.selectTab({
-                label: tab.label
+              beforeEach(() => {
+                activatedRoute.nextQueryParamMap({ tab: tab.index });
+                fixture.detectChanges();
               });
-            });
 
-            it('should exist', () => {
-              expect(tabGroup).toBeTruthy();
-            });
-
-            describe('article service collection', () => {
-
-              it(`should be called for ${tab.label} status`, () => {
+              it(`should be called once for ${tab.label} status`, () => {
                 expect(articleService.collectionCalledFor[tab.label]).toBe(1);
               });
 
-              [{
-                label: 'an article is',
-                articles: new Array<Article>(
-                  <Article>{ title: 'alsdjfa', text: 'uhfwiu' }
-                )
-              }, {
-                label: 'three articles are',
-                articles: new Array<Article>(
-                  <Article>{ title: 'alsdjfa', text: 'uhfwiu' },
-                  <Article>{ title: 'vuybybwas', text: 'wyebf' },
-                  <Article>{ title: 'qvasduf', text: 'pvasdf' }
-                )
-              }].forEach(item => {
+            });
 
-                describe(`when ${item.label} returned`, () => {
+            it(`should be called for ${tab.label} status`, () => {
+              expect(articleService.collectionCalledFor[tab.label]).toBe(1);
+            });
+
+            [{
+              label: 'an article is',
+              articles: new Array<Article>(
+                <Article>{ title: 'alsdjfa', text: 'uhfwiu' }
+              )
+            }, {
+              label: 'three articles are',
+              articles: new Array<Article>(
+                <Article>{ title: 'alsdjfa', text: 'uhfwiu' },
+                <Article>{ title: 'vuybybwas', text: 'wyebf' },
+                <Article>{ title: 'qvasduf', text: 'pvasdf' }
+              )
+            }].forEach(item => {
+
+              describe(`when ${item.label} returned`, () => {
+
+                beforeEach(() => {
+                  articleService.nextCollection(item.articles);
+                  fixture.detectChanges();
+                });
+
+                describe('table', () => {
+
+                  let table: DebugElement;
+                  let thead: DebugElement;
+                  let tbody: DebugElement;
+                  let tfoot: DebugElement;
 
                   beforeEach(() => {
-                    articleService.nextCollection(item.articles);
-                    fixture.detectChanges();
+                    table = fixture.debugElement.query(howToFindTable);
+                    thead = table.query(howToFindTableHeader);
+                    tbody = table.query(howToFindTableBody);
+                    tfoot = table.query(howToFindTableFooter);
                   });
 
-                  describe('table', () => {
+                  it('should exist', () => {
+                    expect(table).toBeTruthy();
+                  });
 
-                    let table: DebugElement;
-                    let thead: DebugElement;
-                    let tbody: DebugElement;
-                    let tfoot: DebugElement;
+                  it('should include a header', () => {
+                    expect(thead).toBeTruthy();
+                  });
 
-                    beforeEach(() => {
-                      table = fixture.debugElement.query(howToFindTable);
-                      thead = table.query(howToFindTableHeader);
-                      tbody = table.query(howToFindTableBody);
-                      tfoot = table.query(howToFindTableFooter);
-                    });
+                  it('should include a body', () => {
+                    expect(tbody).toBeTruthy();
+                  });
 
-                    it('should exist', () => {
-                      expect(table).toBeTruthy();
-                    });
+                  it('should include a footer', () => {
+                    expect(tfoot).toBeTruthy();
+                  });
 
-                    it('should include a header', () => {
-                      expect(thead).toBeTruthy();
-                    });
-
-                    it('should include a body', () => {
-                      expect(tbody).toBeTruthy();
-                    });
-
-                    it('should include a footer', () => {
-                      expect(tfoot).toBeTruthy();
-                    });
-
-                    it(`should have a row count of ${item.articles.length}`, () => {
-                      expect(table.queryAll(howToFindTableBody).length).toBe(item.articles.length);
-                    });
-
+                  it(`should have a row count of ${item.articles.length}`, () => {
+                    expect(table.queryAll(howToFindTableBody).length).toBe(item.articles.length);
                   });
 
                 });
@@ -281,7 +293,21 @@ describe('Write -> Dashboard', () => {
 
   };
 
-  tabs.forEach(tab => verifyRoute(tab));
+  describe('when user is logged in', () => {
+
+    const displayName = 'abvsunvj';
+    const user = <User>{
+      displayName: displayName
+    };
+
+    beforeEach(() => {
+      userService.setUpLoggedInAs(user);
+      fixture.detectChanges();
+    });
+
+    tabs.forEach(tab => verifyRoute(tab));
+
+  });
 
   describe('when user is not logged in', () => {
 

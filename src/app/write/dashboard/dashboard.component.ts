@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable, of } from 'rxjs';
-import { flatMap, map, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/user.service';
 import { Article, ArticleService } from '../article.service';
 
@@ -13,7 +13,7 @@ type TabsDefinition = Array<TabDefinition>;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
 
   private readonly tabs: TabsDefinition = [
     ['Draft', new Array<string>('title')],
@@ -25,21 +25,27 @@ export class DashboardComponent implements OnInit {
   ];
 
   public readonly tabIndex$: Observable<number> = this.activatedRoute.queryParamMap.pipe(
-    map((queryParamMap): string => queryParamMap.has('tab') ? queryParamMap.get('tab') || '0' : '0'),
+    map((queryParamMap): string => queryParamMap.get('tab') || '0'),
     map(tabIndexString => parseInt(tabIndexString, 10)),
-    map(tabIndex => isNaN(tabIndex) ? 0 : tabIndex)
+    map(tabIndex => isNaN(tabIndex) ? 0 : tabIndex),
+    shareReplay(1)
   );
 
   public readonly tabDefinition$: Observable<TabDefinition> = this.tabIndex$.pipe(
-    map(tabIndex => this.tabs[tabIndex])
+    map(tabIndex => this.tabs[tabIndex]),
   );
 
   public readonly columns$: Observable<Array<string>> = this.tabDefinition$.pipe(
-    map(tabDefinition => tabDefinition[1])
+    map(tabDefinition => tabDefinition[1]),
+    shareReplay(1)
   );
 
   public readonly data$: Observable<Array<Article>> = combineLatest([this.userService.loggedIn$, this.tabDefinition$]).pipe(
-    switchMap(([loggedIn, tabDefinition]) => loggedIn ? this.articleService.collection(tabDefinition[0]) : of([]))
+    filter(([loggedIn, _]) => loggedIn),
+    map(([_, tabDefinition]) => tabDefinition[0]),
+    distinctUntilChanged(),
+    switchMap(tabName => this.articleService.collection(tabName)),
+    shareReplay(1)
   );
 
   constructor(
@@ -48,8 +54,5 @@ export class DashboardComponent implements OnInit {
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router
   ) { }
-
-  public ngOnInit(): void {
-  }
 
 }

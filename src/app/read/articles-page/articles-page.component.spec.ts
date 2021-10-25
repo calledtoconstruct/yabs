@@ -3,7 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { User } from '@firebase/auth';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
+import { CountContainer } from 'src/app/test/count-container.type';
 import { UserService } from 'src/app/user.service';
+import { FakeReadArticleService } from '../fake/read-article-service.fake';
+import { ReadArticleService } from '../read-article.service';
 import { ArticlesPageComponent } from './articles-page.component';
 
 describe('ArticlesPageComponent', () => {
@@ -14,13 +17,16 @@ describe('ArticlesPageComponent', () => {
 
   let userService: FakeUserService;
   let activatedRoute: FakeActivatedRoute;
+  let articleService: FakeReadArticleService;
 
   beforeEach(() => {
     userService = new FakeUserService();
     activatedRoute = new FakeActivatedRoute();
+    articleService = new FakeReadArticleService();
   });
 
   afterEach(() => {
+    articleService.tearDown();
     activatedRoute.tearDown();
     userService.tearDown();
   });
@@ -33,7 +39,8 @@ describe('ArticlesPageComponent', () => {
       declarations: [ArticlesPageComponent],
       providers: [
         { provide: UserService, useValue: userService },
-        { provide: ActivatedRoute, useValue: activatedRoute }
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: ReadArticleService, useValue: articleService }
       ]
     })
       .compileComponents();
@@ -64,12 +71,35 @@ describe('ArticlesPageComponent', () => {
 
       describe(`when route '${category}' is activated`, () => {
 
-        it(`should provide category '${category}'`, () => {
-          let emittedCategory = '';
+        let emittedCategory = '';
+        let hasWasCalledFor: CountContainer;
+        let getWasCalledFor: CountContainer;
+
+        beforeEach(() => {
           const subscription = component.category$.subscribe(data => emittedCategory = data);
-          activatedRoute.nextParamMap({ category: category });
+          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({ category: category });
           subscription.unsubscribe();
+          fixture.detectChanges();
+        });
+
+        it('should call has for category route parameter', () => {
+          expect(hasWasCalledFor['category']).toBe(1);
+        });
+
+        it('should call get for category route parameter', () => {
+          expect(getWasCalledFor['category']).toBe(1);
+        });
+
+        it(`should provide category '${category}'`, () => {
           expect(emittedCategory).toBe(category === '' ? 'local' : category);
+        });
+
+        it(`should call read article service once to get excerpts for '${category}'`, () => {
+          expect(articleService.excerptsForWasCalled).toBe(1);
+        });
+
+        it(`should call pass '${category}' for category parameter when getting excerpts`, () => {
+          expect(articleService.excerptsForCategoryParameterWas).toBe(category === '' ? 'local' : category);
         });
 
       });

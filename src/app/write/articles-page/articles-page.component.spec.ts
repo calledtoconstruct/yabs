@@ -147,11 +147,11 @@ describe('Write -> Articles Page', () => {
         fixture.detectChanges();
       });
 
-      it('should call has', () => {
+      it('should call has for article identifier route parameter', () => {
         expect(hasWasCalledFor['articleIdentifier']).toBe(1);
       });
 
-      it('should call get', () => {
+      it('should call get for article identifier route parameter', () => {
         expect(getWasCalledFor['articleIdentifier']).toBe(1);
       });
 
@@ -535,11 +535,11 @@ describe('Write -> Articles Page', () => {
         fixture.detectChanges();
       });
 
-      it('should call has', () => {
+      it('should call has for article identifier route parameter', () => {
         expect(hasWasCalledFor['articleIdentifier']).toBeGreaterThan(0);
       });
 
-      it('should call get', () => {
+      it('should call get for article identifier route parameter', () => {
         expect(getWasCalledFor['articleIdentifier']).toBeGreaterThan(0);
       });
 

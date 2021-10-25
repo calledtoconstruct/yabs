@@ -9,7 +9,7 @@ import { Article, ArticleService } from '../article.service';
 import { ArticlesPageComponent } from './articles-page.component';
 import { CountContainer } from '../../test/count-container.type';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
-import { FakeArticleService } from '../../fake/article-service.fake';
+import { FakeArticleService } from '../fake/article-service.fake';
 
 const howToFindTitleInput = (element: DebugElement) =>
   element.name === 'input'

@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CdkTableModule } from '@angular/cdk/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ArticleService } from './article.service';
 
 const routes: Routes = [
   { path: 'articles/:articleIdentifier', component: ArticlesPageComponent },
@@ -24,6 +25,9 @@ const routes: Routes = [
   declarations: [
     ArticlesPageComponent,
     DashboardComponent
+  ],
+  providers: [
+    ArticleService
   ]
 })
 export class WriteModule { }

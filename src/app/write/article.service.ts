@@ -1,9 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ArticleService implements OnDestroy {
 
   private readonly articlesSubject = new ReplaySubject<Array<Article>>(1);

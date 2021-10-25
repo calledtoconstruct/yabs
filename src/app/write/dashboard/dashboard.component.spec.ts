@@ -6,7 +6,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
-import { FakeArticleService } from '../../fake/article-service.fake';
+import { FakeArticleService } from '../fake/article-service.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { UserService } from '../../user.service';
 import { Article, ArticleService } from '../article.service';

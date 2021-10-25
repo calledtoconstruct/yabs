@@ -27,7 +27,7 @@ export class ArticleService implements OnDestroy {
     return this.articleSubject.asObservable();
   }
 
-  public saveArticle(): void {
+  public saveArticle(article: Article): void {
   }
 
   public ngOnDestroy(): void {

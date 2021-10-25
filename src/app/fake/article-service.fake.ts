@@ -22,9 +22,11 @@ export class FakeArticleService {
   };
 
   public saveArticleCalled = 0;
+  public articleToSave: Article | null = null;
 
-  public saveArticle(): void {
+  public saveArticle(article: Article): void {
     this.saveArticleCalled++;
+    this.articleToSave = article;
   }
 
   public collection(name: string): Observable<Array<Article>> {

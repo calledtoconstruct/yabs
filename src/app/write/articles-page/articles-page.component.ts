@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { User } from '@angular/fire/auth';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
@@ -14,7 +13,7 @@ const articleIdentifierParameterName = 'articleIdentifier';
   templateUrl: './articles-page.component.html',
   styleUrls: ['./articles-page.component.scss']
 })
-export class ArticlesPageComponent implements OnInit {
+export class ArticlesPageComponent {
 
   public readonly formGroup = this.formBuilder.group({
     title: this.formBuilder.control(''),
@@ -60,11 +59,8 @@ export class ArticlesPageComponent implements OnInit {
     }
   }
 
-  public ngOnInit(): void {
-  }
-
   public done(): void {
-    this.articleService.saveArticle();
+    this.articleService.saveArticle(this.formGroup.value);
   }
 
 }

@@ -340,8 +340,12 @@ describe('Write -> Articles Page', () => {
           doneButton.nativeElement.click();
         });
 
-        it('should call aritcle service save article', () => {
+        it('should call save article', () => {
           expect(articleService.saveArticleCalled).toBe(1);
+        });
+
+        it('should pass article to save article', () => {
+          expect(articleService.articleToSave).toBeTruthy();
         });
 
       });

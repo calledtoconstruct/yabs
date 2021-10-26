@@ -12,16 +12,17 @@ import { ReadArticleService } from '../read-article.service';
 })
 export class ArticlesPageComponent {
 
-  public readonly category$ = this.activatedRoute.paramMap.pipe(
-    map(paramMap => paramMap.get('category') || 'local'),
+  public readonly articleIdentifier$ = this.activatedRoute.paramMap.pipe(
+    map(paramMap => paramMap.get('articleIdentifier') || ''),
+    filter(articleIdentifier => !!articleIdentifier),
     shareReplay(1)
   );
 
-  public readonly excerpts$ = combineLatest([this.userService.loggedIn$, this.category$]).pipe(
+  public readonly article$ = combineLatest([this.userService.loggedIn$, this.articleIdentifier$]).pipe(
     filter(([loggedIn, _]) => loggedIn),
-    map(([_, category]) => category),
+    map(([_, articleIdentifier]) => articleIdentifier),
     distinctUntilChanged(),
-    switchMap(category => this.articleService.excerptsFor(category)),
+    switchMap(articleIdentifier => this.articleService.articleFor(articleIdentifier)),
     shareReplay(1)
   );
 

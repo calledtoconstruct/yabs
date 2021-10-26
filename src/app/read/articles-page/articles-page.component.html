@@ -2,11 +2,9 @@
 </ng-container>
 
 <ng-template #loggedIn>
-    <ng-template ngFor let-item [ngForOf]='excerpts$ | async'>
-        <a href='/read/articles/{{ item.articleIdentifier }}' [routerLink]=''>
-            <span> {{ item.title }} </span>
-            <span> {{ item.text }} </span>
-        </a>
+    <ng-template [ngIf]='article$ | async' let-item>
+        <span> {{ item.title }} </span>
+        <span> {{ item.text }} </span>
     </ng-template>
 </ng-template>
 

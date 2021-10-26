@@ -64,42 +64,44 @@ describe('ArticlesPageComponent', () => {
     });
 
     [
-      { category: '' }
+      { route: {articleIdentifier: '523'} }
     ].forEach(scenario => {
 
-      const category = scenario.category;
+      const route = scenario.route;
+      const routeString = JSON.stringify(route);
+      const articleIdentifier = route.articleIdentifier;
 
-      describe(`when route '${category}' is activated`, () => {
+      describe(`when route '${routeString}' is activated`, () => {
 
-        let emittedCategory = '';
+        let emittedArticleIdentifier = '';
         let hasWasCalledFor: CountContainer;
         let getWasCalledFor: CountContainer;
 
         beforeEach(() => {
-          const subscription = component.category$.subscribe(data => emittedCategory = data);
-          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({ category: category });
+          const subscription = component.articleIdentifier$.subscribe(data => emittedArticleIdentifier = data);
+          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap(route);
           subscription.unsubscribe();
           fixture.detectChanges();
         });
 
-        it('should call has for category route parameter', () => {
-          expect(hasWasCalledFor['category']).toBe(1);
+        it('should call has for article identifier route parameter', () => {
+          expect(hasWasCalledFor['articleIdentifier']).toBe(1);
         });
 
-        it('should call get for category route parameter', () => {
-          expect(getWasCalledFor['category']).toBe(1);
+        it('should call get for article identifier route parameter', () => {
+          expect(getWasCalledFor['articleIdentifier']).toBe(1);
         });
 
-        it(`should provide category '${category}'`, () => {
-          expect(emittedCategory).toBe(category === '' ? 'local' : category);
+        it(`should provide article identifier '${articleIdentifier}'`, () => {
+          expect(emittedArticleIdentifier).toBe(articleIdentifier);
         });
 
-        it(`should call read article service once to get excerpts for '${category}'`, () => {
-          expect(articleService.excerptsForWasCalled).toBe(1);
+        it(`should call read article service once to get article for '${articleIdentifier}'`, () => {
+          expect(articleService.articleForWasCalled).toBe(1);
         });
 
-        it(`should call pass '${category}' for category parameter when getting excerpts`, () => {
-          expect(articleService.excerptsForCategoryParameterWas).toBe(category === '' ? 'local' : category);
+        it(`should pass '${articleIdentifier}' for article identifier parameter when getting article`, () => {
+          expect(articleService.articleForParameterWas).toBe(articleIdentifier);
         });
 
       });

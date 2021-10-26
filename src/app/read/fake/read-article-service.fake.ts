@@ -1,21 +1,31 @@
 import { Observable, ReplaySubject } from "rxjs";
-import { Excerpt } from "../read-article.service";
+import { Article, Excerpt } from "../read-article.service";
 
 export class FakeReadArticleService {
 
     private readonly excerpts$ = new ReplaySubject<Array<Excerpt>>(1);
+    private readonly article$ = new ReplaySubject<Article>(1);
 
     public excerptsForWasCalled = 0;
-    public excerptsForCategoryParameterWas = '';
+    public excerptsForParameterWas = '';
+    public articleForWasCalled = 0;
+    public articleForParameterWas = '';
 
     public excerptsFor(category: string): Observable<Array<Excerpt>> {
         this.excerptsForWasCalled++;
-        this.excerptsForCategoryParameterWas = category;
+        this.excerptsForParameterWas = category;
         return this.excerpts$.asObservable();
+    }
+
+    public articleFor(articleIdentifier: string): Observable<Article> {
+        this.articleForWasCalled++;
+        this.articleForParameterWas = articleIdentifier;
+        return this.article$.asObservable();
     }
 
     public tearDown(): void {
         this.excerpts$.complete();
+        this.article$.complete();
     }
     
 }

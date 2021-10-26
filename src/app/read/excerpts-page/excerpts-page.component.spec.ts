@@ -98,8 +98,8 @@ describe('ExcerptsPageComponent', () => {
           expect(articleService.excerptsForWasCalled).toBe(1);
         });
 
-        it(`should call pass '${category}' for category parameter when getting excerpts`, () => {
-          expect(articleService.excerptsForCategoryParameterWas).toBe(category === '' ? 'local' : category);
+        it(`should pass '${category}' for category parameter when getting excerpts`, () => {
+          expect(articleService.excerptsForParameterWas).toBe(category === '' ? 'local' : category);
         });
 
       });

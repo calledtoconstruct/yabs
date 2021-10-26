@@ -17,6 +17,10 @@ export class FakeReadArticleService {
         return this.excerpts$.asObservable();
     }
 
+    public nextExcerpts(excerpts: Array<Excerpt>): void {
+        this.excerpts$.next(excerpts);
+    }
+
     public articleFor(articleIdentifier: string): Observable<Article> {
         this.articleForWasCalled++;
         this.articleForParameterWas = articleIdentifier;

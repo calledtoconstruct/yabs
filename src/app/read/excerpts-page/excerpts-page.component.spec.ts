@@ -1,13 +1,21 @@
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { User } from '@firebase/auth';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
 import { CountContainer } from 'src/app/test/count-container.type';
 import { UserService } from 'src/app/user.service';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
-import { ReadArticleService } from '../read-article.service';
+import { Excerpt, ReadArticleService } from '../read-article.service';
 import { ExcerptsPageComponent } from './excerpts-page.component';
+
+const howToFindAnchor = (articleIdentifier: string): (element: DebugElement) => boolean =>
+  (element: DebugElement) =>
+    element.name === 'a'
+    && !!element.attributes['href']
+    && element.attributes['href'] === `/read/articles/${articleIdentifier}`
 
 describe('ExcerptsPageComponent', () => {
 
@@ -37,6 +45,7 @@ describe('ExcerptsPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ExcerptsPageComponent],
+      imports: [RouterTestingModule],
       providers: [
         { provide: UserService, useValue: userService },
         { provide: ActivatedRoute, useValue: activatedRoute },
@@ -64,7 +73,9 @@ describe('ExcerptsPageComponent', () => {
     });
 
     [
-      { category: '' }
+      { category: '', articleIdentifier: 'nainvdsi' },
+      { category: 'regional', articleIdentifier: 'ybyasd' },
+      { category: 'national', articleIdentifier: 'pboapsdoj' }
     ].forEach(scenario => {
 
       const category = scenario.category;
@@ -100,6 +111,35 @@ describe('ExcerptsPageComponent', () => {
 
         it(`should pass '${category}' for category parameter when getting excerpts`, () => {
           expect(articleService.excerptsForParameterWas).toBe(category === '' ? 'local' : category);
+        });
+
+        describe('when an excerpt is loaded', () => {
+
+          const excerpt = <Excerpt>{
+            articleIdentifier: scenario.articleIdentifier,
+            title: 'uaiwogiewn',
+            text: 'qpinvoia'
+          };
+
+          beforeEach(() => {
+            articleService.nextExcerpts([excerpt]);
+            fixture.detectChanges();
+          });
+
+          describe('user interface', () => {
+  
+            let anchor: DebugElement;
+  
+            beforeEach(() => {
+              anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
+            });
+  
+            it('should have an anchor', () => {
+              expect(anchor).toBeTruthy();
+            });
+  
+          });
+
         });
 
       });

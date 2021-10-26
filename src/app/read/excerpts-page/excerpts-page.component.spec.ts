@@ -1,9 +1,10 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { User } from '@firebase/auth';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
+import { FakeRouter } from 'src/app/fake/router.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
 import { CountContainer } from 'src/app/test/count-container.type';
 import { UserService } from 'src/app/user.service';
@@ -15,7 +16,7 @@ const howToFindAnchor = (articleIdentifier: string): (element: DebugElement) => 
   (element: DebugElement) =>
     element.name === 'a'
     && !!element.attributes['href']
-    && element.attributes['href'] === `/read/articles/${articleIdentifier}`
+    && element.attributes['href'] === `/read/articles/${articleIdentifier}`;
 
 describe('ExcerptsPageComponent', () => {
 
@@ -26,17 +27,20 @@ describe('ExcerptsPageComponent', () => {
   let userService: FakeUserService;
   let activatedRoute: FakeActivatedRoute;
   let articleService: FakeReadArticleService;
+  let router: FakeRouter;
 
   beforeEach(() => {
     userService = new FakeUserService();
     activatedRoute = new FakeActivatedRoute();
     articleService = new FakeReadArticleService();
+    router = new FakeRouter(activatedRoute);
   });
 
   afterEach(() => {
     articleService.tearDown();
     activatedRoute.tearDown();
     userService.tearDown();
+    router.tearDown();
   });
 
   let component: ExcerptsPageComponent;
@@ -49,7 +53,8 @@ describe('ExcerptsPageComponent', () => {
       providers: [
         { provide: UserService, useValue: userService },
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: ReadArticleService, useValue: articleService }
+        { provide: ReadArticleService, useValue: articleService },
+        { provide: Router, useValue: router }
       ]
     })
       .compileComponents();
@@ -127,17 +132,42 @@ describe('ExcerptsPageComponent', () => {
           });
 
           describe('user interface', () => {
-  
-            let anchor: DebugElement;
-  
-            beforeEach(() => {
-              anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
+
+            describe('anchor', () => {
+
+              let anchor: DebugElement;
+
+              beforeEach(() => {
+                anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
+              });
+
+              it('should exist', () => {
+                expect(anchor).toBeTruthy();
+              });
+
+              describe('when clicked', () => {
+
+                beforeEach(() => {
+                  const nativeElement: HTMLAnchorElement = anchor.nativeElement;
+                  nativeElement.dispatchEvent(new Event('click'));
+                });
+
+                it('should navigate router', () => {
+                  expect(router.navigateWasCalled).toBe(1);
+                });
+
+                const expectedPath = ['/read', 'articles', scenario.articleIdentifier];
+                const expectedPathString = JSON.stringify(expectedPath);
+
+                it(`should navigate router to ${'/read/articles/'}`, () => {
+                  const actualPathString = JSON.stringify(router.navigateWasCalledTokens);
+                  expect(actualPathString).toBe(expectedPathString);
+                });
+
+              });
+
             });
-  
-            it('should have an anchor', () => {
-              expect(anchor).toBeTruthy();
-            });
-  
+
           });
 
         });

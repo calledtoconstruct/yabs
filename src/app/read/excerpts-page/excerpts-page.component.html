@@ -3,7 +3,7 @@
 
 <ng-template #loggedIn>
     <ng-template ngFor let-item [ngForOf]='excerpts$ | async'>
-        <a href='/read/articles/{{ item.articleIdentifier }}' [routerLink]='["/read", "articles", item.articleIdentifier]'>
+        <a href='/read/articles/{{ item.articleIdentifier }}' (click)='open(item.articleIdentifier)'>
             <span> {{ item.title }} </span>
             <span> {{ item.text }} </span>
         </a>

@@ -117,6 +117,10 @@ describe('Write -> Articles Page', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should provide form group', () => {
+    expect(component.formGroup).toBeTruthy();
+  });
+
   describe('when user is logged in', () => {
 
     const displayName = 'abvsunvj';

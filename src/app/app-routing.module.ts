@@ -7,9 +7,9 @@ const routes: Routes = [
   { path: 'edit', loadChildren: () => import('./edit/edit.module').then(module => module.EditModule) },
   { path: 'read', loadChildren: () => import('./read/read.module').then(module => module.ReadModule) },
   { path: 'write', loadChildren: () => import('./write/write.module').then(module => module.WriteModule) },
+  { path: 'document', loadChildren: () => import('./document/document.module').then(module => module.DocumentModule) },
   { path: '', component: WelcomePageComponent }
 ];
-
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

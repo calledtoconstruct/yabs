@@ -18,7 +18,7 @@ const howToFindAnchor = (articleIdentifier: string): (element: DebugElement) => 
     && !!element.attributes['href']
     && element.attributes['href'] === `/read/articles/${articleIdentifier}`;
 
-describe('ExcerptsPageComponent', () => {
+describe('Read -> Excerpts Page', () => {
 
   const user = <User>{
     displayName: 'byeudifunf'

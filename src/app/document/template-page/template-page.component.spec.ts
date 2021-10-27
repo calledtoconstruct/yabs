@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TemplatePageComponent } from './template-page.component';
 
-describe('TemplatePageComponent', () => {
+describe('Document -> Template Page', () => {
   let component: TemplatePageComponent;
   let fixture: ComponentFixture<TemplatePageComponent>;
 

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArticlesPageComponent } from './articles-page.component';
 
-describe('ArticlesPageComponent', () => {
+describe('Edit -> Articles Page', () => {
   let component: ArticlesPageComponent;
   let fixture: ComponentFixture<ArticlesPageComponent>;
 

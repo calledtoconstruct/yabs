@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DocumentPageComponent } from './document-page.component';
 
-describe('DocumentPageComponent', () => {
+describe('Document -> Document Page', () => {
   let component: DocumentPageComponent;
   let fixture: ComponentFixture<DocumentPageComponent>;
 

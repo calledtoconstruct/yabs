@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WelcomePageComponent } from './welcome-page.component';
 
-describe('WelcomePageComponent', () => {
+describe('Welcome Page', () => {
   let component: WelcomePageComponent;
   let fixture: ComponentFixture<WelcomePageComponent>;
 

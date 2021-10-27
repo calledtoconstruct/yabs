@@ -9,7 +9,7 @@ import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { ReadArticleService } from '../read-article.service';
 import { ArticlesPageComponent } from './articles-page.component';
 
-describe('ArticlesPageComponent', () => {
+describe('Read -> Articles Page', () => {
 
   const user = <User>{
     displayName: 'byeudifunf'

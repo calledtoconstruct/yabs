@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RequestsPageComponent } from './requests-page.component';
 
-describe('RequestsPageComponent', () => {
+describe('Edit -> Requests Page', () => {
   let component: RequestsPageComponent;
   let fixture: ComponentFixture<RequestsPageComponent>;
 

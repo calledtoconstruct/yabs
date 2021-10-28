@@ -35,12 +35,12 @@ describe('TemplateService', () => {
       \${pattern-to-match, break}
       \${pattern-to-match, keep}
       \${pattern-to-match, table[abc,asf]}
-      \${pattern-to-match: string, break}
+      \${pattern-to-match:string, break}
       \${pattern-to-match: string, keep}
       \${pattern-to-match: string, table[abc,asf]}
       \${pattern-to-match: string, break, table[asdf]}
       \${pattern-to-match: string, keep, table[abc,asf]}.
-      \${pattern-to-match: string, break, keep}
+      \${pattern-to-match: string,  break,\tkeep}
       \${pattern-to-match: string, break, keep, table[asdf]}
       `;
       let placeholders: Array<Placeholder>;

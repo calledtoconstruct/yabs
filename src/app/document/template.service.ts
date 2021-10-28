@@ -15,11 +15,11 @@ const dataTypeExpressions = [
   .join('|');
 
 const placeholderNameExpression = `([a-zA-Z\\-\\_]*)`;
-const dataTypeExpression = `(?:\\:\\s?(${dataTypeExpressions}))?`;
-const optionalExpression = '(?:\\,\\s?(optional))?';
-const breakExpression = '(?:\\,\\s?(break))?';
-const keepExpression = '(?:\\,\\s?(keep))?';
-const tableExpression = '(?:\\,\\s?(table\\[.*?\\]))?';
+const dataTypeExpression = `(?:\\:\\s*(${dataTypeExpressions}))?`;
+const optionalExpression = '(?:\\,\\s*(optional))?';
+const breakExpression = '(?:\\,\\s*(break))?';
+const keepExpression = '(?:\\,\\s*(keep))?';
+const tableExpression = '(?:\\,\\s*(table\\[.*?\\]))?';
 const extractPlaceholderDefinitionExpression = `\\$\\{${placeholderNameExpression}${dataTypeExpression}${optionalExpression}${breakExpression}${keepExpression}${tableExpression}\\}`;
 
 @Injectable({

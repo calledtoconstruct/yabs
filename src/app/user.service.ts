@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
 import {
-  signInWithPopup, signOut,
-  GoogleAuthProvider,
+  Auth, authState,
   GithubAuthProvider,
-  Auth,
-  authState,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
   User
 } from '@angular/fire/auth';
+import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 
 @Injectable({

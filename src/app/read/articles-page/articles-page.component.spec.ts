@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { User } from '@firebase/auth';
-import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
-import { FakeUserService } from 'src/app/fake/user-service.fake';
-import { CountContainer } from 'src/app/test/count-container.type';
-import { UserService } from 'src/app/user.service';
-import { FakeReadArticleService } from '../fake/read-article-service.fake';
-import { ReadArticleService } from '../read-article.service';
 import { ArticlesPageComponent } from './articles-page.component';
+import { CountContainer } from 'src/app/test/count-container.type';
+import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
+import { FakeReadArticleService } from '../fake/read-article-service.fake';
+import { FakeUserService } from 'src/app/fake/user-service.fake';
+import { ReadArticleService } from '../read-article.service';
+import { User } from '@firebase/auth';
+import { UserService } from 'src/app/user.service';
 
 describe('Read -> Articles Page', () => {
 

@@ -1,15 +1,15 @@
-import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { User } from '@angular/fire/auth';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { FakeUserService } from '../../fake/user-service.fake';
-import { UserService } from '../../user.service';
 import { Article, WriteArticleService } from '../write-article.service';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { ArticlesPageComponent } from './articles-page.component';
 import { CountContainer } from '../../test/count-container.type';
+import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
+import { FakeUserService } from '../../fake/user-service.fake';
 import { FakeWriteArticleService } from '../fake/write-article-service.fake';
+import { ReactiveFormsModule } from '@angular/forms';
+import { User } from '@angular/fire/auth';
+import { UserService } from '../../user.service';
 
 const howToFindTitleInput = (element: DebugElement) =>
   element.name === 'input'

@@ -10,7 +10,7 @@ describe('Welcome Page', () => {
     await TestBed.configureTestingModule({
       declarations: [ WelcomePageComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

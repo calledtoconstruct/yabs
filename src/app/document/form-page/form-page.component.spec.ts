@@ -10,7 +10,7 @@ describe('Document -> Form Page', () => {
     await TestBed.configureTestingModule({
       declarations: [ FormPageComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

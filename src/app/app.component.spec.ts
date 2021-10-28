@@ -1,24 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { User } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { RouterTestingModule } from '@angular/router/testing';
-import { environment } from 'src/environments/environment';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { AppComponent } from './app.component';
+import { environment } from 'src/environments/environment';
 import { FakeUserService } from './fake/user-service.fake';
+import { RouterTestingModule } from '@angular/router/testing';
+import { User } from '@angular/fire/auth';
 import { UserService } from './user.service';
 
-interface clickable { click: () => void };
+interface clickable { click: () => void }
 
-function buttonWithText(buttons: NodeList, text: string) {
+function buttonWithText(buttons: NodeList, text: string): HTMLButtonElement {
   return Array
     .from(buttons)
     .map(node => <HTMLButtonElement>node)
     .filter(button => button.innerText === text)
-    .pop() || {
-    click: () => { }
-  };
-};
+    .pop() || document.createElement('button');
+}
 
 export let userService: FakeUserService;
 
@@ -57,11 +55,11 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'yabs'`, () => {
+  it('should have as title \'yabs\'', () => {
     expect(app.title).toEqual('yabs');
   });
 
-  describe(`when user is not logged in`, () => {
+  describe('when user is not logged in', () => {
 
     beforeEach(() => {
       userService.setUpNotLoggedIn();
@@ -82,37 +80,37 @@ describe('AppComponent', () => {
       signInWithGitHubButton = buttonWithText(buttons, 'Sign In w/ GitHub');
     });
 
-    it(`should display sign-in options`, () => {
+    it('should display sign-in options', () => {
       expect(buttons.length).toBe(2);
     });
 
-    it(`the sign in with google button should exist`, () => {
+    it('the sign in with google button should exist', () => {
       expect(signInWithGoogleButton).toBeTruthy();
     });
 
-    it(`the sign in with github button should exist`, () => {
+    it('the sign in with github button should exist', () => {
       expect(signInWithGitHubButton).toBeTruthy();
     });
 
-    describe(`when clicking sign-in with google`, () => {
+    describe('when clicking sign-in with google', () => {
 
       beforeEach(() => {
         signInWithGoogleButton.click();
       });
 
-      it(`should call sign in with google service`, () => {
+      it('should call sign in with google service', () => {
         expect(userService.signInWithGoogleCalled).toBe(1);
       });
 
     });
 
-    describe(`when clicking sign-in with github`, () => {
+    describe('when clicking sign-in with github', () => {
 
       beforeEach(() => {
         signInWithGitHubButton.click();
       });
 
-      it(`should call sign in with github service`, () => {
+      it('should call sign in with github service', () => {
         expect(userService.signInWithGitHubCalled).toBe(1);
       });
 
@@ -120,7 +118,7 @@ describe('AppComponent', () => {
 
   });
 
-  describe(`when user is logged in`, () => {
+  describe('when user is logged in', () => {
 
     const displayName = 'wiefusdjksvn';
     const user = <User>{
@@ -145,25 +143,25 @@ describe('AppComponent', () => {
       paragraph = element.querySelector('p');
     });
 
-    describe(`name paragraph`, () => {
+    describe('name paragraph', () => {
 
-      it(`should be displayed`, () => {
+      it('should be displayed', () => {
         expect(paragraph).toBeTruthy();
       });
 
-      it(`should contain display name`, () => {
+      it('should contain display name', () => {
         expect(paragraph.innerText).toContain(displayName);
       });
 
     });
 
-    describe(`sign out button`, () => {
+    describe('sign out button', () => {
 
-      it(`should be displayed`, () => {
+      it('should be displayed', () => {
         expect(button).toBeTruthy();
       });
 
-      it(`should say sign out`, () => {
+      it('should say sign out', () => {
         expect(button.innerText).toBe('Sign Out');
       });
 

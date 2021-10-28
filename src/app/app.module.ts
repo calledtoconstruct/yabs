@@ -1,17 +1,16 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
+import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore} from '@angular/fire/firestore';
 import { AppComponent } from './app.component';
-import { provideFirebaseApp, initializeApp, FirebaseApp } from '@angular/fire/app';
-import { provideFirestore, getFirestore} from '@angular/fire/firestore';
-import { WelcomePageComponent } from './welcome-page/welcome-page.component';
-import { environment } from 'src/environments/environment';
-import { CommonModule } from '@angular/common';
-import { UserService } from './user.service';
-import { Auth, User } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
-import { getAuth } from '@firebase/auth';
+import { AppRoutingModule } from './app-routing.module';
+import { Auth } from '@angular/fire/auth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
+import { environment } from 'src/environments/environment';
+import { getAuth } from '@firebase/auth';
+import { NgModule } from '@angular/core';
+import { UserService } from './user.service';
+import { WelcomePageComponent } from './welcome-page/welcome-page.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +32,3 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-function of(arg0: null): Observable<User | null> {
-  throw new Error('Function not implemented.');
-}
-

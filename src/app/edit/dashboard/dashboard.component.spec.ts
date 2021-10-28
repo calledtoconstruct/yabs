@@ -10,7 +10,7 @@ describe('Edit -> Dashboard', () => {
     await TestBed.configureTestingModule({
       declarations: [ DashboardComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

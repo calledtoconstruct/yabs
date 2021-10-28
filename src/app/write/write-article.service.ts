@@ -7,9 +7,7 @@ export class WriteArticleService implements OnDestroy {
   private readonly articlesSubject = new ReplaySubject<Array<Article>>(1);
   private readonly articleSubject = new ReplaySubject<Article>(1);
 
-  constructor() { }
-
-  public collection(state: string): Observable<Array<Article>> {
+  public collection(_state: string): Observable<Array<Article>> {
     setTimeout(() => this.articlesSubject.next(new Array<Article>(<Article>{
       title: 'sakldfjasdf',
       text: 'ghqauwnviuw'
@@ -17,7 +15,7 @@ export class WriteArticleService implements OnDestroy {
     return this.articlesSubject.asObservable();
   }
 
-  public article(articleIdentifier: number): Observable<Article> {
+  public article(_articleIdentifier: number): Observable<Article> {
     setTimeout(() => this.articleSubject.next(<Article>{
       title: 'vweydshyf',
       text: 'qvpwuvhvd'
@@ -25,7 +23,8 @@ export class WriteArticleService implements OnDestroy {
     return this.articleSubject.asObservable();
   }
 
-  public saveArticle(article: Article): void {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public saveArticle(_article: Article): void {
   }
 
   public ngOnDestroy(): void {

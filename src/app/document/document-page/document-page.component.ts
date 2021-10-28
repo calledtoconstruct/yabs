@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { UserService } from 'src/app/user.service';
+import { Component } from '@angular/core';
 import { DocumentService } from '../document.service';
+import { FormBuilder } from '@angular/forms';
+import { UserService } from 'src/app/user.service';
 
 @Component({
   selector: 'app-document-page',

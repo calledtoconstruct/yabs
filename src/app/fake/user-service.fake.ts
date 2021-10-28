@@ -1,5 +1,5 @@
-import { User } from '@angular/fire/auth';
 import { ReplaySubject } from 'rxjs';
+import { User } from '@angular/fire/auth';
 
 export class FakeUserService {
 

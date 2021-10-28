@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { TemplatePageComponent } from './template-page/template-page.component';
 import { DocumentPageComponent } from './document-page/document-page.component';
-import { RouterModule, Routes } from '@angular/router';
 import { FormPageComponent } from './form-page/form-page.component';
+import { NgModule } from '@angular/core';
+import { TemplatePageComponent } from './template-page/template-page.component';
 
 const routes: Routes = [
   { path: 'template/create', component: TemplatePageComponent },

@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Article, WriteArticleService } from '../write-article.service';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { Component } from '@angular/core';
 import { UserService } from 'src/app/user.service';
-import { Article, WriteArticleService } from '../write-article.service';
 
 type TabDefinition = [string, Array<string>];
 type TabsDefinition = Array<TabDefinition>;

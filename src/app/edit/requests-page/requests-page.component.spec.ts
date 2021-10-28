@@ -10,7 +10,7 @@ describe('Edit -> Requests Page', () => {
     await TestBed.configureTestingModule({
       declarations: [ RequestsPageComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

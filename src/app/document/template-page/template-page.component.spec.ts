@@ -1,13 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
-import { FakeUserService } from 'src/app/fake/user-service.fake';
-import { UserService } from 'src/app/user.service';
 import { FakeTemplateService } from '../fake/template-service.fake';
-import { TemplateService } from '../template.service';
-
+import { FakeUserService } from 'src/app/fake/user-service.fake';
+import { ReactiveFormsModule } from '@angular/forms';
 import { TemplatePageComponent } from './template-page.component';
+import { TemplateService } from '../template.service';
+import { UserService } from 'src/app/user.service';
 
 describe('Document -> Template Page', () => {
 

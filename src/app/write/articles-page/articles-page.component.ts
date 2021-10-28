@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Article, WriteArticleService } from '../write-article.service';
+import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
-import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { Component } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { UserService } from 'src/app/user.service';
-import { Article, WriteArticleService } from '../write-article.service';
 
 const articleIdentifierParameterName = 'articleIdentifier';
 

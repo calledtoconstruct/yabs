@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentService {
 
-  public documentFor(documentIdentifier: string): Observable<Document> {
+  public documentFor(_documentIdentifier: string): Observable<Document> {
     return of(<Document>{
       name: 'vwuybweyrbuwbv',
       text: 'bbqiuwybfeisdj'

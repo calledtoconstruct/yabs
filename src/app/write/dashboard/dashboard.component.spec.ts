@@ -1,21 +1,21 @@
-import { CdkTableModule } from '@angular/cdk/table';
-import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { User } from '@angular/fire/auth';
-import { MatTabsModule } from '@angular/material/tabs';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FakeActivatedRoute } from '../../fake/activated-route.fake';
-import { FakeWriteArticleService } from '../fake/write-article-service.fake';
-import { FakeUserService } from '../../fake/user-service.fake';
-import { UserService } from '../../user.service';
 import { Article, WriteArticleService } from '../write-article.service';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CdkTableModule } from '@angular/cdk/table';
+import { CountContainer } from 'src/app/test/count-container.type';
 import { DashboardComponent } from './dashboard.component';
+import { DebugElement } from '@angular/core';
+import { FakeActivatedRoute } from '../../fake/activated-route.fake';
+import { FakeRouter } from '../../fake/router.fake';
+import { FakeUserService } from '../../fake/user-service.fake';
+import { FakeWriteArticleService } from '../fake/write-article-service.fake';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { MatTabGroupHarness } from '@angular/material/tabs/testing';
+import { MatTabsModule } from '@angular/material/tabs';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { FakeRouter } from '../../fake/router.fake';
-import { CountContainer } from 'src/app/test/count-container.type';
+import { User } from '@angular/fire/auth';
+import { UserService } from '../../user.service';
 
 const howToFindTable = (element: DebugElement): boolean =>
   element.name === 'table'

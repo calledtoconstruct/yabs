@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 const dataTypeExpressions = [
   { name: 'string', expression: '(?:string)' },
@@ -14,7 +14,7 @@ const dataTypeExpressions = [
   .map(dataType => dataType.expression)
   .join('|');
 
-const placeholderNameExpression = `([a-zA-Z\\-\\_]*)`;
+const placeholderNameExpression = '([a-zA-Z\\-\\_]*)';
 const dataTypeExpression = `(?:\\:\\s*(${dataTypeExpressions}))?`;
 const optionalExpression = '(?:\\,\\s*(optional))?';
 const breakExpression = '(?:\\,\\s*(break))?';
@@ -27,7 +27,7 @@ const extractPlaceholderDefinitionExpression = `\\$\\{${placeholderNameExpressio
 })
 export class TemplateService {
 
-  public templateFor(templateIdentifier: string): Observable<Template> {
+  public templateFor(_templateIdentifier: string): Observable<Template> {
     return of(<Template>{
       title: 'aslkdjfasd',
       text: 'vuianuiwesdafaaasdf'
@@ -40,23 +40,24 @@ export class TemplateService {
     const placeholders = new Array<Placeholder>();
 
     let result: RegExpExecArray | null;
-    while (!!(result = regex.exec(templateText))) {
-      const match = result[0];
+
+    while ((result = regex.exec(templateText))) {
+      const _match = result[0];
       const name = result[1];
       const dataType = result[2];
       const optional = result[3];
       const hardBreak = result[4];
       const keep = result[5];
-      const table = result[6];
+      const _table = result[6];
       placeholders.push(<Placeholder>{
         name: name,
-        dataType: !!dataType ? dataType : 'string',
+        dataType: dataType ? dataType : 'string',
         optional: optional === 'optional',
         break: hardBreak === 'break',
         keep: keep === 'keep',
         tableDefinition: null
       });
-    };
+    }
 
     return placeholders;
   }

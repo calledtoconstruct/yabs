@@ -1,16 +1,16 @@
-import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { User } from '@firebase/auth';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Excerpt, ReadArticleService } from '../read-article.service';
+import { CountContainer } from 'src/app/test/count-container.type';
+import { DebugElement } from '@angular/core';
+import { ExcerptsPageComponent } from './excerpts-page.component';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
+import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeRouter } from 'src/app/fake/router.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
-import { CountContainer } from 'src/app/test/count-container.type';
+import { RouterTestingModule } from '@angular/router/testing';
+import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
-import { FakeReadArticleService } from '../fake/read-article-service.fake';
-import { Excerpt, ReadArticleService } from '../read-article.service';
-import { ExcerptsPageComponent } from './excerpts-page.component';
 
 const howToFindAnchor = (articleIdentifier: string): (element: DebugElement) => boolean =>
   (element: DebugElement) =>

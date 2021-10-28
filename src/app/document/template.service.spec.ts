@@ -1,6 +1,5 @@
-import { TestBed } from '@angular/core/testing';
-
 import { Placeholder, TemplateService } from './template.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('TemplateService', () => {
   let service: TemplateService;

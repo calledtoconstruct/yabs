@@ -10,7 +10,7 @@ describe('Edit -> Articles Page', () => {
     await TestBed.configureTestingModule({
       declarations: [ ArticlesPageComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

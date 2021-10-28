@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject } from "rxjs";
+import { Observable, ReplaySubject } from 'rxjs';
 
 export class FakeDocumentService {
 
@@ -8,13 +8,13 @@ export class FakeDocumentService {
     public documentForParameterWas = '';
 
     public documentFor(documentIdentifier: string): Observable<Document> {
-        this.documentForWasCalled++;
-        this.documentForParameterWas = documentIdentifier;
-        return this.document$.asObservable();
+      this.documentForWasCalled++;
+      this.documentForParameterWas = documentIdentifier;
+      return this.document$.asObservable();
     }
 
     public tearDown(): void {
-        this.document$.complete();
+      this.document$.complete();
     }
 
 }

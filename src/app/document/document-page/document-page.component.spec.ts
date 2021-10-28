@@ -1,13 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
-import { FakeUserService } from 'src/app/fake/user-service.fake';
-import { UserService } from 'src/app/user.service';
-import { DocumentService } from '../document.service';
-import { FakeDocumentService } from '../fake/document-service.fake';
-
 import { DocumentPageComponent } from './document-page.component';
+import { DocumentService } from '../document.service';
+import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
+import { FakeDocumentService } from '../fake/document-service.fake';
+import { FakeUserService } from 'src/app/fake/user-service.fake';
+import { ReactiveFormsModule } from '@angular/forms';
+import { UserService } from 'src/app/user.service';
 
 describe('Document -> Document Page', () => {
 

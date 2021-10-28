@@ -1,8 +1,8 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { UserService } from 'src/app/user.service';
 import { TemplateService } from '../template.service';
+import { UserService } from 'src/app/user.service';
 
 @Component({
   selector: 'app-template-page',

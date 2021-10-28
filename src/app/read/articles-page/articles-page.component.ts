@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
-import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { UserService } from 'src/app/user.service';
+import { Component } from '@angular/core';
 import { ReadArticleService } from '../read-article.service';
+import { UserService } from 'src/app/user.service';
 
 @Component({
   selector: 'app-articles-page',

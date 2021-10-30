@@ -5,8 +5,8 @@
     <ng-template [ngIf]='article$ | async' let-item>
         <article>
             <span class='title'>{{ item.title }}</span>
+            <span class='text'>{{ item.text }}</span>
         </article>
-        <span> {{ item.text }} </span>
     </ng-template>
 </ng-template>
 

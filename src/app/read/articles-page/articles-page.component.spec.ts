@@ -17,6 +17,10 @@ const howToFindTitleElement = (element: DebugElement) =>
   element.name === 'span'
   && !!element.classes['title'];
 
+const howToFindTextElement = (element: DebugElement) =>
+  element.name === 'span'
+  && !!element.classes['text'];
+
 describe('Read -> Articles Page', () => {
 
   const user = <User>{
@@ -152,6 +156,22 @@ describe('Read -> Articles Page', () => {
                 });
 
               });
+
+              describe('text', () => {
+
+                let textElement: DebugElement;
+
+                beforeEach(() => {
+                  textElement = article.query(howToFindTextElement);
+                });
+
+                it('should exist', () => {
+                  expect(textElement).toBeTruthy();
+                });
+
+              });
+
+
 
             });
 

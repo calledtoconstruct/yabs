@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { AppComponent } from './app.component';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/current-environment';
 import { FakeUserService } from './fake/user-service.fake';
 import { RouterTestingModule } from '@angular/router/testing';
 import { User } from '@angular/fire/auth';

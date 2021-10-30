@@ -11,19 +11,22 @@ export class ReadArticleService implements OnDestroy {
     title: 'wvbdsfasd',
     text: 'iqwenv',
     editors: 0,
-    brand: 'lwc'
+    brand: 'lwc',
+    brandPhoto: 'fjdksla'
   }, {
     articleIdentifier: 'fjkdsljf',
     title: 'Title',
     text: 'lorem Ipsum',
     editors: 2,
-    brand: 'Sucks'
+    brand: 'Sucks',
+    brandPhoto: 'jfkdsla'
   }, {
     articleIdentifier: 'jfkdsla',
     title: 'another title',
     text: 'more lorem ipsum',
     editors: 1,
-    brand: 'MFS'
+    brand: 'MFS',
+    brandPhoto: 'fjsdkla'
   });
 
   public excerptsFor(_category: string): Observable<Array<Excerpt>> {
@@ -56,6 +59,7 @@ export interface Excerpt {
   text: string;
   editors: number;
   brand: string;
+  brandPhoto: string;
 }
 
 export interface Article {

@@ -34,6 +34,11 @@ const howToFindBrandInAnchor = (element: DebugElement) =>
   element.name === 'span'
   && !!element.classes['brand'];
 
+const howToFindBrandPhotoInAnchor = (element: DebugElement) =>
+  element.name === 'img'
+  && !!element.classes['brand-photo'];
+
+
 describe('Read -> Excerpts Page', () => {
 
   const user = <User>{
@@ -141,7 +146,8 @@ describe('Read -> Excerpts Page', () => {
             title: 'uaiwogiewn',
             text: 'qpinvoia',
             editors: 5,
-            brand: 'fjklf'
+            brand: 'fjklf',
+            brandPhoto: 'jfklsda'
           };
 
           beforeEach(() => {
@@ -158,6 +164,7 @@ describe('Read -> Excerpts Page', () => {
               let textElement: DebugElement;
               let editorsElement: DebugElement;
               let brandElement: DebugElement;
+              let brandPhotoElement: DebugElement;
 
               beforeEach(() => {
                 anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
@@ -165,6 +172,7 @@ describe('Read -> Excerpts Page', () => {
                 textElement = anchor.query(howToFindTextInAnchor);
                 editorsElement = anchor.query(howToFindEditorsInAnchor);
                 brandElement = anchor.query(howToFindBrandInAnchor);
+                brandPhotoElement = anchor.query(howToFindBrandPhotoInAnchor);
               });
 
               it('should exist', () => {
@@ -215,6 +223,18 @@ describe('Read -> Excerpts Page', () => {
 
                 it(`should contain ${excerpt.brand}`, () => {
                   expect(brandElement.nativeElement.innerText).toBe(excerpt.brand);
+                });
+
+              });
+
+              describe('brand photo', () => {
+
+                it('should exist', () => {
+                  expect(brandPhotoElement).toBeTruthy();
+                });
+
+                it(`should use ${excerpt.brandPhoto} as brand photo source url`, () => {
+                  expect(brandPhotoElement.attributes['src']).toBe(excerpt.brandPhoto);
                 });
 
               });

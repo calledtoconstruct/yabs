@@ -6,6 +6,7 @@
         <a href='/read/articles/{{ item.articleIdentifier }}' (click)='open(item.articleIdentifier)'>
             <div>
                 <span class='brand'>{{ item.brand }}</span>
+                <img [src]='item.brandPhoto' class='brand-photo' />
                 <span class='title'>{{ item.title }}</span>
                 <span class='text'>{{ item.text }}</span>
                 <span class='editors'>{{ item.editors }}</span>

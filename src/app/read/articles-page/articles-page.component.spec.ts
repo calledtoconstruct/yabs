@@ -246,11 +246,11 @@ describe('Read -> Articles Page', () => {
 
           });
 
-          const inCommentSection = (then: (get: () => DebugElement) => void) => {
-
-            describe('comment section', () => {
+          const inCommentSection = (then: () => void): () => DebugElement => {
 
               let commentSectionElement: DebugElement;
+
+            describe('comment section', () => {
 
               beforeEach(() => {
                 commentSectionElement = mainElement.query(howToFindCommentSectionElement);
@@ -260,15 +260,17 @@ describe('Read -> Articles Page', () => {
                 expect(commentSectionElement).toBeTruthy();
               });
 
-              then(() => commentSectionElement);
+              then();
 
             });
+
+            return () => commentSectionElement;
 
           };
 
           whenUserIsLoggedIn(() => {
 
-            inCommentSection((getCommentSectionElement: () => DebugElement) => {
+            const getCommentSectionElement = inCommentSection(() => {
 
               describe('comment input', () => {
 
@@ -291,7 +293,7 @@ describe('Read -> Articles Page', () => {
 
           whenUserIsNotLoggedIn(() => {
 
-            inCommentSection((getCommentSectionElement: () => DebugElement) => {
+            const getCommentSectionElement = inCommentSection(() => {
 
               describe('login reminder', () => {
 

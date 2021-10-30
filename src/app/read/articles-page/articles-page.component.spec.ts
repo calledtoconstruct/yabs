@@ -160,6 +160,10 @@ describe('Read -> Articles Page', () => {
                   expect(titleElement).toBeTruthy();
                 });
 
+                it(`should contain ${article.title}`, () => {
+                  expect(titleElement.nativeElement.innerText).toBe(article.title);
+                });
+
               });
 
               describe('text', () => {

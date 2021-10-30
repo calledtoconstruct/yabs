@@ -12,21 +12,21 @@ export class ReadArticleService implements OnDestroy {
     text: 'iqwenv',
     editors: 0,
     brand: 'lwc',
-    brandPhoto: 'fjdksla'
+    brandPhoto: '/fake/image/bbuiaurasdf'
   }, {
     articleIdentifier: 'fjkdsljf',
-    title: 'Title',
-    text: 'lorem Ipsum',
-    editors: 2,
-    brand: 'Sucks',
-    brandPhoto: 'jfkdsla'
+    title: 'awiusbdrgviuawisdf',
+    text: 'lorem ipsum',
+    editors: 89342,
+    brand: 'vnbauosidfasdf',
+    brandPhoto: '/fake/image/anvaiouwsedg'
   }, {
     articleIdentifier: 'jfkdsla',
     title: 'another title',
     text: 'more lorem ipsum',
-    editors: 1,
-    brand: 'MFS',
-    brandPhoto: 'fjsdkla'
+    editors: 128993,
+    brand: 'ahbnvhsdfkasdf',
+    brandPhoto: '/fake/image/dsflkjhashdgkasdf'
   });
 
   public excerptsFor(_userIdentifier: string, _category: string): Observable<Array<Excerpt>> {

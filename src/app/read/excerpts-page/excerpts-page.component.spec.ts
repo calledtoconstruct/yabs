@@ -5,6 +5,7 @@ import { CountContainer } from 'src/app/test/count-container.type';
 import { DebugElement } from '@angular/core';
 import { ExcerptsPageComponent } from './excerpts-page.component';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
+import { FakeImageDirective } from 'src/app/fake/image.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeRouter } from 'src/app/fake/router.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
@@ -38,7 +39,6 @@ const howToFindBrandPhotoInAnchor = (element: DebugElement) =>
   element.name === 'img'
   && !!element.classes['brand-photo'];
 
-
 describe('Read -> Excerpts Page', () => {
 
   const userIdentifier = 'uwibneinsidf';
@@ -71,7 +71,7 @@ describe('Read -> Excerpts Page', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ExcerptsPageComponent],
+      declarations: [ExcerptsPageComponent, FakeImageDirective],
       imports: [RouterTestingModule],
       providers: [
         { provide: UserService, useValue: userService },
@@ -95,15 +95,38 @@ describe('Read -> Excerpts Page', () => {
 
   const regardlessOfLoggedInState = (then: () => void) => {
 
+    const firstExcerpt = <Excerpt>{
+      articleIdentifier: 'nainvdsi',
+      title: 'uaiwogiewn',
+      text: 'qpinvoia',
+      editors: 5,
+      brand: 'fjklf',
+      brandPhoto: '/fake/image/vbauiwafdasdf'
+    };
+
+    const secondExcerpt = <Excerpt>{
+      articleIdentifier: 'nainvdsi',
+      title: 'hgajbiohgiaasdf',
+      text: 'qnsvnlkdffasdfkjasld',
+      editors: 32892,
+      brand: 'asfngbakljsn',
+      brandPhoto: '/fake/image/iwuvnisnbd'
+    };
+
+    interface Scenario {
+      category: string;
+      excerptCount: string;
+      excerpts: Array<Excerpt>;
+    }
+
     [
-      { category: '', articleIdentifier: 'nainvdsi' },
-      { category: 'regional', articleIdentifier: 'ybyasd' },
-      { category: 'national', articleIdentifier: 'pboapsdoj' }
+      <Scenario>{ category: '', excerptCount: 'an excerpt', excerpts: [firstExcerpt] },
+      <Scenario>{ category: 'local', excerptCount: 'more than one excerpt', excerpts: [firstExcerpt, secondExcerpt] },
+      <Scenario>{ category: 'regional', excerptCount: 'more than one excerpt', excerpts: [firstExcerpt, secondExcerpt] },
+      <Scenario>{ category: 'national', excerptCount: 'an excerpt', excerpts: [firstExcerpt] }
     ].forEach(scenario => {
 
-      const category = scenario.category;
-
-      describe(`when route '${category}' is activated`, () => {
+      describe(`when route '${scenario.category}' is activated`, () => {
 
         let emittedCategory = '';
         let hasWasCalledFor: CountContainer;
@@ -111,7 +134,7 @@ describe('Read -> Excerpts Page', () => {
 
         beforeEach(() => {
           const subscription = component.category$.subscribe(data => emittedCategory = data);
-          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({ category: category });
+          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({ category: scenario.category });
           subscription.unsubscribe();
           fixture.detectChanges();
         });
@@ -124,137 +147,133 @@ describe('Read -> Excerpts Page', () => {
           expect(getWasCalledFor['category']).toBe(1);
         });
 
-        it(`should provide category '${category}'`, () => {
-          expect(emittedCategory).toBe(category === '' ? 'local' : category);
+        it(`should provide category '${scenario.category}'`, () => {
+          expect(emittedCategory).toBe(scenario.category === '' ? 'local' : scenario.category);
         });
 
-        it(`should call read article service once to get excerpts for '${category}'`, () => {
+        it(`should call read article service once to get excerpts for '${scenario.category}'`, () => {
           expect(articleService.excerptsForWasCalled).toBe(1);
         });
 
-        it(`should pass '${category}' for category parameter when getting excerpts`, () => {
-          expect(articleService.excerptsForCategoryParameterWas).toBe(category === '' ? 'local' : category);
+        it(`should pass '${scenario.category}' for category parameter when getting excerpts`, () => {
+          expect(articleService.excerptsForCategoryParameterWas).toBe(scenario.category === '' ? 'local' : scenario.category);
         });
 
-        describe('when an excerpt is loaded', () => {
-
-          const excerpt = <Excerpt>{
-            articleIdentifier: scenario.articleIdentifier,
-            title: 'uaiwogiewn',
-            text: 'qpinvoia',
-            editors: 5,
-            brand: 'fjklf',
-            brandPhoto: 'jfklsda'
-          };
+        describe(`when ${scenario.excerptCount} is loaded`, () => {
 
           beforeEach(() => {
-            articleService.nextExcerpts([excerpt]);
+            articleService.nextExcerpts(scenario.excerpts);
             fixture.detectChanges();
           });
 
           describe('user interface', () => {
 
-            describe('anchor', () => {
+            scenario.excerpts.forEach(excerpt => {
 
-              let anchor: DebugElement;
-              let titleElement: DebugElement;
-              let textElement: DebugElement;
-              let editorsElement: DebugElement;
-              let brandElement: DebugElement;
-              let brandPhotoElement: DebugElement;
-
-              beforeEach(() => {
-                anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
-                titleElement = anchor.query(howToFindTitleInAnchor);
-                textElement = anchor.query(howToFindTextInAnchor);
-                editorsElement = anchor.query(howToFindEditorsInAnchor);
-                brandElement = anchor.query(howToFindBrandInAnchor);
-                brandPhotoElement = anchor.query(howToFindBrandPhotoInAnchor);
-              });
-
-              it('should exist', () => {
-                expect(anchor).toBeTruthy();
-              });
-
-              describe('title', () => {
-
-                it('should exist', () => {
-                  expect(titleElement).toBeTruthy();
-                });
-
-                it(`should contain ${excerpt.title}`, () => {
-                  expect(titleElement.nativeElement.innerText).toBe(excerpt.title);
-                });
-
-              });
-
-              describe('text', () => {
-
-                it('should exist', () => {
-                  expect(textElement).toBeTruthy();
-                });
-
-                it(`should contain ${excerpt.text}`, () => {
-                  expect(textElement.nativeElement.innerText).toBe(excerpt.text);
-                });
-
-              });
-
-              describe('editors', () => {
-
-                it('should exist', () => {
-                  expect(editorsElement).toBeTruthy();
-                });
-
-                it(`should contain ${excerpt.editors}`, () => {
-                  expect(editorsElement.nativeElement.innerText).toBeCloseTo(excerpt.editors);
-                });
-
-              });
-
-              describe('brand', () => {
-
-                it('should exist', () => {
-                  expect(brandElement).toBeTruthy();
-                });
-
-                it(`should contain ${excerpt.brand}`, () => {
-                  expect(brandElement.nativeElement.innerText).toBe(excerpt.brand);
-                });
-
-              });
-
-              describe('brand photo', () => {
-
-                it('should exist', () => {
-                  expect(brandPhotoElement).toBeTruthy();
-                });
-
-                it(`should use ${excerpt.brandPhoto} as brand photo source url`, () => {
-                  expect(brandPhotoElement.attributes['src']).toBe(excerpt.brandPhoto);
-                });
-
-              });
-
-              describe('when clicked', () => {
-
+              describe('anchor', () => {
+  
+                let anchor: DebugElement;
+                let titleElement: DebugElement;
+                let textElement: DebugElement;
+                let editorsElement: DebugElement;
+                let brandElement: DebugElement;
+                let brandPhotoElement: DebugElement;
+  
                 beforeEach(() => {
-                  const nativeElement: HTMLAnchorElement = anchor.nativeElement;
-                  nativeElement.dispatchEvent(new Event('click'));
+                  anchor = fixture.debugElement.query(howToFindAnchor(excerpt.articleIdentifier));
+                  titleElement = anchor.query(howToFindTitleInAnchor);
+                  textElement = anchor.query(howToFindTextInAnchor);
+                  editorsElement = anchor.query(howToFindEditorsInAnchor);
+                  brandElement = anchor.query(howToFindBrandInAnchor);
+                  brandPhotoElement = anchor.query(howToFindBrandPhotoInAnchor);
                 });
-
-                it('should navigate router', () => {
-                  expect(router.navigateWasCalled).toBe(1);
+  
+                it('should exist', () => {
+                  expect(anchor).toBeTruthy();
                 });
-
-                const expectedPath = ['/read', 'articles', scenario.articleIdentifier];
-                const expectedPathString = JSON.stringify(expectedPath);
-
-                it(`should navigate router to ${'/read/articles/'}`, () => {
-                  const actualPathString = JSON.stringify(router.navigateWasCalledTokens);
-                  expect(actualPathString).toBe(expectedPathString);
+  
+                describe('title', () => {
+  
+                  it('should exist', () => {
+                    expect(titleElement).toBeTruthy();
+                  });
+  
+                  it(`should contain ${firstExcerpt.title}`, () => {
+                    expect(titleElement.nativeElement.innerText).toBe(firstExcerpt.title);
+                  });
+  
                 });
-
+  
+                describe('text', () => {
+  
+                  it('should exist', () => {
+                    expect(textElement).toBeTruthy();
+                  });
+  
+                  it(`should contain ${firstExcerpt.text}`, () => {
+                    expect(textElement.nativeElement.innerText).toBe(firstExcerpt.text);
+                  });
+  
+                });
+  
+                describe('editors', () => {
+  
+                  it('should exist', () => {
+                    expect(editorsElement).toBeTruthy();
+                  });
+  
+                  it(`should contain ${firstExcerpt.editors}`, () => {
+                    expect(editorsElement.nativeElement.innerText).toBeCloseTo(firstExcerpt.editors);
+                  });
+  
+                });
+  
+                describe('brand', () => {
+  
+                  it('should exist', () => {
+                    expect(brandElement).toBeTruthy();
+                  });
+  
+                  it(`should contain ${firstExcerpt.brand}`, () => {
+                    expect(brandElement.nativeElement.innerText).toBe(firstExcerpt.brand);
+                  });
+  
+                });
+  
+                describe('brand photo', () => {
+  
+                  it('should exist', () => {
+                    expect(brandPhotoElement).toBeTruthy();
+                  });
+  
+                  it(`should use ${firstExcerpt.brandPhoto} as brand photo source url`, () => {
+                    const fakeImageDirective = brandPhotoElement.injector.get(FakeImageDirective);
+                    expect(fakeImageDirective.src).toBe(firstExcerpt.brandPhoto);
+                  });
+  
+                });
+  
+                describe('when clicked', () => {
+  
+                  beforeEach(() => {
+                    const nativeElement: HTMLAnchorElement = anchor.nativeElement;
+                    nativeElement.dispatchEvent(new Event('click'));
+                  });
+  
+                  it('should navigate router', () => {
+                    expect(router.navigateWasCalled).toBe(1);
+                  });
+  
+                  const expectedPath = ['/read', 'articles', excerpt.articleIdentifier];
+                  const expectedPathString = JSON.stringify(expectedPath);
+  
+                  it(`should navigate router to ${'/read/articles/'}`, () => {
+                    const actualPathString = JSON.stringify(router.navigateWasCalledTokens);
+                    expect(actualPathString).toBe(expectedPathString);
+                  });
+  
+                });
+  
               });
 
             });

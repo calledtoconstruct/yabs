@@ -36,7 +36,14 @@ const howToFindLogInReminderElement = (element: DebugElement) =>
 const howToFindCommentInputElement = (element: DebugElement) =>
   element.name === 'textarea'
   && !!element.attributes['name']
-  && element.attributes['name'] === 'comment';
+  && element.attributes['name'] === 'comment'
+  && !!element.attributes['id']
+  && element.attributes['id'] === 'comment';
+
+const howToFindCommentInputLabelElement = (element: DebugElement) =>
+  element.name === 'label'
+  && !!element.attributes['for']
+  && element.attributes['for'] === 'comment';
 
 describe('Read -> Articles Page', () => {
 
@@ -248,7 +255,7 @@ describe('Read -> Articles Page', () => {
 
           const inCommentSection = (then: () => void): () => DebugElement => {
 
-              let commentSectionElement: DebugElement;
+            let commentSectionElement: DebugElement;
 
             describe('comment section', () => {
 
@@ -275,14 +282,20 @@ describe('Read -> Articles Page', () => {
               describe('comment input', () => {
 
                 let commentInputElement: DebugElement;
+                let commentInputLabelElement: DebugElement;
 
                 beforeEach(() => {
                   const commentSectionElement = getCommentSectionElement();
                   commentInputElement = commentSectionElement.query(howToFindCommentInputElement);
+                  commentInputLabelElement = commentSectionElement.query(howToFindCommentInputLabelElement);
                 });
 
                 it('should exist', () => {
                   expect(commentInputElement).toBeTruthy();
+                });
+
+                it('should have label', () => {
+                  expect(commentInputLabelElement).toBeTruthy();
                 });
 
               });

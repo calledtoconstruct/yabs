@@ -3,6 +3,7 @@
 
 <ng-template #loggedIn>
     <ng-template [ngIf]='article$ | async' let-item>
+        <article></article>
         <span> {{ item.title }} </span>
         <span> {{ item.text }} </span>
     </ng-template>

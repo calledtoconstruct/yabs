@@ -27,6 +27,10 @@ export class FakeReadArticleService {
       return this.article$.asObservable();
     }
 
+    public nextArticle(article: Article): void {
+      this.article$.next(article);
+    }
+
     public tearDown(): void {
       this.excerpts$.complete();
       this.article$.complete();

@@ -1,13 +1,17 @@
+import { Article, ReadArticleService } from '../read-article.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesPageComponent } from './articles-page.component';
 import { CountContainer } from 'src/app/test/count-container.type';
+import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
-import { ReadArticleService } from '../read-article.service';
 import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
+
+const howToFindArticleElement = (element: DebugElement) =>
+  element.name === 'article';
 
 describe('Read -> Articles Page', () => {
 
@@ -64,7 +68,7 @@ describe('Read -> Articles Page', () => {
     });
 
     [
-      { route: {articleIdentifier: '523'} }
+      { route: { articleIdentifier: '523' } }
     ].forEach(scenario => {
 
       const route = scenario.route;
@@ -102,6 +106,39 @@ describe('Read -> Articles Page', () => {
 
         it(`should pass '${articleIdentifier}' for article identifier parameter when getting article`, () => {
           expect(articleService.articleForParameterWas).toBe(articleIdentifier);
+        });
+
+        describe('when an article is loaded', () => {
+
+          const article = <Article>{
+            articleIdentifier: scenario.route.articleIdentifier,
+            title: 'uaiwogiewn',
+            text: 'qpinvoia'
+          };
+
+          beforeEach(() => {
+            articleService.nextArticle(article);
+            fixture.detectChanges();
+          });
+
+          describe('user interface', () => {
+
+            describe('article', () => {
+
+              let article: DebugElement;
+
+              beforeEach(() => {
+                article = fixture.debugElement.query(howToFindArticleElement);
+              });
+
+              it('should exist', () => {
+                expect(article).toBeTruthy();
+              });
+
+            });
+
+          });
+
         });
 
       });

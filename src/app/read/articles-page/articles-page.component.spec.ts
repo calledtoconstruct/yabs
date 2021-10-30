@@ -178,6 +178,10 @@ describe('Read -> Articles Page', () => {
                   expect(textElement).toBeTruthy();
                 });
 
+                it(`should contain ${article.text}`, () => {
+                  expect(textElement.nativeElement.innerText).toBe(article.text);
+                });
+
               });
 
               describe('brand', () => {

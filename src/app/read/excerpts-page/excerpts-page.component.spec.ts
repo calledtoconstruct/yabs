@@ -22,6 +22,10 @@ const howToFindTitleInAnchor = (element: DebugElement) =>
   element.name === 'span'
   && !!element.classes['title'];
 
+const howToFindTextInAnchor = (element: DebugElement) =>
+  element.name === 'span'
+  && !!element.classes['text'];
+
 describe('Read -> Excerpts Page', () => {
 
   const user = <User>{
@@ -142,10 +146,12 @@ describe('Read -> Excerpts Page', () => {
 
               let anchor: DebugElement;
               let titleSpan: DebugElement;
+              let textSpan: DebugElement;
 
               beforeEach(() => {
                 anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
                 titleSpan = anchor.query(howToFindTitleInAnchor);
+                textSpan = anchor.query(howToFindTextInAnchor);
               });
 
               it('should exist', () => {
@@ -160,6 +166,18 @@ describe('Read -> Excerpts Page', () => {
 
                 it(`should contain ${excerpt.title}`, () => {
                   expect(titleSpan.nativeElement.innerText).toBe(excerpt.title);
+                });
+
+              });
+
+              describe('text', () => {
+
+                it('should exist', () => {
+                  expect(textSpan).toBeTruthy();
+                });
+
+                it(`should contain ${excerpt.text}`, () => {
+                  expect(textSpan.nativeElement.innerText).toBe(excerpt.text);
                 });
 
               });

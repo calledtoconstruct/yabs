@@ -196,6 +196,10 @@ describe('Read -> Articles Page', () => {
                   expect(brandElement).toBeTruthy();
                 });
 
+                it(`should contain ${article.brand}`, () => {
+                  expect(brandElement.nativeElement.innerText).toBe(article.brand);
+                });
+
               });
 
             });

@@ -1,3 +1,6 @@
+
+[![Status of Unit Tests](https://github.com/calledtoconstruct/yabs/workflows/Execute%20Unit%20Tests/badge.svg)](https://github.com/calledtoconstruct/yabs/actions/workflows/test-production.yml)
+
 # Yet Another Blog Site (YABS)
 
 A self-hosted blogging site utilizing Firebase authentication, firestore storage, and Angular client code.

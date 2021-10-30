@@ -154,17 +154,17 @@ describe('Read -> Excerpts Page', () => {
             describe('anchor', () => {
 
               let anchor: DebugElement;
-              let titleSpan: DebugElement;
-              let textSpan: DebugElement;
-              let editorsSpan: DebugElement;
-              let brandSpan: DebugElement;
+              let titleElement: DebugElement;
+              let textElement: DebugElement;
+              let editorsElement: DebugElement;
+              let brandElement: DebugElement;
 
               beforeEach(() => {
                 anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
-                titleSpan = anchor.query(howToFindTitleInAnchor);
-                textSpan = anchor.query(howToFindTextInAnchor);
-                editorsSpan = anchor.query(howToFindEditorsInAnchor);
-                brandSpan = anchor.query(howToFindBrandInAnchor);
+                titleElement = anchor.query(howToFindTitleInAnchor);
+                textElement = anchor.query(howToFindTextInAnchor);
+                editorsElement = anchor.query(howToFindEditorsInAnchor);
+                brandElement = anchor.query(howToFindBrandInAnchor);
               });
 
               it('should exist', () => {
@@ -174,11 +174,11 @@ describe('Read -> Excerpts Page', () => {
               describe('title', () => {
 
                 it('should exist', () => {
-                  expect(titleSpan).toBeTruthy();
+                  expect(titleElement).toBeTruthy();
                 });
 
                 it(`should contain ${excerpt.title}`, () => {
-                  expect(titleSpan.nativeElement.innerText).toBe(excerpt.title);
+                  expect(titleElement.nativeElement.innerText).toBe(excerpt.title);
                 });
 
               });
@@ -186,11 +186,11 @@ describe('Read -> Excerpts Page', () => {
               describe('text', () => {
 
                 it('should exist', () => {
-                  expect(textSpan).toBeTruthy();
+                  expect(textElement).toBeTruthy();
                 });
 
                 it(`should contain ${excerpt.text}`, () => {
-                  expect(textSpan.nativeElement.innerText).toBe(excerpt.text);
+                  expect(textElement.nativeElement.innerText).toBe(excerpt.text);
                 });
 
               });
@@ -198,11 +198,11 @@ describe('Read -> Excerpts Page', () => {
               describe('editors', () => {
 
                 it('should exist', () => {
-                  expect(editorsSpan).toBeTruthy();
+                  expect(editorsElement).toBeTruthy();
                 });
 
                 it(`should contain ${excerpt.editors}`, () => {
-                  expect(editorsSpan.nativeElement.innerText).toBeCloseTo(excerpt.editors);
+                  expect(editorsElement.nativeElement.innerText).toBeCloseTo(excerpt.editors);
                 });
 
               });
@@ -210,11 +210,11 @@ describe('Read -> Excerpts Page', () => {
               describe('brand', () => {
 
                 it('should exist', () => {
-                  expect(brandSpan).toBeTruthy();
+                  expect(brandElement).toBeTruthy();
                 });
 
                 it(`should contain ${excerpt.brand}`, () => {
-                  expect(brandSpan.nativeElement.innerText).toBe(excerpt.brand);
+                  expect(brandElement.nativeElement.innerText).toBe(excerpt.brand);
                 });
 
               });

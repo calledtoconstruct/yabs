@@ -26,6 +26,10 @@ const howToFindTextInAnchor = (element: DebugElement) =>
   element.name === 'span'
   && !!element.classes['text'];
 
+const howToFindEditorsInAnchor = (element: DebugElement) =>
+  element.name === 'span'
+  && !!element.classes['editors'];
+
 describe('Read -> Excerpts Page', () => {
 
   const user = <User>{
@@ -147,11 +151,13 @@ describe('Read -> Excerpts Page', () => {
               let anchor: DebugElement;
               let titleSpan: DebugElement;
               let textSpan: DebugElement;
+              let editorsSpan: DebugElement;
 
               beforeEach(() => {
                 anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
                 titleSpan = anchor.query(howToFindTitleInAnchor);
                 textSpan = anchor.query(howToFindTextInAnchor);
+                editorsSpan = anchor.query(howToFindEditorsInAnchor);
               });
 
               it('should exist', () => {
@@ -178,6 +184,18 @@ describe('Read -> Excerpts Page', () => {
 
                 it(`should contain ${excerpt.text}`, () => {
                   expect(textSpan.nativeElement.innerText).toBe(excerpt.text);
+                });
+
+              });
+
+              describe('editors', () => {
+
+                it('should exist', () => {
+                  expect(editorsSpan).toBeTruthy();
+                });
+
+                it(`should contain ${excerpt.editors}`, () => {
+                  expect(editorsSpan.nativeElement.innerText).toBeCloseTo(excerpt.editors);
                 });
 
               });

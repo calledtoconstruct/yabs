@@ -21,6 +21,10 @@ const howToFindTextElement = (element: DebugElement) =>
   element.name === 'span'
   && !!element.classes['text'];
 
+const howToFindBrandElement = (element: DebugElement) =>
+  element.name === 'span'
+  && !!element.classes['brand'];
+
 describe('Read -> Articles Page', () => {
 
   const user = <User>{
@@ -121,7 +125,8 @@ describe('Read -> Articles Page', () => {
           const article = <Article>{
             articleIdentifier: scenario.route.articleIdentifier,
             title: 'uaiwogiewn',
-            text: 'qpinvoia'
+            text: 'qpinvoia',
+            brand: 'fjdksla'
           };
 
           beforeEach(() => {
@@ -133,14 +138,14 @@ describe('Read -> Articles Page', () => {
 
             describe('article', () => {
 
-              let article: DebugElement;
+              let articleElement: DebugElement;
 
               beforeEach(() => {
-                article = fixture.debugElement.query(howToFindArticleElement);
+                articleElement = fixture.debugElement.query(howToFindArticleElement);
               });
 
               it('should exist', () => {
-                expect(article).toBeTruthy();
+                expect(articleElement).toBeTruthy();
               });
 
               describe('title', () => {
@@ -148,7 +153,7 @@ describe('Read -> Articles Page', () => {
                 let titleElement: DebugElement;
 
                 beforeEach(() => {
-                  titleElement = article.query(howToFindTitleElement);
+                  titleElement = articleElement.query(howToFindTitleElement);
                 });
 
                 it('should exist', () => {
@@ -162,7 +167,7 @@ describe('Read -> Articles Page', () => {
                 let textElement: DebugElement;
 
                 beforeEach(() => {
-                  textElement = article.query(howToFindTextElement);
+                  textElement = articleElement.query(howToFindTextElement);
                 });
 
                 it('should exist', () => {
@@ -171,7 +176,19 @@ describe('Read -> Articles Page', () => {
 
               });
 
+              describe('brand', () => {
+                                
+                let brandElement: DebugElement;
 
+                beforeEach(() => {
+                  brandElement = articleElement.query(howToFindBrandElement);
+                });
+
+                it('should exist', () => {
+                  expect(brandElement).toBeTruthy();
+                });
+
+              });
 
             });
 

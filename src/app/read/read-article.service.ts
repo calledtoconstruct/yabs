@@ -66,4 +66,5 @@ export interface Article {
   articleIdentifier: string;
   title: string;
   text: string;
+  brand: string;
 }

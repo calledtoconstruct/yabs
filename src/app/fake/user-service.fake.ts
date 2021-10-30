@@ -1,3 +1,4 @@
+import { ComponentFixture } from '@angular/core/testing';
 import { ReplaySubject } from 'rxjs';
 import { User } from '@angular/fire/auth';
 
@@ -40,4 +41,36 @@ export class FakeUserService {
     this.loggedIn$.complete();
     this.notLoggedIn$.complete();
   }
+
+  public static readonly whenUserIsLoggedIn = <TComponent>(context: () => [FakeUserService, ComponentFixture<TComponent>], user: User, then: () => void) => {
+  
+    describe('when user is logged in', () => {
+  
+      beforeEach(() => {
+        const [userService, fixture] = context();
+        userService.setUpLoggedInAs(user);
+        fixture.detectChanges();
+      });
+  
+      then();
+  
+    });
+  
+  };
+  
+  public static readonly whenUserIsNotLoggedIn = <TComponent>(context: () => [FakeUserService, ComponentFixture<TComponent>], then: () => void) => {
+  
+    describe('when user is not logged in', () => {
+  
+      beforeEach(() => {
+        const [userService, fixture] = context();
+        userService.setUpNotLoggedIn();
+        fixture.detectChanges();
+      });
+  
+      then();
+  
+    });
+  
+  };
 }

@@ -91,12 +91,7 @@ describe('Read -> Excerpts Page', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('when user is logged in', () => {
-
-    beforeEach(() => {
-      userService.setUpLoggedInAs(user);
-      fixture.detectChanges();
-    });
+  FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
 
     [
       { category: '', articleIdentifier: 'nainvdsi' },
@@ -272,12 +267,7 @@ describe('Read -> Excerpts Page', () => {
 
   });
 
-  describe('when user is not logged in', () => {
-
-    beforeEach(() => {
-      userService.setUpNotLoggedIn();
-      fixture.detectChanges();
-    });
+  FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
 
   });
 

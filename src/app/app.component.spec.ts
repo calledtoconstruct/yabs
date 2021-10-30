@@ -59,22 +59,13 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('yabs');
   });
 
-  describe('when user is not logged in', () => {
-
-    beforeEach(() => {
-      userService.setUpNotLoggedIn();
-    });
-
-    afterEach(() => {
-      userService.tearDown();
-    });
+  FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
 
     let buttons: NodeList;
     let signInWithGoogleButton: HTMLButtonElement | clickable;
     let signInWithGitHubButton: HTMLButtonElement | clickable;
 
     beforeEach(() => {
-      fixture.detectChanges();
       buttons = fixture.debugElement.nativeElement.querySelectorAll('button');
       signInWithGoogleButton = buttonWithText(buttons, 'Sign In w/ Google');
       signInWithGitHubButton = buttonWithText(buttons, 'Sign In w/ GitHub');
@@ -118,26 +109,17 @@ describe('AppComponent', () => {
 
   });
 
-  describe('when user is logged in', () => {
+  const displayName = 'wiefusdjksvn';
+  const user = <User>{
+    displayName: displayName
+  };
 
-    const displayName = 'wiefusdjksvn';
-    const user = <User>{
-      displayName: displayName
-    };
-
-    beforeEach(() => {
-      userService.setUpLoggedInAs(user);
-    });
-
-    afterEach(() => {
-      userService.tearDown();
-    });
+  FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
 
     let button: HTMLButtonElement;
     let paragraph: HTMLParagraphElement;
 
     beforeEach(() => {
-      fixture.detectChanges();
       const element = fixture.debugElement.nativeElement;
       button = element.querySelector('button');
       paragraph = element.querySelector('p');

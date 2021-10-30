@@ -293,31 +293,18 @@ describe('Write -> Dashboard', () => {
 
   };
 
-  describe('when user is logged in', () => {
+  const displayName = 'abvsunvj';
+  const user = <User>{
+    displayName: displayName
+  };
 
-    const displayName = 'abvsunvj';
-    const user = <User>{
-      displayName: displayName
-    };
-
-    beforeEach(() => {
-      userService.setUpLoggedInAs(user);
-      fixture.detectChanges();
-    });
+  FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
 
     tabs.forEach(tab => verifyRoute(tab));
 
   });
 
-  describe('when user is not logged in', () => {
-
-    beforeEach(() => {
-      userService.setUpNotLoggedIn();
-    });
-
-    afterEach(() => {
-      userService.tearDown();
-    });
+  FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
 
     describe('tab group', () => {
 

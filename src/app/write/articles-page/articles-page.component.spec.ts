@@ -121,16 +121,12 @@ describe('Write -> Articles Page', () => {
     expect(component.formGroup).toBeTruthy();
   });
 
-  describe('when user is logged in', () => {
+  const displayName = 'abvsunvj';
+  const user = <User>{
+    displayName: displayName
+  };
 
-    const displayName = 'abvsunvj';
-    const user = <User>{
-      displayName: displayName
-    };
-
-    beforeEach(() => {
-      userService.setUpLoggedInAs(user);
-    });
+  FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
 
     const regarlessOfArticleIdentifier = (
       articleIdentifier: string,
@@ -521,11 +517,7 @@ describe('Write -> Articles Page', () => {
 
   });
 
-  describe('when user is not logged in', () => {
-
-    beforeEach(() => {
-      userService.setUpNotLoggedIn();
-    });
+  FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
 
     describe('when passed article identifier "new"', () => {
 

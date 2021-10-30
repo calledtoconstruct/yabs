@@ -92,36 +92,6 @@ describe('Read -> Articles Page', () => {
     expect(component).toBeTruthy();
   });
 
-  const whenUserIsLoggedIn = (then: () => void) => {
-
-    describe('when user is logged in', () => {
-
-      beforeEach(() => {
-        userService.setUpLoggedInAs(user);
-        fixture.detectChanges();
-      });
-
-      then();
-
-    });
-
-  };
-
-  const whenUserIsNotLoggedIn = (then: () => void) => {
-
-    describe('when user is not logged in', () => {
-
-      beforeEach(() => {
-        userService.setUpNotLoggedIn();
-        fixture.detectChanges();
-      });
-
-      then();
-
-    });
-
-  };
-
   [
     { route: { articleIdentifier: '523' } }
   ].forEach(scenario => {
@@ -275,7 +245,7 @@ describe('Read -> Articles Page', () => {
 
           };
 
-          whenUserIsLoggedIn(() => {
+          FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
 
             const getCommentSectionElement = inCommentSection(() => {
 
@@ -304,7 +274,7 @@ describe('Read -> Articles Page', () => {
 
           });
 
-          whenUserIsNotLoggedIn(() => {
+          FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
 
             const getCommentSectionElement = inCommentSection(() => {
 

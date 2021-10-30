@@ -7,7 +7,6 @@ import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
-import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
 
 const howToFindArticleElement = (element: DebugElement) =>
@@ -26,10 +25,6 @@ const howToFindBrandElement = (element: DebugElement) =>
   && !!element.classes['brand'];
 
 describe('Read -> Articles Page', () => {
-
-  const user = <User>{
-    displayName: 'byeudifunf'
-  };
 
   let userService: FakeUserService;
   let activatedRoute: FakeActivatedRoute;
@@ -72,134 +67,125 @@ describe('Read -> Articles Page', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('when user is logged in', () => {
+  [
+    { route: { articleIdentifier: '523' } }
+  ].forEach(scenario => {
 
-    beforeEach(() => {
-      userService.setUpLoggedInAs(user);
-      fixture.detectChanges();
-    });
+    const route = scenario.route;
+    const routeString = JSON.stringify(route);
+    const articleIdentifier = route.articleIdentifier;
 
-    [
-      { route: { articleIdentifier: '523' } }
-    ].forEach(scenario => {
+    describe(`when route '${routeString}' is activated`, () => {
 
-      const route = scenario.route;
-      const routeString = JSON.stringify(route);
-      const articleIdentifier = route.articleIdentifier;
+      let emittedArticleIdentifier = '';
+      let hasWasCalledFor: CountContainer;
+      let getWasCalledFor: CountContainer;
 
-      describe(`when route '${routeString}' is activated`, () => {
+      beforeEach(() => {
+        const subscription = component.articleIdentifier$.subscribe(data => emittedArticleIdentifier = data);
+        [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap(route);
+        subscription.unsubscribe();
+        fixture.detectChanges();
+      });
 
-        let emittedArticleIdentifier = '';
-        let hasWasCalledFor: CountContainer;
-        let getWasCalledFor: CountContainer;
+      it('should call has for article identifier route parameter', () => {
+        expect(hasWasCalledFor['articleIdentifier']).toBe(1);
+      });
+
+      it('should call get for article identifier route parameter', () => {
+        expect(getWasCalledFor['articleIdentifier']).toBe(1);
+      });
+
+      it(`should provide article identifier '${articleIdentifier}'`, () => {
+        expect(emittedArticleIdentifier).toBe(articleIdentifier);
+      });
+
+      it(`should call read article service once to get article for '${articleIdentifier}'`, () => {
+        expect(articleService.articleForWasCalled).toBe(1);
+      });
+
+      it(`should pass '${articleIdentifier}' for article identifier parameter when getting article`, () => {
+        expect(articleService.articleForParameterWas).toBe(articleIdentifier);
+      });
+
+      describe('when an article is loaded', () => {
+
+        const article = <Article>{
+          articleIdentifier: scenario.route.articleIdentifier,
+          title: 'uaiwogiewn',
+          text: 'qpinvoia',
+          brand: 'fjdksla'
+        };
 
         beforeEach(() => {
-          const subscription = component.articleIdentifier$.subscribe(data => emittedArticleIdentifier = data);
-          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap(route);
-          subscription.unsubscribe();
+          articleService.nextArticle(article);
           fixture.detectChanges();
         });
 
-        it('should call has for article identifier route parameter', () => {
-          expect(hasWasCalledFor['articleIdentifier']).toBe(1);
-        });
+        describe('user interface', () => {
 
-        it('should call get for article identifier route parameter', () => {
-          expect(getWasCalledFor['articleIdentifier']).toBe(1);
-        });
+          describe('article', () => {
 
-        it(`should provide article identifier '${articleIdentifier}'`, () => {
-          expect(emittedArticleIdentifier).toBe(articleIdentifier);
-        });
+            let articleElement: DebugElement;
 
-        it(`should call read article service once to get article for '${articleIdentifier}'`, () => {
-          expect(articleService.articleForWasCalled).toBe(1);
-        });
+            beforeEach(() => {
+              articleElement = fixture.debugElement.query(howToFindArticleElement);
+            });
 
-        it(`should pass '${articleIdentifier}' for article identifier parameter when getting article`, () => {
-          expect(articleService.articleForParameterWas).toBe(articleIdentifier);
-        });
+            it('should exist', () => {
+              expect(articleElement).toBeTruthy();
+            });
 
-        describe('when an article is loaded', () => {
+            describe('title', () => {
 
-          const article = <Article>{
-            articleIdentifier: scenario.route.articleIdentifier,
-            title: 'uaiwogiewn',
-            text: 'qpinvoia',
-            brand: 'fjdksla'
-          };
-
-          beforeEach(() => {
-            articleService.nextArticle(article);
-            fixture.detectChanges();
-          });
-
-          describe('user interface', () => {
-
-            describe('article', () => {
-
-              let articleElement: DebugElement;
+              let titleElement: DebugElement;
 
               beforeEach(() => {
-                articleElement = fixture.debugElement.query(howToFindArticleElement);
+                titleElement = articleElement.query(howToFindTitleElement);
               });
 
               it('should exist', () => {
-                expect(articleElement).toBeTruthy();
+                expect(titleElement).toBeTruthy();
               });
 
-              describe('title', () => {
-
-                let titleElement: DebugElement;
-
-                beforeEach(() => {
-                  titleElement = articleElement.query(howToFindTitleElement);
-                });
-
-                it('should exist', () => {
-                  expect(titleElement).toBeTruthy();
-                });
-
-                it(`should contain ${article.title}`, () => {
-                  expect(titleElement.nativeElement.innerText).toBe(article.title);
-                });
-
+              it(`should contain ${article.title}`, () => {
+                expect(titleElement.nativeElement.innerText).toBe(article.title);
               });
 
-              describe('text', () => {
+            });
 
-                let textElement: DebugElement;
+            describe('text', () => {
 
-                beforeEach(() => {
-                  textElement = articleElement.query(howToFindTextElement);
-                });
+              let textElement: DebugElement;
 
-                it('should exist', () => {
-                  expect(textElement).toBeTruthy();
-                });
-
-                it(`should contain ${article.text}`, () => {
-                  expect(textElement.nativeElement.innerText).toBe(article.text);
-                });
-
+              beforeEach(() => {
+                textElement = articleElement.query(howToFindTextElement);
               });
 
-              describe('brand', () => {
-                                
-                let brandElement: DebugElement;
+              it('should exist', () => {
+                expect(textElement).toBeTruthy();
+              });
 
-                beforeEach(() => {
-                  brandElement = articleElement.query(howToFindBrandElement);
-                });
+              it(`should contain ${article.text}`, () => {
+                expect(textElement.nativeElement.innerText).toBe(article.text);
+              });
 
-                it('should exist', () => {
-                  expect(brandElement).toBeTruthy();
-                });
+            });
 
-                it(`should contain ${article.brand}`, () => {
-                  expect(brandElement.nativeElement.innerText).toBe(article.brand);
-                });
+            describe('brand', () => {
 
+              let brandElement: DebugElement;
+
+              beforeEach(() => {
+                brandElement = articleElement.query(howToFindBrandElement);
+              });
+
+              it('should exist', () => {
+                expect(brandElement).toBeTruthy();
+              });
+
+              it(`should contain ${article.brand}`, () => {
+                expect(brandElement.nativeElement.innerText).toBe(article.brand);
               });
 
             });
@@ -210,15 +196,6 @@ describe('Read -> Articles Page', () => {
 
       });
 
-    });
-
-  });
-
-  describe('when user is not logged in', () => {
-
-    beforeEach(() => {
-      userService.setUpNotLoggedIn();
-      fixture.detectChanges();
     });
 
   });

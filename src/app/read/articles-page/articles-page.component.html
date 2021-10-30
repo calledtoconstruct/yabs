@@ -12,4 +12,11 @@
 </ng-template>
 
 <ng-template #notLoggedIn>
+    <ng-template [ngIf]='article$ | async' let-item>
+        <article>
+            <span class='title'>{{ item.title }}</span>
+            <span class='text'>{{ item.text }}</span>
+            <span class='brand'>{{ item.brand }}</span>
+        </article>
+    </ng-template>
 </ng-template>

@@ -1,6 +1,5 @@
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest } from 'rxjs';
 import { Component } from '@angular/core';
 import { ReadArticleService } from '../read-article.service';
 import { UserService } from 'src/app/user.service';
@@ -18,9 +17,7 @@ export class ArticlesPageComponent {
     shareReplay(1)
   );
 
-  public readonly article$ = combineLatest([this.userService.loggedIn$, this.articleIdentifier$]).pipe(
-    filter(([loggedIn, _]) => loggedIn),
-    map(([_, articleIdentifier]) => articleIdentifier),
+  public readonly article$ = this.articleIdentifier$.pipe(
     distinctUntilChanged(),
     switchMap(articleIdentifier => this.articleService.articleFor(articleIdentifier)),
     shareReplay(1)

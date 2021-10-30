@@ -7,6 +7,7 @@ import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
+import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
 
 const howToFindArticleElement = (element: DebugElement) =>
@@ -24,7 +25,24 @@ const howToFindBrandElement = (element: DebugElement) =>
   element.name === 'span'
   && !!element.classes['brand'];
 
+const howToFindCommentSectionElement = (element: DebugElement) =>
+  element.name === 'section'
+  && !!element.classes['comment-section'];
+
+const howToFindLogInReminderElement = (element: DebugElement) =>
+  element.name === 'span'
+  && !!element.classes['log-in-reminder'];
+
+const howToFindCommentInputElement = (element: DebugElement) =>
+  element.name === 'textarea'
+  && !!element.attributes['name']
+  && element.attributes['name'] === 'comment';
+
 describe('Read -> Articles Page', () => {
+
+  const user = <User>{
+    displayName: 'byeudifunf'
+  };
 
   let userService: FakeUserService;
   let activatedRoute: FakeActivatedRoute;
@@ -66,6 +84,36 @@ describe('Read -> Articles Page', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  const whenUserIsLoggedIn = (then: () => void) => {
+
+    describe('when user is logged in', () => {
+
+      beforeEach(() => {
+        userService.setUpLoggedInAs(user);
+        fixture.detectChanges();
+      });
+
+      then();
+
+    });
+
+  };
+
+  const whenUserIsNotLoggedIn = (then: () => void) => {
+
+    describe('when user is not logged in', () => {
+
+      beforeEach(() => {
+        userService.setUpNotLoggedIn();
+        fixture.detectChanges();
+      });
+
+      then();
+
+    });
+
+  };
 
   [
     { route: { articleIdentifier: '523' } }
@@ -124,12 +172,18 @@ describe('Read -> Articles Page', () => {
 
         describe('user interface', () => {
 
+          let mainElement: DebugElement;
+
+          beforeEach(() => {
+            mainElement = fixture.debugElement;
+          });
+
           describe('article', () => {
 
             let articleElement: DebugElement;
 
             beforeEach(() => {
-              articleElement = fixture.debugElement.query(howToFindArticleElement);
+              articleElement = mainElement.query(howToFindArticleElement);
             });
 
             it('should exist', () => {
@@ -186,6 +240,72 @@ describe('Read -> Articles Page', () => {
 
               it(`should contain ${article.brand}`, () => {
                 expect(brandElement.nativeElement.innerText).toBe(article.brand);
+              });
+
+            });
+
+          });
+
+          const inCommentSection = (then: (get: () => DebugElement) => void) => {
+
+            describe('comment section', () => {
+
+              let commentSectionElement: DebugElement;
+
+              beforeEach(() => {
+                commentSectionElement = mainElement.query(howToFindCommentSectionElement);
+              });
+
+              it('should exist', () => {
+                expect(commentSectionElement).toBeTruthy();
+              });
+
+              then(() => commentSectionElement);
+
+            });
+
+          };
+
+          whenUserIsLoggedIn(() => {
+
+            inCommentSection((getCommentSectionElement: () => DebugElement) => {
+
+              describe('comment input', () => {
+
+                let commentInputElement: DebugElement;
+
+                beforeEach(() => {
+                  const commentSectionElement = getCommentSectionElement();
+                  commentInputElement = commentSectionElement.query(howToFindCommentInputElement);
+                });
+
+                it('should exist', () => {
+                  expect(commentInputElement).toBeTruthy();
+                });
+
+              });
+
+            });
+
+          });
+
+          whenUserIsNotLoggedIn(() => {
+
+            inCommentSection((getCommentSectionElement: () => DebugElement) => {
+
+              describe('login reminder', () => {
+
+                let logInReminderElement: DebugElement;
+
+                beforeEach(() => {
+                  const commentSectionElement = getCommentSectionElement();
+                  logInReminderElement = commentSectionElement.query(howToFindLogInReminderElement);
+                });
+
+                it('should exist', () => {
+                  expect(logInReminderElement).toBeTruthy();
+                });
+
               });
 
             });

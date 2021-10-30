@@ -13,6 +13,10 @@ import { UserService } from 'src/app/user.service';
 const howToFindArticleElement = (element: DebugElement) =>
   element.name === 'article';
 
+const howToFindTitleElement = (element: DebugElement) =>
+  element.name === 'span'
+  && !!element.classes['title'];
+
 describe('Read -> Articles Page', () => {
 
   const user = <User>{
@@ -133,6 +137,20 @@ describe('Read -> Articles Page', () => {
 
               it('should exist', () => {
                 expect(article).toBeTruthy();
+              });
+
+              describe('title', () => {
+
+                let titleElement: DebugElement;
+
+                beforeEach(() => {
+                  titleElement = article.query(howToFindTitleElement);
+                });
+
+                it('should exist', () => {
+                  expect(titleElement).toBeTruthy();
+                });
+
               });
 
             });

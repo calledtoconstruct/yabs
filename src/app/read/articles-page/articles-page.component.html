@@ -3,8 +3,9 @@
 
 <ng-template #loggedIn>
     <ng-template [ngIf]='article$ | async' let-item>
-        <article></article>
-        <span> {{ item.title }} </span>
+        <article>
+            <span class='title'>{{ item.title }}</span>
+        </article>
         <span> {{ item.text }} </span>
     </ng-template>
 </ng-template>

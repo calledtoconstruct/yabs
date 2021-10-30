@@ -28,9 +28,8 @@ jobs:
           projectId: yet-another-blog-site
           channelId: live
 
-      - name: npm install && npx ng build --configuration ember-production
+      - name: npx ng build --configuration ember-production
         run: |
-          npm install
           npx ng build --configuration ember-production
 
       - uses: FirebaseExtended/action-hosting-deploy@v0

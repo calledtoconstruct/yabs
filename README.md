@@ -1,5 +1,6 @@
 
 [![Status of Unit Tests](https://github.com/calledtoconstruct/yabs/workflows/Execute%20Unit%20Tests/badge.svg)](https://github.com/calledtoconstruct/yabs/actions/workflows/test-production.yml)
+[![Deploy to yet-another-blog-site.web.app](https://github.com/calledtoconstruct/yabs/workflows/Deploy%20to%20yet-another-blog-site.web.app/badge.svg)](https://github.com/calledtoconstruct/yabs/actions/workflows/deploy-to-firebase.yml)
 
 # Yet Another Blog Site (YABS)
 

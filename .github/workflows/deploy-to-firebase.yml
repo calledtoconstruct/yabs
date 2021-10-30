@@ -1,0 +1,29 @@
+name: Deploy to yet-another-blog-site.web.app
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy_live_website:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm install && npm run test:prod
+        run: |
+          npm install
+          npx ng build
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_YET_ANOTHER_BLOG_SITE }}"
+          projectId: yet-another-blog-site
+          channelId: live

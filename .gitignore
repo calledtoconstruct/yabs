@@ -13,7 +13,7 @@
 # profiling files
 chrome-profiler-events*.json
 
-# IDEs and editors
+# editors
 /.idea
 .project
 .classpath
@@ -22,7 +22,7 @@ chrome-profiler-events*.json
 .settings/
 *.sublime-workspace
 
-# IDE - VSCode
+# editors - vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -40,10 +40,13 @@ yarn-error.log
 testem.log
 /typings
 
-# System Files
+# system files
 .DS_Store
 Thumbs.db
 
-# Yarn
+# yarn
 yarn.lock
 yarn-error.log
+
+# firebase
+.firebase

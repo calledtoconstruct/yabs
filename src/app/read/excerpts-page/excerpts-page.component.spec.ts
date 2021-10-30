@@ -30,6 +30,10 @@ const howToFindEditorsInAnchor = (element: DebugElement) =>
   element.name === 'span'
   && !!element.classes['editors'];
 
+const howToFindBrandInAnchor = (element: DebugElement) =>
+  element.name === 'span'
+  && !!element.classes['brand'];
+
 describe('Read -> Excerpts Page', () => {
 
   const user = <User>{
@@ -136,7 +140,8 @@ describe('Read -> Excerpts Page', () => {
             articleIdentifier: scenario.articleIdentifier,
             title: 'uaiwogiewn',
             text: 'qpinvoia',
-            editors: 5
+            editors: 5,
+            brand: 'fjklf'
           };
 
           beforeEach(() => {
@@ -152,12 +157,14 @@ describe('Read -> Excerpts Page', () => {
               let titleSpan: DebugElement;
               let textSpan: DebugElement;
               let editorsSpan: DebugElement;
+              let brandSpan: DebugElement;
 
               beforeEach(() => {
                 anchor = fixture.debugElement.query(howToFindAnchor(scenario.articleIdentifier));
                 titleSpan = anchor.query(howToFindTitleInAnchor);
                 textSpan = anchor.query(howToFindTextInAnchor);
                 editorsSpan = anchor.query(howToFindEditorsInAnchor);
+                brandSpan = anchor.query(howToFindBrandInAnchor);
               });
 
               it('should exist', () => {
@@ -196,6 +203,18 @@ describe('Read -> Excerpts Page', () => {
 
                 it(`should contain ${excerpt.editors}`, () => {
                   expect(editorsSpan.nativeElement.innerText).toBeCloseTo(excerpt.editors);
+                });
+
+              });
+
+              describe('brand', () => {
+
+                it('should exist', () => {
+                  expect(brandSpan).toBeTruthy();
+                });
+
+                it(`should contain ${excerpt.brand}`, () => {
+                  expect(brandSpan.nativeElement.innerText).toBe(excerpt.brand);
                 });
 
               });

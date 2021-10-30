@@ -5,6 +5,7 @@
     <ng-template ngFor let-item [ngForOf]='excerpts$ | async'>
         <a href='/read/articles/{{ item.articleIdentifier }}' (click)='open(item.articleIdentifier)'>
             <div>
+                <span class='brand'>{{ item.brand }}</span>
                 <span class='title'>{{ item.title }}</span>
                 <span class='text'>{{ item.text }}</span>
                 <span class='editors'>{{ item.editors }}</span>

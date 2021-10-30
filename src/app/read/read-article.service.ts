@@ -10,17 +10,20 @@ export class ReadArticleService implements OnDestroy {
     articleIdentifier: 'uvasusiuds',
     title: 'wvbdsfasd',
     text: 'iqwenv',
-    editors: 0
+    editors: 0,
+    brand: 'lwc'
   }, {
     articleIdentifier: 'fjkdsljf',
     title: 'Title',
     text: 'lorem Ipsum',
-    editors: 2
+    editors: 2,
+    brand: 'Sucks'
   }, {
     articleIdentifier: 'jfkdsla',
     title: 'another title',
     text: 'more lorem ipsum',
-    editors: 1
+    editors: 1,
+    brand: 'MFS'
   });
 
   public excerptsFor(_category: string): Observable<Array<Excerpt>> {
@@ -52,6 +55,7 @@ export interface Excerpt {
   title: string;
   text: string;
   editors: number;
+  brand: string;
 }
 
 export interface Article {

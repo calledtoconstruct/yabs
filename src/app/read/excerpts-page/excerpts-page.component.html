@@ -1,19 +1,11 @@
-<ng-container *ngIf='userService.loggedIn$ | async; then loggedIn; else notLoggedIn;'>
-</ng-container>
-
-<ng-template #loggedIn>
-    <ng-template ngFor let-item [ngForOf]='excerpts$ | async'>
-        <a href='/read/articles/{{ item.articleIdentifier }}' (click)='open(item.articleIdentifier)'>
-            <div>
-                <span class='brand'>{{ item.brand }}</span>
-                <img [src]='item.brandPhoto' class='brand-photo' />
-                <span class='title'>{{ item.title }}</span>
-                <span class='text'>{{ item.text }}</span>
-                <span class='editors'>{{ item.editors }}</span>
-            </div>
-        </a>
-    </ng-template>
-</ng-template>
-
-<ng-template #notLoggedIn>
+<ng-template ngFor let-item [ngForOf]='excerpts$ | async'>
+    <a href='/read/articles/{{ item.articleIdentifier }}' (click)='open(item.articleIdentifier)'>
+        <div>
+            <span class='brand'>{{ item.brand }}</span>
+            <img [src]='item.brandPhoto' class='brand-photo' />
+            <span class='title'>{{ item.title }}</span>
+            <span class='text'>{{ item.text }}</span>
+            <span class='editors'>{{ item.editors }}</span>
+        </div>
+    </a>
 </ng-template>

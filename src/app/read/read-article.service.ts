@@ -29,7 +29,7 @@ export class ReadArticleService implements OnDestroy {
     brandPhoto: 'fjsdkla'
   });
 
-  public excerptsFor(_category: string): Observable<Array<Excerpt>> {
+  public excerptsFor(_userIdentifier: string, _category: string): Observable<Array<Excerpt>> {
     setTimeout(() => {
       this.excerptSubject.next(this.excerpts);
     });

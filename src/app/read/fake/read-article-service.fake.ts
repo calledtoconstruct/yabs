@@ -7,13 +7,15 @@ export class FakeReadArticleService {
     private readonly article$ = new ReplaySubject<Article>(1);
 
     public excerptsForWasCalled = 0;
-    public excerptsForParameterWas = '';
+    public excerptsForUserIdentifierParameterWas = '';
+    public excerptsForCategoryParameterWas = '';
     public articleForWasCalled = 0;
     public articleForParameterWas = '';
 
-    public excerptsFor(category: string): Observable<Array<Excerpt>> {
+    public excerptsFor(userIdentifier: string, category: string): Observable<Array<Excerpt>> {
       this.excerptsForWasCalled++;
-      this.excerptsForParameterWas = category;
+      this.excerptsForUserIdentifierParameterWas = userIdentifier;
+      this.excerptsForCategoryParameterWas = category;
       return this.excerpts$.asObservable();
     }
 

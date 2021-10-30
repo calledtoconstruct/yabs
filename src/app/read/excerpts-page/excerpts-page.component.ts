@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import { Component } from '@angular/core';
 import { ReadArticleService } from '../read-article.service';
@@ -17,11 +17,13 @@ export class ExcerptsPageComponent {
     shareReplay(1)
   );
 
-  public readonly excerpts$ = combineLatest([this.userService.loggedIn$, this.category$]).pipe(
-    filter(([loggedIn, _]) => loggedIn),
-    map(([_, category]) => category),
+  private readonly uid$ = this.userService.user$.pipe(
+    map(user => user ? user.uid : '')
+  );
+
+  public readonly excerpts$ = combineLatest([this.uid$, this.category$]).pipe(
     distinctUntilChanged(),
-    switchMap(category => this.articleService.excerptsFor(category)),
+    switchMap(([userIdentifier, category]: [string, string]) => this.articleService.excerptsFor(userIdentifier, category)),
     shareReplay(1)
   );
 

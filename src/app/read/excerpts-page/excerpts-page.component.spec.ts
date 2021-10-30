@@ -41,7 +41,9 @@ const howToFindBrandPhotoInAnchor = (element: DebugElement) =>
 
 describe('Read -> Excerpts Page', () => {
 
+  const userIdentifier = 'uwibneinsidf';
   const user = <User>{
+    uid: userIdentifier,
     displayName: 'byeudifunf'
   };
 
@@ -91,7 +93,7 @@ describe('Read -> Excerpts Page', () => {
     expect(component).toBeTruthy();
   });
 
-  FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
+  const regardlessOfLoggedInState = (then: () => void) => {
 
     [
       { category: '', articleIdentifier: 'nainvdsi' },
@@ -131,7 +133,7 @@ describe('Read -> Excerpts Page', () => {
         });
 
         it(`should pass '${category}' for category parameter when getting excerpts`, () => {
-          expect(articleService.excerptsForParameterWas).toBe(category === '' ? 'local' : category);
+          expect(articleService.excerptsForCategoryParameterWas).toBe(category === '' ? 'local' : category);
         });
 
         describe('when an excerpt is loaded', () => {
@@ -259,8 +261,22 @@ describe('Read -> Excerpts Page', () => {
 
           });
 
+          then();
+
         });
 
+      });
+
+    });
+
+  };
+
+  FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
+
+    regardlessOfLoggedInState(() => {
+
+      it(`should pass '${userIdentifier}' for user identifier parameter when getting excerpts`, () => {
+        expect(articleService.excerptsForUserIdentifierParameterWas).toBe(userIdentifier);
       });
 
     });
@@ -268,6 +284,14 @@ describe('Read -> Excerpts Page', () => {
   });
 
   FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
+
+    regardlessOfLoggedInState(() => {
+
+      it('should pass empty string for user identifier parameter when getting excerpts', () => {
+        expect(articleService.excerptsForUserIdentifierParameterWas).toBeFalsy();
+      });
+
+    });
 
   });
 

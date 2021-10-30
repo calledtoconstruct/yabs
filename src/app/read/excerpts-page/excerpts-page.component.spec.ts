@@ -1,13 +1,13 @@
-import { ActivatedRoute, Router } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Excerpt, ReadArticleService } from '../read-article.service';
+import { ActivatedRoute } from '@angular/router';
 import { CountContainer } from 'src/app/test/count-container.type';
 import { DebugElement } from '@angular/core';
 import { ExcerptsPageComponent } from './excerpts-page.component';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeImageDirective } from 'src/app/fake/image.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
-import { FakeRouter } from 'src/app/fake/router.fake';
+import { FakeRouterLinkDirective } from 'src/app/fake/router-link.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
 import { RouterTestingModule } from '@angular/router/testing';
 import { User } from '@firebase/auth';
@@ -50,20 +50,17 @@ describe('Read -> Excerpts Page', () => {
   let userService: FakeUserService;
   let activatedRoute: FakeActivatedRoute;
   let articleService: FakeReadArticleService;
-  let router: FakeRouter;
 
   beforeEach(() => {
     userService = new FakeUserService();
     activatedRoute = new FakeActivatedRoute();
     articleService = new FakeReadArticleService();
-    router = new FakeRouter(activatedRoute);
   });
 
   afterEach(() => {
     articleService.tearDown();
     activatedRoute.tearDown();
     userService.tearDown();
-    router.tearDown();
   });
 
   let component: ExcerptsPageComponent;
@@ -71,13 +68,12 @@ describe('Read -> Excerpts Page', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ExcerptsPageComponent, FakeImageDirective],
+      declarations: [ExcerptsPageComponent, FakeImageDirective, FakeRouterLinkDirective],
       imports: [RouterTestingModule],
       providers: [
         { provide: UserService, useValue: userService },
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: ReadArticleService, useValue: articleService },
-        { provide: Router, useValue: router }
+        { provide: ReadArticleService, useValue: articleService }
       ]
     })
       .compileComponents();
@@ -256,20 +252,12 @@ describe('Read -> Excerpts Page', () => {
                 describe('when clicked', () => {
   
                   beforeEach(() => {
-                    const nativeElement: HTMLAnchorElement = anchor.nativeElement;
-                    nativeElement.dispatchEvent(new Event('click'));
+                    anchor.nativeElement.click();
                   });
   
-                  it('should navigate router', () => {
-                    expect(router.navigateWasCalled).toBe(1);
-                  });
-  
-                  const expectedPath = ['/read', 'articles', excerpt.articleIdentifier];
-                  const expectedPathString = JSON.stringify(expectedPath);
-  
-                  it(`should navigate router to ${'/read/articles/'}`, () => {
-                    const actualPathString = JSON.stringify(router.navigateWasCalledTokens);
-                    expect(actualPathString).toBe(expectedPathString);
+                  it(`should navigate router to /read/articles/${excerpt.articleIdentifier}`, () => {
+                    const fakeRouterLinkDirective = anchor.injector.get(FakeRouterLinkDirective);
+                    expect(fakeRouterLinkDirective.navigatedTo).toEqual(['/read/articles/', excerpt.articleIdentifier]);
                   });
   
                 });

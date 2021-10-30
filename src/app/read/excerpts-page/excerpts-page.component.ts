@@ -1,5 +1,5 @@
-import { ActivatedRoute, Router } from '@angular/router';
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { Component } from '@angular/core';
 import { ReadArticleService } from '../read-article.service';
@@ -30,12 +30,7 @@ export class ExcerptsPageComponent {
   constructor(
     public readonly userService: UserService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly articleService: ReadArticleService,
-    private readonly router: Router
+    private readonly articleService: ReadArticleService
   ) { }
-
-  public open(articleIdentifier: string): void {
-    this.router.navigate(['/read', 'articles', articleIdentifier]);
-  }
 
 }

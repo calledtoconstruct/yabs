@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: npm install && npm run test:prod
+      - name: npm install && npx ng build
         run: |
           npm install
           npx ng build
@@ -26,4 +26,16 @@ jobs:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_YET_ANOTHER_BLOG_SITE }}"
           projectId: yet-another-blog-site
+          channelId: live
+
+      - name: npm install && npx ng build --configuration ember-production
+        run: |
+          npm install
+          npx ng build --configuration ember-production
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EMBER_YABS }}"
+          projectId: ember-yabs
           channelId: live

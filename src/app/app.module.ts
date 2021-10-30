@@ -6,7 +6,7 @@ import { Auth } from '@angular/fire/auth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/current-environment';
 import { getAuth } from '@firebase/auth';
 import { NgModule } from '@angular/core';
 import { UserService } from './user.service';
@@ -26,7 +26,11 @@ import { WelcomePageComponent } from './welcome-page/welcome-page.component';
     CommonModule
   ],
   providers: [
-    { provide: Auth, useFactory: (firebaseApp: FirebaseApp) => getAuth(firebaseApp), deps: [FirebaseApp] },
+    {
+      provide: Auth,
+      useFactory: (firebaseApp: FirebaseApp) => getAuth(firebaseApp),
+      deps: [FirebaseApp]
+    },
     UserService
   ],
   bootstrap: [AppComponent]

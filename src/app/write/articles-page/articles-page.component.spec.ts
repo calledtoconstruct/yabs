@@ -90,6 +90,10 @@ const howToFindArticleHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && !!element.classes['article'];
 
+const howToFindArticleFooter = (element: DebugElement): boolean =>
+  element.name === 'footer'
+  && !!element.classes['article'];
+
 const howToFindPageFooter = (element: DebugElement): boolean =>
   element.name === 'footer'
   && !!element.classes['page'];
@@ -124,7 +128,7 @@ describe('Write -> Articles Page', () => {
     })
       .compileComponents();
   });
-  
+
   let component: ArticlesPageComponent;
   let fixture: ComponentFixture<ArticlesPageComponent>;
 
@@ -263,6 +267,28 @@ describe('Write -> Articles Page', () => {
 
               it('should exist', () => {
                 expect(header).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(header.nativeElement.innerText).toBeTruthy();
+              });
+
+            });
+
+            describe('footer', () => {
+
+              let footer: DebugElement;
+
+              beforeEach(() => {
+                footer = article.query(howToFindArticleFooter);
+              });
+
+              it('should exist', () => {
+                expect(footer).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(footer.nativeElement.innerText).toBeTruthy();
               });
 
             });

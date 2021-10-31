@@ -5,8 +5,7 @@
     <header class='page'>page header</header>
     <form class='article' [formGroup]='formGroup'>
         <article class='article'>
-            <header class='article'>
-            </header>
+            <header class='article'>article header</header>
             <input name='title' formControlName='title' />
             <textarea name='text' formControlName='text'></textarea>
             <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />
@@ -16,6 +15,7 @@
             <input type='radio' name='operation' formControlName='operation' value='saveAndRequestCheck' id='saveAndRequestCheckOperation' />
             <label for='saveAndRequestCheckOperation'>Save Article and Request a Fact Check</label>
             <button (click)='done()'>Done</button>
+            <footer class='article'>article footer</footer>
         </article>
     </form>
     <footer class='page'>page footer</footer>

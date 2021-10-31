@@ -1,5 +1,6 @@
 import { Article, WriteArticleService } from '../write-article.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesPageComponent } from './articles-page.component';
 import { CountContainer } from '../../test/count-container.type';
@@ -7,7 +8,6 @@ import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { FakeWriteArticleService } from '../fake/write-article-service.fake';
-import { ReactiveFormsModule } from '@angular/forms';
 import { User } from '@angular/fire/auth';
 import { UserService } from '../../user.service';
 
@@ -78,6 +78,10 @@ const howToFindHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && element.classes['page-header'];
 
+const howToFindArticle = (element: DebugElement): boolean =>
+  element.name === 'article'
+  && element.classes['article'];
+
 const howToFindFooter = (element: DebugElement): boolean =>
   element.name === 'footer'
   && element.classes['page-footer'];
@@ -127,8 +131,36 @@ describe('Write -> Articles Page', () => {
 
   describe('form group', () => {
 
+    let formGroup: FormGroup;
+
+    beforeEach(() => {
+      formGroup = component.formGroup;
+    });
+
     it('should exist', () => {
-      expect(component.formGroup).toBeTruthy();
+      expect(formGroup).toBeTruthy();
+    });
+
+    describe('controls', () => {
+
+      let formControlNames: Array<string>;
+
+      beforeEach(() => {
+        formControlNames = Object.keys(formGroup.value);
+      });
+
+      it('should contain title', () => {
+        expect(formControlNames).toContain('title');
+      });
+
+      it('should contain text', () => {
+        expect(formControlNames).toContain('text');
+      });
+
+      it('should contain operation', () => {
+        expect(formControlNames).toContain('operation');
+      });
+
     });
 
   });
@@ -146,268 +178,260 @@ describe('Write -> Articles Page', () => {
       thenTextInput: (get: () => DebugElement) => void,
       thenSaveOnly: (get: () => DebugElement) => void,
       thenSaveAndRequestEdit: (get: () => DebugElement) => void,
-      thenSaveAndRequestCheck: (get: () => DebugElement) => void
+      thenSaveAndRequestCheck: (get: () => DebugElement) => void,
+      then: () => void
     ) => {
 
-      describe('header', () => {
+      describe('when route is activated', () => {
 
-        let header: DebugElement;
-
-        beforeEach(() => {
-          header = fixture.debugElement.query(howToFindHeader);
-        });
-
-        it('should exist', () => {
-          expect(header).toBeTruthy();
-        });
-
-        it('should contain text', () => {
-          expect(header.nativeElement.innerText).toBeTruthy();
-        });
-
-      });
-
-      describe('footer', () => {
-
-        let footer: DebugElement;
+        let hasWasCalledFor: CountContainer;
+        let getWasCalledFor: CountContainer;
 
         beforeEach(() => {
-          footer = fixture.debugElement.query(howToFindFooter);
+          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({
+            articleIdentifier: articleIdentifier
+          });
+          fixture.detectChanges();
         });
 
-        it('should exist', () => {
-          expect(footer).toBeTruthy();
+        it('should call has for article identifier route parameter', () => {
+          expect(hasWasCalledFor['articleIdentifier']).toBe(1);
         });
 
-        it('should contain text', () => {
-          expect(footer.nativeElement.innerText).toBeTruthy();
+        it('should call get for article identifier route parameter', () => {
+          expect(getWasCalledFor['articleIdentifier']).toBe(1);
         });
 
-      });
+        describe('header', () => {
 
-      let hasWasCalledFor: CountContainer;
-      let getWasCalledFor: CountContainer;
-
-      beforeEach(() => {
-        [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({
-          articleIdentifier: articleIdentifier
-        });
-        fixture.detectChanges();
-      });
-
-      it('should call has for article identifier route parameter', () => {
-        expect(hasWasCalledFor['articleIdentifier']).toBe(1);
-      });
-
-      it('should call get for article identifier route parameter', () => {
-        expect(getWasCalledFor['articleIdentifier']).toBe(1);
-      });
-
-      let titleInput: DebugElement;
-      let textInput: DebugElement;
-      let saveOnlyRadio: DebugElement;
-      let saveOnlyLabel: DebugElement;
-      let saveAndRequestEditRadio: DebugElement;
-      let saveAndRequestEditLabel: DebugElement;
-      let saveAndRequestCheckRadio: DebugElement;
-      let saveAndRequestCheckLabel: DebugElement;
-      let doneButton: DebugElement;
-
-      beforeEach(() => {
-        const element = fixture.debugElement;
-        titleInput = element.query(howToFindTitleInput);
-        textInput = element.query(howToFindTextInput);
-        saveOnlyRadio = element.query(howToFindSaveOnlyRadio);
-        saveOnlyLabel = element.query(howToFindSaveOnlyLabel);
-        saveAndRequestEditRadio = element.query(howToFindSaveAndRequestEditRadio);
-        saveAndRequestEditLabel = element.query(howToFindSaveAndRequestEditLabel);
-        saveAndRequestCheckRadio = element.query(howToFindSaveAndRequestCheckRadio);
-        saveAndRequestCheckLabel = element.query(howToFindSaveAndRequestCheckLabel);
-        doneButton = element.query(howToFindDoneButton);
-      });
-
-      it('should expose form group', () => {
-        expect(component.formGroup).toBeTruthy();
-      });
-
-      describe('form group', () => {
-
-        let formControlNames: Array<string>;
-
-        beforeEach(() => {
-          formControlNames = Object.keys(component.formGroup.value);
-        });
-
-        it('should contain title', () => {
-          expect(formControlNames).toContain('title');
-        });
-
-        it('should contain text', () => {
-          expect(formControlNames).toContain('text');
-        });
-
-        it('should contain operation', () => {
-          expect(formControlNames).toContain('operation');
-        });
-
-      });
-
-      it('should display title edit field', () => {
-        expect(titleInput).toBeTruthy();
-      });
-
-      it('should display text edit field', () => {
-        expect(textInput).toBeTruthy();
-      });
-
-      it('should display save only radio button', () => {
-        expect(saveOnlyRadio).toBeTruthy();
-      });
-
-      it('should display save only label', () => {
-        expect(saveOnlyLabel).toBeTruthy();
-      });
-
-      it('should display save and request edit radio button', () => {
-        expect(saveAndRequestEditRadio).toBeTruthy();
-      });
-
-      it('should display save and request edit label', () => {
-        expect(saveAndRequestEditLabel).toBeTruthy();
-      });
-
-      it('should display save and request check radio button', () => {
-        expect(saveAndRequestCheckRadio).toBeTruthy();
-      });
-
-      it('should display save and request check label', () => {
-        expect(saveAndRequestCheckLabel).toBeTruthy();
-      });
-
-      it('should display done button', () => {
-        expect(doneButton).toBeTruthy();
-      });
-
-      describe('save only radio button', () => {
-
-        thenSaveOnly(() => saveOnlyRadio);
-
-      });
-
-      describe('save and request edit radio button', () => {
-
-        thenSaveAndRequestEdit(() => saveAndRequestEditRadio);
-
-        describe('when clicked', () => {
-
-          let operationValue: string;
+          let header: DebugElement;
 
           beforeEach(() => {
-            saveAndRequestEditRadio.nativeElement.click();
-            operationValue = component.formGroup.value['operation'];
+            header = fixture.debugElement.query(howToFindHeader);
           });
 
-          it('should update form group', () => {
-            expect(operationValue).toBe('saveAndRequestEdit');
+          it('should exist', () => {
+            expect(header).toBeTruthy();
+          });
+
+          it('should contain text', () => {
+            expect(header.nativeElement.innerText).toBeTruthy();
           });
 
         });
 
-      });
+        describe('article', () => {
 
-      describe('save and request check radio button', () => {
-
-        thenSaveAndRequestCheck(() => saveAndRequestCheckRadio);
-
-        describe('when clicked', () => {
-
-          let operationValue: string;
+          let article: DebugElement;
 
           beforeEach(() => {
-            saveAndRequestCheckRadio.nativeElement.click();
-            operationValue = component.formGroup.value['operation'];
+            article = fixture.debugElement.query(howToFindArticle);
           });
 
-          it('should update form group', () => {
-            expect(operationValue).toBe('saveAndRequestCheck');
+          it('should exist', () => {
+            expect(article).toBeTruthy();
           });
 
         });
 
-      });
+        describe('footer', () => {
 
-      describe('title input', () => {
-
-        thenTitleInput(() => titleInput);
-
-        describe('when the user enters text', () => {
-
-          const title = 'byauvdhygdyf';
-          let titleValue: string;
+          let footer: DebugElement;
 
           beforeEach(() => {
-            titleInput.nativeElement.value = title;
-            titleInput.nativeElement.dispatchEvent(new Event('input'));
-            titleValue = component.formGroup.value['title'];
+            footer = fixture.debugElement.query(howToFindFooter);
           });
 
-          it('should update form group value', () => {
-            expect(titleValue).toBe(title);
+          it('should exist', () => {
+            expect(footer).toBeTruthy();
+          });
+
+          it('should contain text', () => {
+            expect(footer.nativeElement.innerText).toBeTruthy();
           });
 
         });
 
-      });
+        describe('form', () => {
 
-      describe('text input', () => {
-
-        thenTextInput(() => textInput);
-
-        describe('when user enters text', () => {
-
-          const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
-          let textValue: string;
+          let titleInput: DebugElement;
+          let textInput: DebugElement;
+          let saveOnlyRadio: DebugElement;
+          let saveOnlyLabel: DebugElement;
+          let saveAndRequestEditRadio: DebugElement;
+          let saveAndRequestEditLabel: DebugElement;
+          let saveAndRequestCheckRadio: DebugElement;
+          let saveAndRequestCheckLabel: DebugElement;
+          let doneButton: DebugElement;
 
           beforeEach(() => {
-            textInput.nativeElement.value = text;
-            textInput.nativeElement.dispatchEvent(new Event('input'));
-            textValue = component.formGroup.value['text'];
+            const element = fixture.debugElement;
+            titleInput = element.query(howToFindTitleInput);
+            textInput = element.query(howToFindTextInput);
+            saveOnlyRadio = element.query(howToFindSaveOnlyRadio);
+            saveOnlyLabel = element.query(howToFindSaveOnlyLabel);
+            saveAndRequestEditRadio = element.query(howToFindSaveAndRequestEditRadio);
+            saveAndRequestEditLabel = element.query(howToFindSaveAndRequestEditLabel);
+            saveAndRequestCheckRadio = element.query(howToFindSaveAndRequestCheckRadio);
+            saveAndRequestCheckLabel = element.query(howToFindSaveAndRequestCheckLabel);
+            doneButton = element.query(howToFindDoneButton);
           });
 
-          it('should update form group value', () => {
-            expect(textValue).toBe(text);
+          it('should display title edit field', () => {
+            expect(titleInput).toBeTruthy();
+          });
+
+          it('should display text edit field', () => {
+            expect(textInput).toBeTruthy();
+          });
+
+          it('should display save only radio button', () => {
+            expect(saveOnlyRadio).toBeTruthy();
+          });
+
+          it('should display save only label', () => {
+            expect(saveOnlyLabel).toBeTruthy();
+          });
+
+          it('should display save and request edit radio button', () => {
+            expect(saveAndRequestEditRadio).toBeTruthy();
+          });
+
+          it('should display save and request edit label', () => {
+            expect(saveAndRequestEditLabel).toBeTruthy();
+          });
+
+          it('should display save and request check radio button', () => {
+            expect(saveAndRequestCheckRadio).toBeTruthy();
+          });
+
+          it('should display save and request check label', () => {
+            expect(saveAndRequestCheckLabel).toBeTruthy();
+          });
+
+          it('should display done button', () => {
+            expect(doneButton).toBeTruthy();
+          });
+
+          describe('save only radio button', () => {
+
+            thenSaveOnly(() => saveOnlyRadio);
+
+          });
+
+          describe('save and request edit radio button', () => {
+
+            thenSaveAndRequestEdit(() => saveAndRequestEditRadio);
+
+            describe('when clicked', () => {
+
+              let operationValue: string;
+
+              beforeEach(() => {
+                saveAndRequestEditRadio.nativeElement.click();
+                operationValue = component.formGroup.value['operation'];
+              });
+
+              it('should update form group', () => {
+                expect(operationValue).toBe('saveAndRequestEdit');
+              });
+
+            });
+
+          });
+
+          describe('save and request check radio button', () => {
+
+            thenSaveAndRequestCheck(() => saveAndRequestCheckRadio);
+
+            describe('when clicked', () => {
+
+              let operationValue: string;
+
+              beforeEach(() => {
+                saveAndRequestCheckRadio.nativeElement.click();
+                operationValue = component.formGroup.value['operation'];
+              });
+
+              it('should update form group', () => {
+                expect(operationValue).toBe('saveAndRequestCheck');
+              });
+
+            });
+
+          });
+
+          describe('title input', () => {
+
+            thenTitleInput(() => titleInput);
+
+            describe('when the user enters text', () => {
+
+              const title = 'byauvdhygdyf';
+              let titleValue: string;
+
+              beforeEach(() => {
+                titleInput.nativeElement.value = title;
+                titleInput.nativeElement.dispatchEvent(new Event('input'));
+                titleValue = component.formGroup.value['title'];
+              });
+
+              it('should update form group value', () => {
+                expect(titleValue).toBe(title);
+              });
+
+            });
+
+          });
+
+          describe('text input', () => {
+
+            thenTextInput(() => textInput);
+
+            describe('when user enters text', () => {
+
+              const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
+              let textValue: string;
+
+              beforeEach(() => {
+                textInput.nativeElement.value = text;
+                textInput.nativeElement.dispatchEvent(new Event('input'));
+                textValue = component.formGroup.value['text'];
+              });
+
+              it('should update form group value', () => {
+                expect(textValue).toBe(text);
+              });
+
+            });
+
+          });
+
+          describe('when user clicks done button', () => {
+
+            beforeEach(() => {
+              doneButton.nativeElement.click();
+            });
+
+            it('should call save article', () => {
+              expect(articleService.saveArticleCalled).toBe(1);
+            });
+
+            it('should pass article to save article', () => {
+              expect(articleService.articleToSave).toBeTruthy();
+            });
+
           });
 
         });
 
-      });
-
-      describe('when user clicks done button', () => {
-
-        beforeEach(() => {
-          doneButton.nativeElement.click();
-        });
-
-        it('should call save article', () => {
-          expect(articleService.saveArticleCalled).toBe(1);
-        });
-
-        it('should pass article to save article', () => {
-          expect(articleService.articleToSave).toBeTruthy();
-        });
+        then();
 
       });
 
     };
 
     describe('when passed article identifier "new"', () => {
-
-      it('should not call article service', () => {
-        const times = Object.keys(articleService.articleCalledFor)
-          .map((key: string) => articleService.articleCalledFor[key])
-          .reduce((accumulator, value) => accumulator + value, 0);
-        expect(times).toBe(0);
-      });
 
       const thenTitleInput = (get: () => DebugElement): void => {
 
@@ -465,8 +489,17 @@ describe('Write -> Articles Page', () => {
         thenTextInput,
         thenSaveOnly,
         thenSaveAndRequestEdit,
-        thenSaveAndRequestCheck
-      );
+        thenSaveAndRequestCheck,
+        () => {
+
+          it('should not call article service', () => {
+            const times = Object.keys(articleService.articleCalledFor)
+              .map((key: string) => articleService.articleCalledFor[key])
+              .reduce((accumulator, value) => accumulator + value, 0);
+            expect(times).toBe(0);
+          });
+
+        });
 
     });
 
@@ -494,10 +527,6 @@ describe('Write -> Articles Page', () => {
             operation: operation
           });
           fixture.detectChanges();
-        });
-
-        it(`should call article service for ${articleIdentifier}`, () => {
-          expect(articleService.articleCalledFor[articleIdentifier]).toBe(1);
         });
 
         const thenTitleInput = (get: () => DebugElement): void => {
@@ -556,8 +585,14 @@ describe('Write -> Articles Page', () => {
           thenTextInput,
           thenSaveOnly,
           thenSaveAndRequestEdit,
-          thenSaveAndRequestCheck
-        );
+          thenSaveAndRequestCheck,
+          () => {
+
+            it(`should call article service for ${articleIdentifier}`, () => {
+              expect(articleService.articleCalledFor[articleIdentifier]).toBe(1);
+            });
+
+          });
 
       });
 

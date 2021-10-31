@@ -4,15 +4,17 @@
 <ng-template #loggedIn>
     <header class='page-header'>page header</header>
     <form [formGroup]='formGroup'>
-        <input name='title' formControlName='title' />
-        <textarea name='text' formControlName='text'></textarea>
-        <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />
-        <label for='saveOnlyOperation'>Save Article and Return to List</label>
-        <input type='radio' name='operation' formControlName='operation' value='saveAndRequestEdit' id='saveAndRequestEditOperation' />
-        <label for='saveAndRequestEditOperation'>Save Article and Request an Editorial Review</label>
-        <input type='radio' name='operation' formControlName='operation' value='saveAndRequestCheck' id='saveAndRequestCheckOperation' />
-        <label for='saveAndRequestCheckOperation'>Save Article and Request a Fact Check</label>
-        <button (click)='done()'>Done</button>
+        <article class='article'>
+            <input name='title' formControlName='title' />
+            <textarea name='text' formControlName='text'></textarea>
+            <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />
+            <label for='saveOnlyOperation'>Save Article and Return to List</label>
+            <input type='radio' name='operation' formControlName='operation' value='saveAndRequestEdit' id='saveAndRequestEditOperation' />
+            <label for='saveAndRequestEditOperation'>Save Article and Request an Editorial Review</label>
+            <input type='radio' name='operation' formControlName='operation' value='saveAndRequestCheck' id='saveAndRequestCheckOperation' />
+            <label for='saveAndRequestCheckOperation'>Save Article and Request a Fact Check</label>
+            <button (click)='done()'>Done</button>
+        </article>
     </form>
     <footer class='page-footer'>page footer</footer>
 </ng-template>

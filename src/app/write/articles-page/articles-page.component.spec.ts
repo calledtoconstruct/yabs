@@ -78,17 +78,21 @@ const howToFindPageHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && !!element.classes['page'];
 
-const howToFindArticle = (element: DebugElement): boolean =>
-  element.name === 'article'
-  && !!element.classes['article'];
-
 const howToFindArticleForm = (element: DebugElement): boolean =>
   element.name === 'form'
+  && !!element.classes['article'];
+
+const howToFindArticle = (element: DebugElement): boolean =>
+  element.name === 'article'
   && !!element.classes['article'];
 
 const howToFindArticleHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && !!element.classes['article'];
+
+const howToFindEditSection = (element: DebugElement): boolean =>
+  element.name === 'section'
+  && !!element.classes['edit'];
 
 const howToFindArticleFooter = (element: DebugElement): boolean =>
   element.name === 'footer'
@@ -275,6 +279,79 @@ describe('Write -> Articles Page', () => {
 
             });
 
+            describe('edit section', () => {
+
+              let editSection: DebugElement;
+
+              let titleInput: DebugElement;
+              let textInput: DebugElement;
+
+              beforeEach(() => {
+                editSection = article.query(howToFindEditSection);
+                titleInput = editSection.query(howToFindTitleInput);
+                textInput = editSection.query(howToFindTextInput);
+              });
+
+              it('should exist', () => {
+                expect(editSection).toBeTruthy();
+              });
+
+              it('should display title edit field', () => {
+                expect(titleInput).toBeTruthy();
+              });
+
+              it('should display text edit field', () => {
+                expect(textInput).toBeTruthy();
+              });
+
+              describe('title input', () => {
+
+                thenTitleInput(() => titleInput);
+
+                describe('when the user enters text', () => {
+
+                  const title = 'byauvdhygdyf';
+                  let titleValue: string;
+
+                  beforeEach(() => {
+                    titleInput.nativeElement.value = title;
+                    titleInput.nativeElement.dispatchEvent(new Event('input'));
+                    titleValue = component.formGroup.value['title'];
+                  });
+
+                  it('should update form group value', () => {
+                    expect(titleValue).toBe(title);
+                  });
+
+                });
+
+              });
+
+              describe('text input', () => {
+
+                thenTextInput(() => textInput);
+
+                describe('when user enters text', () => {
+
+                  const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
+                  let textValue: string;
+
+                  beforeEach(() => {
+                    textInput.nativeElement.value = text;
+                    textInput.nativeElement.dispatchEvent(new Event('input'));
+                    textValue = component.formGroup.value['text'];
+                  });
+
+                  it('should update form group value', () => {
+                    expect(textValue).toBe(text);
+                  });
+
+                });
+
+              });
+
+            });
+
             describe('footer', () => {
 
               let footer: DebugElement;
@@ -292,9 +369,6 @@ describe('Write -> Articles Page', () => {
               });
 
             });
-
-            let titleInput: DebugElement;
-            let textInput: DebugElement;
             let saveOnlyRadio: DebugElement;
             let saveOnlyLabel: DebugElement;
             let saveAndRequestEditRadio: DebugElement;
@@ -304,8 +378,6 @@ describe('Write -> Articles Page', () => {
             let doneButton: DebugElement;
 
             beforeEach(() => {
-              titleInput = article.query(howToFindTitleInput);
-              textInput = article.query(howToFindTextInput);
               saveOnlyRadio = article.query(howToFindSaveOnlyRadio);
               saveOnlyLabel = article.query(howToFindSaveOnlyLabel);
               saveAndRequestEditRadio = article.query(howToFindSaveAndRequestEditRadio);
@@ -313,14 +385,6 @@ describe('Write -> Articles Page', () => {
               saveAndRequestCheckRadio = article.query(howToFindSaveAndRequestCheckRadio);
               saveAndRequestCheckLabel = article.query(howToFindSaveAndRequestCheckLabel);
               doneButton = article.query(howToFindDoneButton);
-            });
-
-            it('should display title edit field', () => {
-              expect(titleInput).toBeTruthy();
-            });
-
-            it('should display text edit field', () => {
-              expect(textInput).toBeTruthy();
             });
 
             it('should display save only radio button', () => {
@@ -393,52 +457,6 @@ describe('Write -> Articles Page', () => {
 
                 it('should update form group', () => {
                   expect(operationValue).toBe('saveAndRequestCheck');
-                });
-
-              });
-
-            });
-
-            describe('title input', () => {
-
-              thenTitleInput(() => titleInput);
-
-              describe('when the user enters text', () => {
-
-                const title = 'byauvdhygdyf';
-                let titleValue: string;
-
-                beforeEach(() => {
-                  titleInput.nativeElement.value = title;
-                  titleInput.nativeElement.dispatchEvent(new Event('input'));
-                  titleValue = component.formGroup.value['title'];
-                });
-
-                it('should update form group value', () => {
-                  expect(titleValue).toBe(title);
-                });
-
-              });
-
-            });
-
-            describe('text input', () => {
-
-              thenTextInput(() => textInput);
-
-              describe('when user enters text', () => {
-
-                const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
-                let textValue: string;
-
-                beforeEach(() => {
-                  textInput.nativeElement.value = text;
-                  textInput.nativeElement.dispatchEvent(new Event('input'));
-                  textValue = component.formGroup.value['text'];
-                });
-
-                it('should update form group value', () => {
-                  expect(textValue).toBe(text);
                 });
 
               });

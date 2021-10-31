@@ -6,8 +6,10 @@
     <form class='article' [formGroup]='formGroup'>
         <article class='article'>
             <header class='article'>article header</header>
-            <input name='title' formControlName='title' />
-            <textarea name='text' formControlName='text'></textarea>
+            <section class='edit'>
+                <input name='title' formControlName='title' />
+                <textarea name='text' formControlName='text'></textarea>
+            </section>
             <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />
             <label for='saveOnlyOperation'>Save Article and Return to List</label>
             <input type='radio' name='operation' formControlName='operation' value='saveAndRequestEdit' id='saveAndRequestEditOperation' />

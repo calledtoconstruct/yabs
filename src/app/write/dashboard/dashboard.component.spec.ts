@@ -10,7 +10,7 @@ import { FakeRouter } from '../../fake/router.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { FakeWriteArticleService } from '../fake/write-article-service.fake';
 import { HarnessLoader } from '@angular/cdk/testing';
-import { MatTabGroupHarness } from '@angular/material/tabs/testing';
+import { MatTabGroupHarness, MatTabHarness } from '@angular/material/tabs/testing';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
@@ -24,6 +24,10 @@ const howToFindPageHeader = (element: DebugElement): boolean =>
 const howToFindNavigation = (element: DebugElement): boolean =>
   element.name === 'nav'
   && !!element.classes['page'];
+
+const howToFindTabHeader = (element: DebugElement): boolean =>
+  element.name === 'header'
+  && !!element.classes['tab'];
 
 const howToFindTable = (element: DebugElement): boolean =>
   element.name === 'table'
@@ -241,6 +245,42 @@ describe('Write -> Dashboard', () => {
 
           it('should exist', () => {
             expect(tabGroup).toBeTruthy();
+          });
+
+          describe('selected tab', () => {
+
+            let selectedTab: MatTabHarness;
+
+            beforeEach(async () => {
+              selectedTab = await tabGroup.getSelectedTab();
+            });
+
+            it('should exist', () => {
+              expect(selectedTab).toBeTruthy();
+            });
+
+            it('should have the correct label', async () => {
+              expect(await selectedTab.getLabel()).toBe(tab.label);
+            });
+
+          });
+
+          describe('tab header', () => {
+
+            let header: DebugElement;
+
+            beforeEach(() => {
+              header = fixture.debugElement.query(howToFindTabHeader);
+            });
+
+            it('should exist', () => {
+              expect(header).toBeTruthy();
+            });
+
+            it('should contain text', () => {
+              expect(header.nativeElement.innerText).toBeTruthy();
+            });
+
           });
 
           describe('article service collection', () => {

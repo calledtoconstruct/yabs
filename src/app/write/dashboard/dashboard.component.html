@@ -7,15 +7,14 @@
       (selectedTabChange)='router.navigate([], { relativeTo: activatedRoute, queryParams: {tab: $event.index}, queryParamsHandling: "merge"})'>
       <mat-tab label="Draft">
         <ng-template matTabContent>
-          <h1>Draft Articles</h1>
-          <h5></h5>
+          <header class='tab'>tab header</header>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
         </ng-template>
       </mat-tab>
       <mat-tab label="Request Pending">
         <ng-template matTabContent>
-          <h1>Articles with a Request Pending</h1>
+          <header class='tab'>tab header</header>
           <h5>(waiting for an Editor or Fact Checker)</h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
@@ -23,7 +22,7 @@
       </mat-tab>
       <mat-tab label="Out For Edit">
         <ng-template matTabContent>
-          <h1>Articles which are Out For Edit</h1>
+          <header class='tab'>tab header</header>
           <h5>(edit is in progress)</h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
@@ -31,7 +30,7 @@
       </mat-tab>
       <mat-tab label='Out For Fact Check'>
         <ng-template matTabContent>
-          <h1>Articles which are Out For Fact Check</h1>
+          <header class='tab'>Articles which are Out For Fact Check</header>
           <h5>(fact check is in progress)</h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
@@ -39,7 +38,7 @@
       </mat-tab>
       <mat-tab label='Ready'>
         <ng-template matTabContent>
-          <h1>Articles which are Ready for Revision</h1>
+          <header class='tab'>Articles which are Ready for Revision</header>
           <h5>(review the editorial or fact check results)</h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
@@ -47,7 +46,7 @@
       </mat-tab>
       <mat-tab label='Published'>
         <ng-template matTabContent>
-          <h1>Published Articles</h1>
+          <header class='tab'>Published Articles</header>
           <h5></h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>

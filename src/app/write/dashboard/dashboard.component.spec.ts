@@ -17,6 +17,14 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { User } from '@angular/fire/auth';
 import { UserService } from '../../user.service';
 
+const howToFindPageHeader = (element: DebugElement): boolean =>
+  element.name === 'header'
+  && !!element.classes['page'];
+
+const howToFindNavigation = (element: DebugElement): boolean =>
+  element.name === 'nav'
+  && !!element.classes['page'];
+
 const howToFindTable = (element: DebugElement): boolean =>
   element.name === 'table'
   && Object.keys(element.attributes).includes('cdk-table')
@@ -173,6 +181,38 @@ describe('Write -> Dashboard', () => {
 
       it('should call query param map get', () => {
         expect(getWasCalledFor['tab']).toBe(1);
+      });
+
+      describe('header', () => {
+
+        let header: DebugElement;
+
+        beforeEach(() => {
+          header = fixture.debugElement.query(howToFindPageHeader);
+        });
+
+        it('should exist', () => {
+          expect(header).toBeTruthy();
+        });
+
+        it('should contain text', () => {
+          expect(header.nativeElement.innerText).toBeTruthy();
+        });
+
+      });
+
+      describe('navigation', () => {
+
+        let navigation: DebugElement;
+
+        beforeEach(() => {
+          navigation = fixture.debugElement.query(howToFindNavigation);
+        });
+
+        it('should exist', () => {
+          expect(navigation).toBeTruthy();
+        });
+
       });
 
       describe('tab group', () => {

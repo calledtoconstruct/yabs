@@ -78,6 +78,10 @@ const howToFindHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && element.classes['page-header'];
 
+const howToFindFooter = (element: DebugElement): boolean =>
+  element.name === 'footer'
+  && element.classes['page-footer'];
+
 describe('Write -> Articles Page', () => {
 
   let userService: FakeUserService;
@@ -159,6 +163,24 @@ describe('Write -> Articles Page', () => {
 
         it('should contain text', () => {
           expect(header.nativeElement.innerText).toBeTruthy();
+        });
+
+      });
+
+      describe('footer', () => {
+
+        let footer: DebugElement;
+
+        beforeEach(() => {
+          footer = fixture.debugElement.query(howToFindFooter);
+        });
+
+        it('should exist', () => {
+          expect(footer).toBeTruthy();
+        });
+
+        it('should contain text', () => {
+          expect(footer.nativeElement.innerText).toBeTruthy();
         });
 
       });

@@ -1,5 +1,5 @@
 import {
-  Auth, authState,
+  Auth,
   GithubAuthProvider,
   GoogleAuthProvider,
   signInWithPopup,
@@ -8,13 +8,13 @@ import {
 } from '@angular/fire/auth';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  public readonly user$ = authState(this.auth);
   public readonly loggedIn$ = this.user$.pipe(
     map((user: User | null): boolean => user !== null)
   );
@@ -24,6 +24,7 @@ export class UserService {
 
   constructor(
     private readonly auth: Auth,
+    public readonly user$: Observable<User | null>
   ) { }
 
   public signInWithGoogle(): void {

@@ -74,7 +74,7 @@ const howToFindDoneButton = (element: DebugElement): boolean =>
   && !!element.nativeElement.innerText
   && element.nativeElement.innerText === 'Done';
 
-const howToFindHeader = (element: DebugElement): boolean =>
+const howToFindPageHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && !!element.classes['page'];
 
@@ -82,7 +82,7 @@ const howToFindArticle = (element: DebugElement): boolean =>
   element.name === 'article'
   && !!element.classes['article'];
 
-const howToFindForm = (element: DebugElement): boolean =>
+const howToFindArticleForm = (element: DebugElement): boolean =>
   element.name === 'form'
   && !!element.classes['article'];
 
@@ -90,7 +90,7 @@ const howToFindArticleHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && !!element.classes['article'];
 
-const howToFindFooter = (element: DebugElement): boolean =>
+const howToFindPageFooter = (element: DebugElement): boolean =>
   element.name === 'footer'
   && !!element.classes['page'];
 
@@ -99,8 +99,6 @@ describe('Write -> Articles Page', () => {
   let userService: FakeUserService;
   let articleService: FakeWriteArticleService;
   let activatedRoute: FakeActivatedRoute;
-  let component: ArticlesPageComponent;
-  let fixture: ComponentFixture<ArticlesPageComponent>;
 
   beforeEach(() => {
     userService = new FakeUserService();
@@ -126,6 +124,9 @@ describe('Write -> Articles Page', () => {
     })
       .compileComponents();
   });
+  
+  let component: ArticlesPageComponent;
+  let fixture: ComponentFixture<ArticlesPageComponent>;
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ArticlesPageComponent);
@@ -215,7 +216,7 @@ describe('Write -> Articles Page', () => {
           let header: DebugElement;
 
           beforeEach(() => {
-            header = fixture.debugElement.query(howToFindHeader);
+            header = fixture.debugElement.query(howToFindPageHeader);
           });
 
           it('should exist', () => {
@@ -233,7 +234,7 @@ describe('Write -> Articles Page', () => {
           let form: DebugElement;
 
           beforeEach(() => {
-            form = fixture.debugElement.query(howToFindForm);
+            form = fixture.debugElement.query(howToFindArticleForm);
           });
 
           it('should exist', () => {
@@ -443,7 +444,7 @@ describe('Write -> Articles Page', () => {
           let footer: DebugElement;
 
           beforeEach(() => {
-            footer = fixture.debugElement.query(howToFindFooter);
+            footer = fixture.debugElement.query(howToFindPageFooter);
           });
 
           it('should exist', () => {

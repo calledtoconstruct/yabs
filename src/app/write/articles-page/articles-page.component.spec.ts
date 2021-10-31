@@ -74,6 +74,10 @@ const howToFindDoneButton = (element: DebugElement): boolean =>
   && !!element.nativeElement.innerText
   && element.nativeElement.innerText === 'Done';
 
+const howToFindHeader = (element: DebugElement): boolean =>
+  element.name === 'header'
+  && element.classes['page-header'];
+
 describe('Write -> Articles Page', () => {
 
   let userService: FakeUserService;
@@ -113,12 +117,16 @@ describe('Write -> Articles Page', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should exist', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should provide form group', () => {
-    expect(component.formGroup).toBeTruthy();
+  describe('form group', () => {
+
+    it('should exist', () => {
+      expect(component.formGroup).toBeTruthy();
+    });
+
   });
 
   const displayName = 'abvsunvj';
@@ -136,6 +144,24 @@ describe('Write -> Articles Page', () => {
       thenSaveAndRequestEdit: (get: () => DebugElement) => void,
       thenSaveAndRequestCheck: (get: () => DebugElement) => void
     ) => {
+
+      describe('header', () => {
+
+        let header: DebugElement;
+
+        beforeEach(() => {
+          header = fixture.debugElement.query(howToFindHeader);
+        });
+
+        it('should exist', () => {
+          expect(header).toBeTruthy();
+        });
+
+        it('should contain text', () => {
+          expect(header.nativeElement.innerText).toBeTruthy();
+        });
+
+      });
 
       let hasWasCalledFor: CountContainer;
       let getWasCalledFor: CountContainer;

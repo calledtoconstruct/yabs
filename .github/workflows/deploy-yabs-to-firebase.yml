@@ -27,14 +27,3 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_YET_ANOTHER_BLOG_SITE }}"
           projectId: yet-another-blog-site
           channelId: live
-
-      - name: npx ng build --configuration ember-production
-        run: |
-          npx ng build --configuration ember-production
-
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EMBER_YABS }}"
-          projectId: ember-yabs
-          channelId: live

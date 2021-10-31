@@ -10,6 +10,7 @@
           <header class='tab'>tab header</header>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
+          <footer class='tab'>tab footer</footer>
         </ng-template>
       </mat-tab>
       <mat-tab label="Request Pending">
@@ -18,6 +19,7 @@
           <h5>(waiting for an Editor or Fact Checker)</h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
+          <footer class='tab'>tab footer</footer>
         </ng-template>
       </mat-tab>
       <mat-tab label="Out For Edit">
@@ -26,30 +28,34 @@
           <h5>(edit is in progress)</h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
+          <footer class='tab'>tab footer</footer>
         </ng-template>
       </mat-tab>
       <mat-tab label='Out For Fact Check'>
         <ng-template matTabContent>
-          <header class='tab'>Articles which are Out For Fact Check</header>
+          <header class='tab'>tab header</header>
           <h5>(fact check is in progress)</h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
+          <footer class='tab'>tab footer</footer>
         </ng-template>
       </mat-tab>
       <mat-tab label='Ready'>
         <ng-template matTabContent>
-          <header class='tab'>Articles which are Ready for Revision</header>
+          <header class='tab'>tab header</header>
           <h5>(review the editorial or fact check results)</h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
+          <footer class='tab'>tab footer</footer>
         </ng-template>
       </mat-tab>
       <mat-tab label='Published'>
         <ng-template matTabContent>
-          <header class='tab'>Published Articles</header>
+          <header class='tab'>tab header</header>
           <h5></h5>
           <ng-container *ngTemplateOutlet='articleTable; context: {data: data$ | async, columns: columns$ | async}'>
           </ng-container>
+          <footer class='tab'>tab footer</footer>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

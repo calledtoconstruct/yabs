@@ -1,6 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Article, WriteArticleService } from '../write-article.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatTabGroupHarness, MatTabHarness } from '@angular/material/tabs/testing';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CountContainer } from 'src/app/test/count-container.type';
 import { DashboardComponent } from './dashboard.component';
@@ -10,7 +11,6 @@ import { FakeRouter } from '../../fake/router.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { FakeWriteArticleService } from '../fake/write-article-service.fake';
 import { HarnessLoader } from '@angular/cdk/testing';
-import { MatTabGroupHarness, MatTabHarness } from '@angular/material/tabs/testing';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
@@ -28,6 +28,10 @@ const howToFindNavigation = (element: DebugElement): boolean =>
 const howToFindTabHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && !!element.classes['tab'];
+
+const howToFindTabFooter = (element: DebugElement): boolean =>
+  element.name === 'footer'
+  && element.classes['tab'];
 
 const howToFindTable = (element: DebugElement): boolean =>
   element.name === 'table'
@@ -279,6 +283,24 @@ describe('Write -> Dashboard', () => {
 
             it('should contain text', () => {
               expect(header.nativeElement.innerText).toBeTruthy();
+            });
+
+          });
+
+          describe('tab footer', () => {
+
+            let footer: DebugElement;
+
+            beforeEach(() => {
+              footer = fixture.debugElement.query(howToFindTabFooter);
+            });
+
+            it('should exist', () => {
+              expect(footer).toBeTruthy();
+            });
+
+            it('should contain text', () => {
+              expect(footer.nativeElement.innerText).toBeTruthy();
             });
 
           });

@@ -40,20 +40,28 @@ describe('User Service', () => {
 
   describe('when a user is authenticated', () => {
 
-    let subscription: Subscription;
-    let value: boolean;
+    let loggedInSubscription: Subscription;
+    let notLoggedInSubscription: Subscription;
+    let loggedInValue: boolean;
+    let notLoggedInValue: boolean;
 
     beforeEach(() => {
-      subscription = service.loggedIn$.subscribe(data => value = data);
+      loggedInSubscription = service.loggedIn$.subscribe(data => loggedInValue = data);
+      notLoggedInSubscription = service.notLoggedIn$.subscribe(data => notLoggedInValue = data);
       userSubject$.next(user);
     });
 
     afterEach(() => {
-      subscription.unsubscribe();
+      loggedInSubscription.unsubscribe();
+      notLoggedInSubscription.unsubscribe();
     });
 
     it('should emit logged in true', () => {
-      expect(value).toBe(true);
+      expect(loggedInValue).toBe(true);
+    });
+
+    it('should emit not logged in false', () => {
+      expect(notLoggedInValue).toBe(false);
     });
 
   });

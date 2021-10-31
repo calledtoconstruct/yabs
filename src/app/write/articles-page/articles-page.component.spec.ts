@@ -439,7 +439,7 @@ describe('Write -> Articles Page', () => {
       describe(`when passed article identifier '${articleIdentifier}'`, () => {
 
         beforeEach(() => {
-          articleService.nextArticle(<Article>{
+          articleService.nextArticleFor(<Article>{
             articleIdentifier: articleIdentifier,
             title: title,
             text: text,

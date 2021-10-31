@@ -44,7 +44,7 @@ export class DashboardComponent {
     filter(([loggedIn, _]) => loggedIn),
     map(([_, tabDefinition]) => tabDefinition[0]),
     distinctUntilChanged(),
-    switchMap(tabName => this.articleService.collection(tabName)),
+    switchMap(tabName => this.articleService.articlesFor(tabName)),
     shareReplay(1)
   );
 

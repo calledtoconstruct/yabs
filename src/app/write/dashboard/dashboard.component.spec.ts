@@ -239,7 +239,7 @@ describe('Write -> Dashboard', () => {
               describe(`when ${item.label} returned`, () => {
 
                 beforeEach(() => {
-                  articleService.nextCollection(item.articles);
+                  articleService.nextArticlesFor(item.articles);
                   fixture.detectChanges();
                 });
 

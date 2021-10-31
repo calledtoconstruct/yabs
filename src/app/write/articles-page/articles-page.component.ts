@@ -21,27 +21,23 @@ export class ArticlesPageComponent {
     operation: this.formBuilder.control('saveOnly')
   });
 
-  private readonly parameter$ = this.activatedRoute.paramMap.pipe(
+  private readonly articleIdentifier$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get(articleIdentifierParameterName)),
     filter(articleIdentifierString => !!articleIdentifierString),
     shareReplay(1)
   );
 
-  private readonly isNew$ = this.parameter$.pipe(
+  private readonly isNew$ = this.articleIdentifier$.pipe(
     map(articleIdentifierString => articleIdentifierString === 'new')
-  );
-
-  private readonly articleIdentifier$ = this.parameter$.pipe(
-    map(articleIdentifierString => parseInt(articleIdentifierString || '0', 10))
   );
 
   private readonly article$ = combineLatest([this.userService.loggedIn$, this.isNew$, this.articleIdentifier$]).pipe(
     filter(([loggedIn, _, __]) => loggedIn),
-    map(([_, isNew, articleIdentifier]): [boolean, number] => [isNew, articleIdentifier]),
+    map(([_, isNew, articleIdentifier]): [boolean, string | null] => [isNew, articleIdentifier]),
     filter(([isNew, _]) => !isNew),
     map(([_, articleIdentifier]) => articleIdentifier),
     distinctUntilChanged(),
-    switchMap(articleIdentifier => this.articleService.article(articleIdentifier)),
+    switchMap(articleIdentifier => this.articleService.articleFor(articleIdentifier)),
     shareReplay(1)
   );
 

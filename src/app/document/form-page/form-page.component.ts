@@ -17,6 +17,13 @@ export class FormPageComponent {
     shareReplay(1)
   );
 
+  public readonly placeholders$ = this.template$.pipe(
+    distinctUntilChanged(),
+    map(template => template.text),
+    map(this.templateService.extractPlaceholdersFrom),
+    shareReplay(1)
+  );
+
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly templateService: TemplateService

@@ -185,6 +185,10 @@ describe('Document -> Form Page', () => {
             form = fixture.debugElement.query(howToFindForm);
           });
 
+          it('should exist', () => {
+            expect(form).toBeTruthy();
+          });
+
           describe('article', () => {
 
             let article: DebugElement;
@@ -245,10 +249,6 @@ describe('Document -> Form Page', () => {
                   result.push(label);
                   return result;
                 }, new Array<DebugElement>());
-              });
-
-              it('should exist', () => {
-                expect(form).toBeTruthy();
               });
 
               it('should have an input for each placeholder', () => {

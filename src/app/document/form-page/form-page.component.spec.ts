@@ -233,30 +233,34 @@ describe('Document -> Form Page', () => {
 
             });
 
-          });
+            describe('fields', () => {
 
-          let labels: Array<DebugElement>;
-          let inputs: Array<DebugElement>;
+              let labels: Array<DebugElement>;
+              let inputs: Array<DebugElement>;
+    
+              beforeEach(() => {
+                inputs = article.queryAll(howToFindInput);
+                labels = inputs.reduce((result, input) => {
+                  const label = form.query(howToFindLabelFor(input));
+                  result.push(label);
+                  return result;
+                }, new Array<DebugElement>());
+              });
+    
+              it('should exist', () => {
+                expect(form).toBeTruthy();
+              });
+    
+              it('should have an input for each placeholder', () => {
+                expect(inputs.length).toBe(expectedPlaceholders.length);
+              });
+    
+              it('should have a label for each input', () => {
+                expect(labels.length).toBe(expectedPlaceholders.length);
+              });
+              
+            });
 
-          beforeEach(() => {
-            inputs = form.queryAll(howToFindInput);
-            labels = inputs.reduce((result, input) => {
-              const label = form.query(howToFindLabelFor(input));
-              result.push(label);
-              return result;
-            }, new Array<DebugElement>());
-          });
-
-          it('should exist', () => {
-            expect(form).toBeTruthy();
-          });
-
-          it('should have an input for each placeholder', () => {
-            expect(inputs.length).toBe(expectedPlaceholders.length);
-          });
-
-          it('should have a label for each input', () => {
-            expect(labels.length).toBe(expectedPlaceholders.length);
           });
 
         });

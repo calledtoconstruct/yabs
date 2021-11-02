@@ -27,6 +27,10 @@ const howToFindArticleHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && !!element.classes['article'];
 
+const howToFindArticleFooter = (element: DebugElement): boolean =>
+  element.name === 'footer'
+  && !!element.classes['article'];
+
 const howToFindInput = (element: DebugElement): boolean =>
   element.name === 'input'
   && !!element.attributes['id']
@@ -208,7 +212,25 @@ describe('Document -> Form Page', () => {
               it('should contain text', () => {
                 expect(header.nativeElement.innerText).toBeTruthy();
               });
+
+            });
+
+            describe('footer', () => {
               
+              let footer: DebugElement;
+
+              beforeEach(() => {
+                footer = article.query(howToFindArticleFooter);
+              });
+
+              it('should exist', () => {
+                expect(footer).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(footer.nativeElement.innerText).toBeTruthy();
+              });
+
             });
 
           });

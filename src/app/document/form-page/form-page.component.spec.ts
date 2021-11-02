@@ -2,9 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { Placeholder, Template, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
+import { CountContainer } from 'src/app/test/count-container.type';
+import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FormPageComponent } from './form-page.component';
-import { CountContainer } from 'src/app/test/count-container.type';
+
+const howToFindForm = (element: DebugElement): boolean => 
+  element.name === 'form'
+  && element.classes['template'];
 
 describe('Document -> Form Page', () => {
 
@@ -15,7 +20,7 @@ describe('Document -> Form Page', () => {
     text: `${firstPlaceholder} and ${secondPlaceholder}`
   };
 
-  const placeholders = [
+  const expectedPlaceholders = [
     <Placeholder>{
       name: 'first-placeholder',
       dataType: 'string'
@@ -36,7 +41,7 @@ describe('Document -> Form Page', () => {
     activatedRoute = new FakeActivatedRoute();
     templateService = jasmine.createSpyObj('TemplateService', {
       'templateFor': of(template),
-      'extractPlaceholdersFrom': placeholders
+      'extractPlaceholdersFrom': expectedPlaceholders
     });
   });
 
@@ -84,7 +89,7 @@ describe('Document -> Form Page', () => {
   const getResult = FakeActivatedRoute.whenRouteIsActivated(
     { 'templateIdentifier': 'asdfasdf' },
     { 'templateIdentifier': 1 },
-    placeholders,
+    expectedPlaceholders,
     () => [fixture, component.placeholders$, activatedRoute],
     () => {
 
@@ -92,7 +97,7 @@ describe('Document -> Form Page', () => {
         expect(templateService.extractPlaceholdersFrom).toHaveBeenCalled();
       });
 
-      describe('result', () => {
+      describe('placeholders', () => {
 
         let result: Array<Placeholder>;
         let hasWasCalledFor: CountContainer;
@@ -102,8 +107,21 @@ describe('Document -> Form Page', () => {
           [result, hasWasCalledFor, getWasCalledFor] = getResult();
         });
 
-        it('should have the correct count of placeholders', () => {
+        it('should have the correct length', () => {
           expect(result.length).toBe(2);
+        });
+
+        describe('form', () => {
+          
+          let form: DebugElement;
+
+          beforeEach(() => {
+            form = fixture.debugElement.query(howToFindForm);
+          });
+
+          it('should exist', () => {
+            expect(form).toBeTruthy();
+          });
         });
         
       });

@@ -7,6 +7,10 @@ import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FormPageComponent } from './form-page.component';
 
+const howToFindPageHeader = (element: DebugElement): boolean =>
+  element.name === 'header'
+  && !!element.classes['page'];
+
 const howToFindForm = (element: DebugElement): boolean => 
   element.name === 'form'
   && element.classes['template'];
@@ -83,6 +87,24 @@ describe('Document -> Form Page', () => {
 
   it('should exist', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('page header', () => {
+    
+    let header: DebugElement;
+
+    beforeEach(() => {
+      header = fixture.debugElement.query(howToFindPageHeader);
+    });
+
+    it('should exist', () => {
+      expect(header).toBeTruthy();
+    });
+
+    it('should contain text', () => {
+      expect(header.nativeElement.innerText).toBeTruthy();
+    });
+
   });
 
   FakeActivatedRoute.whenRouteIsActivated(

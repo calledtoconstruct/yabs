@@ -17,7 +17,11 @@ const howToFindPageFooter = (element: DebugElement): boolean =>
 
 const howToFindForm = (element: DebugElement): boolean => 
   element.name === 'form'
-  && element.classes['template'];
+  && !!element.classes['template'];
+
+const howToFindArticle = (element: DebugElement): boolean =>
+  element.name === 'article'
+  && !!element.classes['template'];
 
 const howToFindInput = (element: DebugElement): boolean =>
   element.name === 'input'
@@ -126,7 +130,7 @@ describe('Document -> Form Page', () => {
     it('should contain text', () => {
       expect(footer.nativeElement.innerText).toBeTruthy();
     });
-    
+
   });
 
   FakeActivatedRoute.whenRouteIsActivated(
@@ -168,11 +172,29 @@ describe('Document -> Form Page', () => {
         describe('form', () => {
           
           let form: DebugElement;
+          
+          beforeEach(() => {
+            form = fixture.debugElement.query(howToFindForm);
+          });
+
+          describe('article', () => {
+            
+            let article: DebugElement;
+
+            beforeEach(() => {
+              article = form.query(howToFindArticle);
+            });
+
+            it('should exist', () => {
+              expect(article).toBeTruthy();
+            });
+
+          });
+
           let labels: Array<DebugElement>;
           let inputs: Array<DebugElement>;
 
           beforeEach(() => {
-            form = fixture.debugElement.query(howToFindForm);
             inputs = form.queryAll(howToFindInput);
             labels = inputs.reduce((result, input) => {
               const label = form.query(howToFindLabelFor(input));

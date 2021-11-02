@@ -11,6 +11,10 @@ const howToFindPageHeader = (element: DebugElement): boolean =>
   element.name === 'header'
   && !!element.classes['page'];
 
+const howToFindPageFooter = (element: DebugElement): boolean =>
+  element.name === 'footer'
+  && !!element.classes['page'];
+
 const howToFindForm = (element: DebugElement): boolean => 
   element.name === 'form'
   && element.classes['template'];
@@ -105,6 +109,24 @@ describe('Document -> Form Page', () => {
       expect(header.nativeElement.innerText).toBeTruthy();
     });
 
+  });
+
+  describe('page footer', () => {
+    
+    let footer: DebugElement;
+
+    beforeEach(() => {
+      footer = fixture.debugElement.query(howToFindPageFooter);
+    });
+
+    it('should exist', () => {
+      expect(footer).toBeTruthy();
+    });
+
+    it('should contain text', () => {
+      expect(footer.nativeElement.innerText).toBeTruthy();
+    });
+    
   });
 
   FakeActivatedRoute.whenRouteIsActivated(

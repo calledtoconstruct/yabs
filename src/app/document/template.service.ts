@@ -30,7 +30,7 @@ export class TemplateService {
   public templateFor(_templateIdentifier: string): Observable<Template> {
     return of(<Template>{
       title: 'aslkdjfasd',
-      text: 'vuianuiwesdafaaasdf'
+      text: '${sdfdfas: string}, ${fjksdsdf: number, break}'
     });
   }
 

@@ -1,1 +1,3 @@
-<form class='template'></form>
+<form class='template'>
+  <input *ngFor='let placeholder of placeholders$ | async' />
+</form>

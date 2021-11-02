@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { Placeholder, Template, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { CountContainer } from 'src/app/test/count-container.type';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
@@ -10,6 +11,9 @@ import { FormPageComponent } from './form-page.component';
 const howToFindForm = (element: DebugElement): boolean => 
   element.name === 'form'
   && element.classes['template'];
+
+const howToFindInput = (element: DebugElement): boolean =>
+  element.name === 'input';
 
 describe('Document -> Form Page', () => {
 
@@ -55,6 +59,7 @@ describe('Document -> Form Page', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [FormPageComponent],
+      imports: [CommonModule],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: TemplateService, useValue: templateService }
@@ -114,14 +119,21 @@ describe('Document -> Form Page', () => {
         describe('form', () => {
           
           let form: DebugElement;
+          let inputs: Array<DebugElement>;
 
           beforeEach(() => {
             form = fixture.debugElement.query(howToFindForm);
+            inputs = form.queryAll(howToFindInput);
           });
 
           it('should exist', () => {
             expect(form).toBeTruthy();
           });
+
+          it('should have an input for each placeholder', () => {
+            expect(inputs.length).toBe(expectedPlaceholders.length);
+          });
+
         });
         
       });

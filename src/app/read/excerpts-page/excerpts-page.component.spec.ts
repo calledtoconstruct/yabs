@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Excerpt, ReadArticleService } from '../read-article.service';
 import { ActivatedRoute } from '@angular/router';
-import { CountContainer } from 'src/app/test/count-container.type';
 import { DebugElement } from '@angular/core';
 import { ExcerptsPageComponent } from './excerpts-page.component';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
@@ -122,157 +121,140 @@ describe('Read -> Excerpts Page', () => {
       <Scenario>{ category: 'national', excerptCount: 'an excerpt', excerpts: [firstExcerpt] }
     ].forEach(scenario => {
 
-      describe(`when route '${scenario.category}' is activated`, () => {
+      FakeActivatedRoute.whenRouteIsActivatedVerifyEmittedValue(
+        { paramMap: { category: scenario.category } },
+        { paramMap: { category: 1 } },
+        () => [fixture, activatedRoute, component.category$],
+        scenario.category === '' ? 'local' : scenario.category,
+        () => {
 
-        let emittedCategory = '';
-        let hasWasCalledFor: CountContainer;
-        let getWasCalledFor: CountContainer;
-
-        beforeEach(() => {
-          const subscription = component.category$.subscribe(data => emittedCategory = data);
-          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({ category: scenario.category });
-          subscription.unsubscribe();
-          fixture.detectChanges();
-        });
-
-        it('should call has for category route parameter', () => {
-          expect(hasWasCalledFor['category']).toBe(1);
-        });
-
-        it('should call get for category route parameter', () => {
-          expect(getWasCalledFor['category']).toBe(1);
-        });
-
-        it(`should provide category '${scenario.category}'`, () => {
-          expect(emittedCategory).toBe(scenario.category === '' ? 'local' : scenario.category);
-        });
-
-        it(`should call read article service once to get excerpts for '${scenario.category}'`, () => {
-          expect(articleService.excerptsForWasCalled).toBe(1);
-        });
-
-        it(`should pass '${scenario.category}' for category parameter when getting excerpts`, () => {
-          expect(articleService.excerptsForCategoryParameterWas).toBe(scenario.category === '' ? 'local' : scenario.category);
-        });
-
-        describe(`when ${scenario.excerptCount} is loaded`, () => {
-
-          beforeEach(() => {
-            articleService.nextExcerpts(scenario.excerpts);
-            fixture.detectChanges();
+          it(`should call read article service once to get excerpts for '${scenario.category}'`, () => {
+            expect(articleService.excerptsForWasCalled).toBe(1);
           });
-
-          describe('user interface', () => {
-
-            scenario.excerpts.forEach(excerpt => {
-
-              describe('anchor', () => {
   
-                let anchor: DebugElement;
-                let titleElement: DebugElement;
-                let textElement: DebugElement;
-                let editorsElement: DebugElement;
-                let brandElement: DebugElement;
-                let brandPhotoElement: DebugElement;
+          it(`should pass '${scenario.category}' for category parameter when getting excerpts`, () => {
+            expect(articleService.excerptsForCategoryParameterWas).toBe(scenario.category === '' ? 'local' : scenario.category);
+          });
   
-                beforeEach(() => {
-                  anchor = fixture.debugElement.query(howToFindAnchor(excerpt.articleIdentifier));
-                  titleElement = anchor.query(howToFindTitleInAnchor);
-                  textElement = anchor.query(howToFindTextInAnchor);
-                  editorsElement = anchor.query(howToFindEditorsInAnchor);
-                  brandElement = anchor.query(howToFindBrandInAnchor);
-                  brandPhotoElement = anchor.query(howToFindBrandPhotoInAnchor);
-                });
+          describe(`when ${scenario.excerptCount} is loaded`, () => {
   
-                it('should exist', () => {
-                  expect(anchor).toBeTruthy();
-                });
+            beforeEach(() => {
+              articleService.nextExcerpts(scenario.excerpts);
+              fixture.detectChanges();
+            });
   
-                describe('title', () => {
+            describe('user interface', () => {
   
-                  it('should exist', () => {
-                    expect(titleElement).toBeTruthy();
-                  });
+              scenario.excerpts.forEach(excerpt => {
   
-                  it(`should contain ${firstExcerpt.title}`, () => {
-                    expect(titleElement.nativeElement.innerText).toBe(firstExcerpt.title);
-                  });
+                describe('anchor', () => {
   
-                });
-  
-                describe('text', () => {
-  
-                  it('should exist', () => {
-                    expect(textElement).toBeTruthy();
-                  });
-  
-                  it(`should contain ${firstExcerpt.text}`, () => {
-                    expect(textElement.nativeElement.innerText).toBe(firstExcerpt.text);
-                  });
-  
-                });
-  
-                describe('editors', () => {
-  
-                  it('should exist', () => {
-                    expect(editorsElement).toBeTruthy();
-                  });
-  
-                  it(`should contain ${firstExcerpt.editors}`, () => {
-                    expect(editorsElement.nativeElement.innerText).toBeCloseTo(firstExcerpt.editors);
-                  });
-  
-                });
-  
-                describe('brand', () => {
-  
-                  it('should exist', () => {
-                    expect(brandElement).toBeTruthy();
-                  });
-  
-                  it(`should contain ${firstExcerpt.brand}`, () => {
-                    expect(brandElement.nativeElement.innerText).toBe(firstExcerpt.brand);
-                  });
-  
-                });
-  
-                describe('brand photo', () => {
-  
-                  it('should exist', () => {
-                    expect(brandPhotoElement).toBeTruthy();
-                  });
-  
-                  it(`should use ${firstExcerpt.brandPhoto} as brand photo source url`, () => {
-                    const fakeImageDirective = brandPhotoElement.injector.get(FakeImageDirective);
-                    expect(fakeImageDirective.src).toBe(firstExcerpt.brandPhoto);
-                  });
-  
-                });
-  
-                describe('when clicked', () => {
+                  let anchor: DebugElement;
+                  let titleElement: DebugElement;
+                  let textElement: DebugElement;
+                  let editorsElement: DebugElement;
+                  let brandElement: DebugElement;
+                  let brandPhotoElement: DebugElement;
   
                   beforeEach(() => {
-                    anchor.nativeElement.click();
+                    anchor = fixture.debugElement.query(howToFindAnchor(excerpt.articleIdentifier));
+                    titleElement = anchor.query(howToFindTitleInAnchor);
+                    textElement = anchor.query(howToFindTextInAnchor);
+                    editorsElement = anchor.query(howToFindEditorsInAnchor);
+                    brandElement = anchor.query(howToFindBrandInAnchor);
+                    brandPhotoElement = anchor.query(howToFindBrandPhotoInAnchor);
                   });
   
-                  it(`should navigate router to /read/articles/${excerpt.articleIdentifier}`, () => {
-                    const fakeRouterLinkDirective = anchor.injector.get(FakeRouterLinkDirective);
-                    expect(fakeRouterLinkDirective.navigatedTo).toEqual(['/read/articles/', excerpt.articleIdentifier]);
+                  it('should exist', () => {
+                    expect(anchor).toBeTruthy();
+                  });
+  
+                  describe('title', () => {
+  
+                    it('should exist', () => {
+                      expect(titleElement).toBeTruthy();
+                    });
+  
+                    it(`should contain ${firstExcerpt.title}`, () => {
+                      expect(titleElement.nativeElement.innerText).toBe(firstExcerpt.title);
+                    });
+  
+                  });
+  
+                  describe('text', () => {
+  
+                    it('should exist', () => {
+                      expect(textElement).toBeTruthy();
+                    });
+  
+                    it(`should contain ${firstExcerpt.text}`, () => {
+                      expect(textElement.nativeElement.innerText).toBe(firstExcerpt.text);
+                    });
+  
+                  });
+  
+                  describe('editors', () => {
+  
+                    it('should exist', () => {
+                      expect(editorsElement).toBeTruthy();
+                    });
+  
+                    it(`should contain ${firstExcerpt.editors}`, () => {
+                      expect(editorsElement.nativeElement.innerText).toBeCloseTo(firstExcerpt.editors);
+                    });
+  
+                  });
+  
+                  describe('brand', () => {
+  
+                    it('should exist', () => {
+                      expect(brandElement).toBeTruthy();
+                    });
+  
+                    it(`should contain ${firstExcerpt.brand}`, () => {
+                      expect(brandElement.nativeElement.innerText).toBe(firstExcerpt.brand);
+                    });
+  
+                  });
+  
+                  describe('brand photo', () => {
+  
+                    it('should exist', () => {
+                      expect(brandPhotoElement).toBeTruthy();
+                    });
+  
+                    it(`should use ${firstExcerpt.brandPhoto} as brand photo source url`, () => {
+                      const fakeImageDirective = brandPhotoElement.injector.get(FakeImageDirective);
+                      expect(fakeImageDirective.src).toBe(firstExcerpt.brandPhoto);
+                    });
+  
+                  });
+  
+                  describe('when clicked', () => {
+  
+                    beforeEach(() => {
+                      anchor.nativeElement.click();
+                    });
+  
+                    it(`should navigate router to /read/articles/${excerpt.articleIdentifier}`, () => {
+                      const fakeRouterLinkDirective = anchor.injector.get(FakeRouterLinkDirective);
+                      expect(fakeRouterLinkDirective.navigatedTo).toEqual(['/read/articles/', excerpt.articleIdentifier]);
+                    });
+  
                   });
   
                 });
   
               });
-
+  
             });
-
+  
+            then();
+  
           });
 
-          then();
-
-        });
-
-      });
+        }
+      );
 
     });
 

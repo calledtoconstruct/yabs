@@ -1,8 +1,8 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Article, WriteArticleService } from '../write-article.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatTabGroupHarness, MatTabHarness } from '@angular/material/tabs/testing';
 import { CdkTableModule } from '@angular/cdk/table';
-import { CountContainer } from 'src/app/test/count-container.type';
 import { DashboardComponent } from './dashboard.component';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
@@ -10,12 +10,27 @@ import { FakeRouter } from '../../fake/router.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { FakeWriteArticleService } from '../fake/write-article-service.fake';
 import { HarnessLoader } from '@angular/cdk/testing';
-import { MatTabGroupHarness } from '@angular/material/tabs/testing';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { User } from '@angular/fire/auth';
 import { UserService } from '../../user.service';
+
+const howToFindPageHeader = (element: DebugElement): boolean =>
+  element.name === 'header'
+  && !!element.classes['page'];
+
+const howToFindNavigation = (element: DebugElement): boolean =>
+  element.name === 'nav'
+  && !!element.classes['page'];
+
+const howToFindTabHeader = (element: DebugElement): boolean =>
+  element.name === 'header'
+  && !!element.classes['tab'];
+
+const howToFindTabFooter = (element: DebugElement): boolean =>
+  element.name === 'footer'
+  && element.classes['tab'];
 
 const howToFindTable = (element: DebugElement): boolean =>
   element.name === 'table'
@@ -157,124 +172,200 @@ describe('Write -> Dashboard', () => {
 
   const verifyRoute = (tab: TabDefinition): void => {
 
-    describe(`when route ${tab.label} is activated`, () => {
+    FakeActivatedRoute.whenRouteIsActivated(
+      { queryParamMap: { tab: tab.index.toString() } },
+      { queryParamMap: { tab: 1 } },
+      () => [fixture, activatedRoute],
+      () => {
 
-      let hasWasCalledFor: CountContainer;
-      let getWasCalledFor: CountContainer;
+        describe('header', () => {
 
-      beforeEach(() => {
-        [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextQueryParamMap({ tab: tab.index });
-        fixture.detectChanges();
-      });
+          let header: DebugElement;
 
-      it('should call query param map has', () => {
-        expect(hasWasCalledFor['tab']).toBe(1);
-      });
-
-      it('should call query param map get', () => {
-        expect(getWasCalledFor['tab']).toBe(1);
-      });
-
-      describe('tab group', () => {
-
-        let tabGroups: Array<MatTabGroupHarness>;
-
-        beforeEach(async () => {
-          tabGroups = await loader.getAllHarnesses(MatTabGroupHarness);
-        });
-
-        it('should exist', () => {
-          expect(tabGroups.length).toBe(1);
-        });
-
-        describe(`when ${tab.name} is selected`, () => {
-
-          let tabGroup: MatTabGroupHarness;
-
-          beforeEach(async () => {
-            const tabGroups = await loader.getAllHarnesses(MatTabGroupHarness);
-            tabGroup = tabGroups[0];
-            await tabGroup.selectTab({
-              label: tab.label
-            });
+          beforeEach(() => {
+            header = fixture.debugElement.query(howToFindPageHeader);
           });
 
           it('should exist', () => {
-            expect(tabGroup).toBeTruthy();
+            expect(header).toBeTruthy();
           });
 
-          describe('article service collection', () => {
+          it('should contain text', () => {
+            expect(header.nativeElement.innerText).toBeTruthy();
+          });
 
-            describe('even when route is activated multiple times', () => {
+        });
+
+        describe('navigation', () => {
+
+          let navigation: DebugElement;
+
+          beforeEach(() => {
+            navigation = fixture.debugElement.query(howToFindNavigation);
+          });
+
+          it('should exist', () => {
+            expect(navigation).toBeTruthy();
+          });
+
+        });
+
+        describe('tab group', () => {
+
+          let tabGroups: Array<MatTabGroupHarness>;
+
+          beforeEach(async () => {
+            tabGroups = await loader.getAllHarnesses(MatTabGroupHarness);
+          });
+
+          it('should exist', () => {
+            expect(tabGroups.length).toBe(1);
+          });
+
+          describe(`when ${tab.name} is selected`, () => {
+
+            let tabGroup: MatTabGroupHarness;
+
+            beforeEach(async () => {
+              const tabGroups = await loader.getAllHarnesses(MatTabGroupHarness);
+              tabGroup = tabGroups[0];
+              await tabGroup.selectTab({
+                label: tab.label
+              });
+            });
+
+            it('should exist', () => {
+              expect(tabGroup).toBeTruthy();
+            });
+
+            describe('selected tab', () => {
+
+              let selectedTab: MatTabHarness;
+
+              beforeEach(async () => {
+                selectedTab = await tabGroup.getSelectedTab();
+              });
+
+              it('should exist', () => {
+                expect(selectedTab).toBeTruthy();
+              });
+
+              it('should have the correct label', async () => {
+                expect(await selectedTab.getLabel()).toBe(tab.label);
+              });
+
+            });
+
+            describe('tab header', () => {
+
+              let header: DebugElement;
 
               beforeEach(() => {
-                activatedRoute.nextQueryParamMap({ tab: tab.index });
-                fixture.detectChanges();
+                header = fixture.debugElement.query(howToFindTabHeader);
               });
 
-              it(`should be called once for ${tab.label} status`, () => {
-                expect(articleService.collectionCalledFor[tab.label]).toBe(1);
+              it('should exist', () => {
+                expect(header).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(header.nativeElement.innerText).toBeTruthy();
               });
 
             });
 
-            it(`should be called for ${tab.label} status`, () => {
-              expect(articleService.collectionCalledFor[tab.label]).toBe(1);
+            describe('tab footer', () => {
+
+              let footer: DebugElement;
+
+              beforeEach(() => {
+                footer = fixture.debugElement.query(howToFindTabFooter);
+              });
+
+              it('should exist', () => {
+                expect(footer).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(footer.nativeElement.innerText).toBeTruthy();
+              });
+
             });
 
-            [{
-              label: 'an article is',
-              articles: new Array<Article>(
-                <Article>{ title: 'alsdjfa', text: 'uhfwiu' }
-              )
-            }, {
-              label: 'three articles are',
-              articles: new Array<Article>(
-                <Article>{ title: 'alsdjfa', text: 'uhfwiu' },
-                <Article>{ title: 'vuybybwas', text: 'wyebf' },
-                <Article>{ title: 'qvasduf', text: 'pvasdf' }
-              )
-            }].forEach(item => {
+            describe('article service collection', () => {
 
-              describe(`when ${item.label} returned`, () => {
+              describe('even when route is activated multiple times', () => {
 
                 beforeEach(() => {
-                  articleService.nextArticlesFor(item.articles);
+                  activatedRoute.nextQueryParamMap({ tab: tab.index });
                   fixture.detectChanges();
                 });
 
-                describe('table', () => {
+                it(`should be called once for ${tab.label} status`, () => {
+                  expect(articleService.collectionCalledFor[tab.label]).toBe(1);
+                });
 
-                  let table: DebugElement;
-                  let thead: DebugElement;
-                  let tbody: DebugElement;
-                  let tfoot: DebugElement;
+              });
+
+              it(`should be called for ${tab.label} status`, () => {
+                expect(articleService.collectionCalledFor[tab.label]).toBe(1);
+              });
+
+              [{
+                label: 'an article is',
+                articles: new Array<Article>(
+                  <Article>{ title: 'alsdjfa', text: 'uhfwiu' }
+                )
+              }, {
+                label: 'three articles are',
+                articles: new Array<Article>(
+                  <Article>{ title: 'alsdjfa', text: 'uhfwiu' },
+                  <Article>{ title: 'vuybybwas', text: 'wyebf' },
+                  <Article>{ title: 'qvasduf', text: 'pvasdf' }
+                )
+              }].forEach(item => {
+
+                describe(`when ${item.label} returned`, () => {
 
                   beforeEach(() => {
-                    table = fixture.debugElement.query(howToFindTable);
-                    thead = table.query(howToFindTableHeader);
-                    tbody = table.query(howToFindTableBody);
-                    tfoot = table.query(howToFindTableFooter);
+                    articleService.nextArticlesFor(item.articles);
+                    fixture.detectChanges();
                   });
 
-                  it('should exist', () => {
-                    expect(table).toBeTruthy();
-                  });
+                  describe('table', () => {
 
-                  it('should include a header', () => {
-                    expect(thead).toBeTruthy();
-                  });
+                    let table: DebugElement;
+                    let thead: DebugElement;
+                    let tbody: DebugElement;
+                    let tfoot: DebugElement;
 
-                  it('should include a body', () => {
-                    expect(tbody).toBeTruthy();
-                  });
+                    beforeEach(() => {
+                      table = fixture.debugElement.query(howToFindTable);
+                      thead = table.query(howToFindTableHeader);
+                      tbody = table.query(howToFindTableBody);
+                      tfoot = table.query(howToFindTableFooter);
+                    });
 
-                  it('should include a footer', () => {
-                    expect(tfoot).toBeTruthy();
-                  });
+                    it('should exist', () => {
+                      expect(table).toBeTruthy();
+                    });
 
-                  it(`should have a row count of ${item.articles.length}`, () => {
-                    expect(table.queryAll(howToFindTableBody).length).toBe(item.articles.length);
+                    it('should include a header', () => {
+                      expect(thead).toBeTruthy();
+                    });
+
+                    it('should include a body', () => {
+                      expect(tbody).toBeTruthy();
+                    });
+
+                    it('should include a footer', () => {
+                      expect(tfoot).toBeTruthy();
+                    });
+
+                    it(`should have a row count of ${item.articles.length}`, () => {
+                      expect(table.queryAll(howToFindTableBody).length).toBe(item.articles.length);
+                    });
+
                   });
 
                 });
@@ -287,9 +378,8 @@ describe('Write -> Dashboard', () => {
 
         });
 
-      });
-
-    });
+      }
+    );
 
   };
 

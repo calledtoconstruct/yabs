@@ -10,8 +10,8 @@ const routes: Routes = [
   { path: 'template/create', component: TemplatePageComponent },
   { path: 'template/:templateIdentifier/complete', component: FormPageComponent },
   { path: 'template/:templateIdentifier', component: TemplatePageComponent },
-  { path: 'document/create', component: DocumentPageComponent },
-  { path: 'document/:documentIdentifier', component: DocumentPageComponent },
+  { path: 'create', component: DocumentPageComponent },
+  { path: ':documentIdentifier', component: DocumentPageComponent },
   { path: '', component: DashboardComponent }
 ];
 

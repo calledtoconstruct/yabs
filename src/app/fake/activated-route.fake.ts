@@ -55,7 +55,7 @@ export class FakeActivatedRoute {
     expectedValue: TObserved,
     get: () => [ComponentFixture<TComponent>, Observable<TObserved>, FakeActivatedRoute],
     then: () => void
-  ): () => [TObserved, CountContainer, CountContainer] {
+  ): () => TObserved {
     const routeString = JSON.stringify(route);
 
     let emittedValue: TObserved;
@@ -98,6 +98,6 @@ export class FakeActivatedRoute {
 
     });
 
-    return () => [emittedValue, hasWasCalledFor, getWasCalledFor];
+    return () => emittedValue;
   }
 }

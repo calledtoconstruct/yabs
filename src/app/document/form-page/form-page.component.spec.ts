@@ -3,7 +3,6 @@ import { Observable, of } from 'rxjs';
 import { Placeholder, Template, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CountContainer } from 'src/app/test/count-container.type';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FormPageComponent } from './form-page.component';
@@ -13,7 +12,15 @@ const howToFindForm = (element: DebugElement): boolean =>
   && element.classes['template'];
 
 const howToFindInput = (element: DebugElement): boolean =>
-  element.name === 'input';
+  element.name === 'input'
+  && !!element.attributes['id']
+  && !!element.attributes['name'];
+
+const howToFindLabelFor = (input: DebugElement) => 
+  (element: DebugElement): boolean =>
+    element.name === 'label'
+    && !!element.attributes['for']
+    && element.attributes['for'] === input.attributes['id'];
 
 describe('Document -> Form Page', () => {
 
@@ -104,26 +111,30 @@ describe('Document -> Form Page', () => {
 
       describe('placeholders', () => {
 
-        let result: Array<Placeholder>;
-        let hasWasCalledFor: CountContainer;
-        let getWasCalledFor: CountContainer;
+        let receivedPlacholders: Array<Placeholder>;
 
         beforeEach(() => {
-          [result, hasWasCalledFor, getWasCalledFor] = getResult();
+          receivedPlacholders = getResult();
         });
 
         it('should have the correct length', () => {
-          expect(result.length).toBe(2);
+          expect(receivedPlacholders.length).toBe(2);
         });
 
         describe('form', () => {
           
           let form: DebugElement;
+          let labels: Array<DebugElement>;
           let inputs: Array<DebugElement>;
 
           beforeEach(() => {
             form = fixture.debugElement.query(howToFindForm);
             inputs = form.queryAll(howToFindInput);
+            labels = inputs.reduce((result, input) => {
+              const label = form.query(howToFindLabelFor(input));
+              result.push(label);
+              return result;
+            }, new Array<DebugElement>());
           });
 
           it('should exist', () => {
@@ -132,6 +143,10 @@ describe('Document -> Form Page', () => {
 
           it('should have an input for each placeholder', () => {
             expect(inputs.length).toBe(expectedPlaceholders.length);
+          });
+
+          it('should have a label for each input', () => {
+            expect(labels.length).toBe(expectedPlaceholders.length);
           });
 
         });

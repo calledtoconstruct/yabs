@@ -1,3 +1,6 @@
 <form class='template'>
-  <input *ngFor='let placeholder of placeholders$ | async' />
+  <ng-container *ngFor='let placeholder of placeholders$ | async'>
+    <label [for]='placeholder.name'>{{ placeholder.name }}</label>
+    <input [name]='placeholder.name' [id]='placeholder.name' />
+  </ng-container>
 </form>

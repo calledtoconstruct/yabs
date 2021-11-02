@@ -1,5 +1,5 @@
 import { convertToParamMap, ParamMap, Params } from '@angular/router';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, of, ReplaySubject } from 'rxjs';
 import { ComponentFixture } from '@angular/core/testing';
 import { CountContainer } from '../test/count-container.type';
 
@@ -49,44 +49,120 @@ export class FakeActivatedRoute {
     this.queryParamMapSubject.complete();
   }
 
-  public static whenRouteIsActivated<TComponent, TObserved>(
-    route: { [key: string]: string },
-    expectedCount: { [key: string]: number },
+  public static whenRouteIsActivated<TComponent>(
+    route: {
+      paramMap?: { [key: string]: string },
+      queryParamMap?: { [key: string]: string }
+    },
+    expectedCount: {
+      paramMap?: { [key: string]: number },
+      queryParamMap?: { [key: string]: number }
+    },
+    get: () => [ComponentFixture<TComponent>, FakeActivatedRoute],
+    then: () => void
+  ): void {
+    FakeActivatedRoute.whenRouteIsActivatedImplementation(
+      route,
+      expectedCount,
+      () => [get()[0], get()[1], of(null)],
+      null,
+      then
+    );
+  }
+
+  public static whenRouteIsActivatedVerifyEmittedValue<TComponent, TObserved>(
+    route: {
+      paramMap?: { [key: string]: string },
+      queryParamMap?: { [key: string]: string }
+    },
+    expectedCount: {
+      paramMap?: { [key: string]: number },
+      queryParamMap?: { [key: string]: number }
+    },
+    get: () => [ComponentFixture<TComponent>, FakeActivatedRoute, Observable<TObserved>],
     expectedValue: TObserved,
-    get: () => [ComponentFixture<TComponent>, Observable<TObserved>, FakeActivatedRoute],
+    then: () => void
+  ): () => TObserved {
+    return FakeActivatedRoute.whenRouteIsActivatedImplementation(
+      route,
+      expectedCount,
+      get,
+      expectedValue,
+      then
+    );
+  }
+
+  private static whenRouteIsActivatedImplementation<TComponent, TObserved>(
+    route: {
+      paramMap?: { [key: string]: string },
+      queryParamMap?: { [key: string]: string }
+    },
+    expectedCount: {
+      paramMap?: { [key: string]: number },
+      queryParamMap?: { [key: string]: number }
+    },
+    get: () => [ComponentFixture<TComponent>, FakeActivatedRoute, Observable<TObserved>],
+    expectedValue: TObserved,
     then: () => void
   ): () => TObserved {
     const routeString = JSON.stringify(route);
 
     let emittedValue: TObserved;
-    let hasWasCalledFor: CountContainer;
-    let getWasCalledFor: CountContainer;
+    let paramMapHasWasCalledFor: CountContainer;
+    let paramMapGetWasCalledFor: CountContainer;
+    let queryParamMapHasWasCalledFor: CountContainer;
+    let queryParamMapGetWasCalledFor: CountContainer;
 
     describe(`when route '${routeString}' is activated`, () => {
 
       beforeEach(() => {
-        const [fixture, observable, activatedRoute] = get();
+        const [fixture, activatedRoute, observable] = get();
         const subscription = observable.subscribe(data => emittedValue = data);
-        [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap(route);
+        if (route.paramMap) {
+          [paramMapHasWasCalledFor, paramMapGetWasCalledFor] = activatedRoute.nextParamMap(route.paramMap);
+        }
+        if (route.queryParamMap) {
+          [queryParamMapHasWasCalledFor, queryParamMapGetWasCalledFor] = activatedRoute.nextQueryParamMap(route.queryParamMap);
+        }
         subscription.unsubscribe();
         fixture.detectChanges();
       });
 
-      it('should emit', () => {
-        expect(emittedValue).toBeTruthy();
+      if (expectedValue) {
+        it('should emit', () => {
+          expect(emittedValue).toBeTruthy();
+        });
+      }
+
+      Object.keys(expectedCount.paramMap || {}).forEach(key => {
+
+        if (expectedCount.paramMap) {
+          const count = expectedCount.paramMap[key];
+
+          it(`should call has for ${key}`, () => {
+            expect(paramMapHasWasCalledFor[key]).toBe(count);
+          });
+
+          it(`should call get for ${key}`, () => {
+            expect(paramMapGetWasCalledFor[key]).toBe(count);
+          });
+        }
+
       });
 
-      Object.keys(expectedCount).forEach(key => {
+      Object.keys(expectedCount.queryParamMap || {}).forEach(key => {
 
-        const count = expectedCount[key];
+        if (expectedCount.queryParamMap) {
+          const count = expectedCount.queryParamMap[key];
 
-        it(`should call has for ${key}`, () => {
-          expect(hasWasCalledFor[key]).toBe(count);
-        });
+          it(`should call has for ${key}`, () => {
+            expect(queryParamMapHasWasCalledFor[key]).toBe(count);
+          });
 
-        it(`should call get for ${key}`, () => {
-          expect(getWasCalledFor[key]).toBe(count);
-        });
+          it(`should call get for ${key}`, () => {
+            expect(queryParamMapGetWasCalledFor[key]).toBe(count);
+          });
+        }
 
       });
 

@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesPageComponent } from './articles-page.component';
-import { CountContainer } from '../../test/count-container.type';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
@@ -203,318 +202,305 @@ describe('Write -> Articles Page', () => {
       then: () => void
     ) => {
 
-      describe('when route is activated', () => {
+      FakeActivatedRoute.whenRouteIsActivated(
+        { paramMap: { articleIdentifier: articleIdentifier } },
+        { paramMap: { articleIdentifier: 1 } },
+        () => [fixture, activatedRoute],
+        () => {
 
-        let hasWasCalledFor: CountContainer;
-        let getWasCalledFor: CountContainer;
+          describe('header', () => {
 
-        beforeEach(() => {
-          [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({
-            articleIdentifier: articleIdentifier
-          });
-          fixture.detectChanges();
-        });
-
-        it('should call has for article identifier route parameter', () => {
-          expect(hasWasCalledFor['articleIdentifier']).toBe(1);
-        });
-
-        it('should call get for article identifier route parameter', () => {
-          expect(getWasCalledFor['articleIdentifier']).toBe(1);
-        });
-
-        describe('header', () => {
-
-          let header: DebugElement;
-
-          beforeEach(() => {
-            header = fixture.debugElement.query(howToFindPageHeader);
-          });
-
-          it('should exist', () => {
-            expect(header).toBeTruthy();
-          });
-
-          it('should contain text', () => {
-            expect(header.nativeElement.innerText).toBeTruthy();
-          });
-
-        });
-
-        describe('form', () => {
-
-          let form: DebugElement;
-
-          beforeEach(() => {
-            form = fixture.debugElement.query(howToFindArticleForm);
-          });
-
-          it('should exist', () => {
-            expect(form).toBeTruthy();
-          });
-
-          describe('article', () => {
-
-            let article: DebugElement;
+            let header: DebugElement;
 
             beforeEach(() => {
-              article = form.query(howToFindArticle);
+              header = fixture.debugElement.query(howToFindPageHeader);
             });
 
             it('should exist', () => {
-              expect(article).toBeTruthy();
+              expect(header).toBeTruthy();
             });
 
-            describe('header', () => {
+            it('should contain text', () => {
+              expect(header.nativeElement.innerText).toBeTruthy();
+            });
 
-              let header: DebugElement;
+          });
+
+          describe('form', () => {
+
+            let form: DebugElement;
+
+            beforeEach(() => {
+              form = fixture.debugElement.query(howToFindArticleForm);
+            });
+
+            it('should exist', () => {
+              expect(form).toBeTruthy();
+            });
+
+            describe('article', () => {
+
+              let article: DebugElement;
 
               beforeEach(() => {
-                header = article.query(howToFindArticleHeader);
+                article = form.query(howToFindArticle);
               });
 
               it('should exist', () => {
-                expect(header).toBeTruthy();
+                expect(article).toBeTruthy();
               });
 
-              it('should contain text', () => {
-                expect(header.nativeElement.innerText).toBeTruthy();
-              });
+              describe('header', () => {
 
-            });
+                let header: DebugElement;
 
-            describe('edit section', () => {
-
-              let editSection: DebugElement;
-
-              let titleInput: DebugElement;
-              let textInput: DebugElement;
-
-              beforeEach(() => {
-                editSection = article.query(howToFindEditSection);
-                titleInput = editSection.query(howToFindTitleInput);
-                textInput = editSection.query(howToFindTextInput);
-              });
-
-              it('should exist', () => {
-                expect(editSection).toBeTruthy();
-              });
-
-              it('should display title edit field', () => {
-                expect(titleInput).toBeTruthy();
-              });
-
-              it('should display text edit field', () => {
-                expect(textInput).toBeTruthy();
-              });
-
-              describe('title input', () => {
-
-                thenTitleInput(() => titleInput);
-
-                describe('when the user enters text', () => {
-
-                  const title = 'byauvdhygdyf';
-                  let titleValue: string;
-
-                  beforeEach(() => {
-                    titleInput.nativeElement.value = title;
-                    titleInput.nativeElement.dispatchEvent(new Event('input'));
-                    titleValue = component.formGroup.value['title'];
-                  });
-
-                  it('should update form group value', () => {
-                    expect(titleValue).toBe(title);
-                  });
-
-                });
-
-              });
-
-              describe('text input', () => {
-
-                thenTextInput(() => textInput);
-
-                describe('when user enters text', () => {
-
-                  const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
-                  let textValue: string;
-
-                  beforeEach(() => {
-                    textInput.nativeElement.value = text;
-                    textInput.nativeElement.dispatchEvent(new Event('input'));
-                    textValue = component.formGroup.value['text'];
-                  });
-
-                  it('should update form group value', () => {
-                    expect(textValue).toBe(text);
-                  });
-
-                });
-
-              });
-
-            });
-
-            describe('action section', () => {
-
-              let actionSection: DebugElement;
-              let saveOnlyRadio: DebugElement;
-              let saveOnlyLabel: DebugElement;
-              let saveAndRequestEditRadio: DebugElement;
-              let saveAndRequestEditLabel: DebugElement;
-              let saveAndRequestCheckRadio: DebugElement;
-              let saveAndRequestCheckLabel: DebugElement;
-              let doneButton: DebugElement;
-
-              beforeEach(() => {
-                actionSection = article.query(howToFindActionSection);
-                saveOnlyRadio = actionSection.query(howToFindSaveOnlyRadio);
-                saveOnlyLabel = actionSection.query(howToFindSaveOnlyLabel);
-                saveAndRequestEditRadio = actionSection.query(howToFindSaveAndRequestEditRadio);
-                saveAndRequestEditLabel = actionSection.query(howToFindSaveAndRequestEditLabel);
-                saveAndRequestCheckRadio = actionSection.query(howToFindSaveAndRequestCheckRadio);
-                saveAndRequestCheckLabel = actionSection.query(howToFindSaveAndRequestCheckLabel);
-                doneButton = actionSection.query(howToFindDoneButton);
-              });
-
-              it('should display save only radio button', () => {
-                expect(saveOnlyRadio).toBeTruthy();
-              });
-  
-              it('should display save only label', () => {
-                expect(saveOnlyLabel).toBeTruthy();
-              });
-  
-              it('should display save and request edit radio button', () => {
-                expect(saveAndRequestEditRadio).toBeTruthy();
-              });
-  
-              it('should display save and request edit label', () => {
-                expect(saveAndRequestEditLabel).toBeTruthy();
-              });
-  
-              it('should display save and request check radio button', () => {
-                expect(saveAndRequestCheckRadio).toBeTruthy();
-              });
-  
-              it('should display save and request check label', () => {
-                expect(saveAndRequestCheckLabel).toBeTruthy();
-              });
-  
-              it('should display done button', () => {
-                expect(doneButton).toBeTruthy();
-              });
-  
-              describe('save only radio button', () => {
-  
-                thenSaveOnly(() => saveOnlyRadio);
-  
-              });
-  
-              describe('save and request edit radio button', () => {
-  
-                thenSaveAndRequestEdit(() => saveAndRequestEditRadio);
-  
-                describe('when clicked', () => {
-  
-                  let operationValue: string;
-  
-                  beforeEach(() => {
-                    saveAndRequestEditRadio.nativeElement.click();
-                    operationValue = component.formGroup.value['operation'];
-                  });
-  
-                  it('should update form group', () => {
-                    expect(operationValue).toBe('saveAndRequestEdit');
-                  });
-  
-                });
-  
-              });
-  
-              describe('save and request check radio button', () => {
-  
-                thenSaveAndRequestCheck(() => saveAndRequestCheckRadio);
-  
-                describe('when clicked', () => {
-  
-                  let operationValue: string;
-  
-                  beforeEach(() => {
-                    saveAndRequestCheckRadio.nativeElement.click();
-                    operationValue = component.formGroup.value['operation'];
-                  });
-  
-                  it('should update form group', () => {
-                    expect(operationValue).toBe('saveAndRequestCheck');
-                  });
-  
-                });
-  
-              });
-  
-              describe('when user clicks done button', () => {
-  
                 beforeEach(() => {
-                  doneButton.nativeElement.click();
+                  header = article.query(howToFindArticleHeader);
                 });
-  
-                it('should call save article', () => {
-                  expect(articleService.saveArticleCalled).toBe(1);
+
+                it('should exist', () => {
+                  expect(header).toBeTruthy();
                 });
-  
-                it('should pass article to save article', () => {
-                  expect(articleService.articleToSave).toBeTruthy();
+
+                it('should contain text', () => {
+                  expect(header.nativeElement.innerText).toBeTruthy();
                 });
-  
+
               });
-              
+
+              describe('edit section', () => {
+
+                let editSection: DebugElement;
+
+                let titleInput: DebugElement;
+                let textInput: DebugElement;
+
+                beforeEach(() => {
+                  editSection = article.query(howToFindEditSection);
+                  titleInput = editSection.query(howToFindTitleInput);
+                  textInput = editSection.query(howToFindTextInput);
+                });
+
+                it('should exist', () => {
+                  expect(editSection).toBeTruthy();
+                });
+
+                it('should display title edit field', () => {
+                  expect(titleInput).toBeTruthy();
+                });
+
+                it('should display text edit field', () => {
+                  expect(textInput).toBeTruthy();
+                });
+
+                describe('title input', () => {
+
+                  thenTitleInput(() => titleInput);
+
+                  describe('when the user enters text', () => {
+
+                    const title = 'byauvdhygdyf';
+                    let titleValue: string;
+
+                    beforeEach(() => {
+                      titleInput.nativeElement.value = title;
+                      titleInput.nativeElement.dispatchEvent(new Event('input'));
+                      titleValue = component.formGroup.value['title'];
+                    });
+
+                    it('should update form group value', () => {
+                      expect(titleValue).toBe(title);
+                    });
+
+                  });
+
+                });
+
+                describe('text input', () => {
+
+                  thenTextInput(() => textInput);
+
+                  describe('when user enters text', () => {
+
+                    const text = 'uybusydufdhfsdfjnagasdjfkjsldfj';
+                    let textValue: string;
+
+                    beforeEach(() => {
+                      textInput.nativeElement.value = text;
+                      textInput.nativeElement.dispatchEvent(new Event('input'));
+                      textValue = component.formGroup.value['text'];
+                    });
+
+                    it('should update form group value', () => {
+                      expect(textValue).toBe(text);
+                    });
+
+                  });
+
+                });
+
+              });
+
+              describe('action section', () => {
+
+                let actionSection: DebugElement;
+                let saveOnlyRadio: DebugElement;
+                let saveOnlyLabel: DebugElement;
+                let saveAndRequestEditRadio: DebugElement;
+                let saveAndRequestEditLabel: DebugElement;
+                let saveAndRequestCheckRadio: DebugElement;
+                let saveAndRequestCheckLabel: DebugElement;
+                let doneButton: DebugElement;
+
+                beforeEach(() => {
+                  actionSection = article.query(howToFindActionSection);
+                  saveOnlyRadio = actionSection.query(howToFindSaveOnlyRadio);
+                  saveOnlyLabel = actionSection.query(howToFindSaveOnlyLabel);
+                  saveAndRequestEditRadio = actionSection.query(howToFindSaveAndRequestEditRadio);
+                  saveAndRequestEditLabel = actionSection.query(howToFindSaveAndRequestEditLabel);
+                  saveAndRequestCheckRadio = actionSection.query(howToFindSaveAndRequestCheckRadio);
+                  saveAndRequestCheckLabel = actionSection.query(howToFindSaveAndRequestCheckLabel);
+                  doneButton = actionSection.query(howToFindDoneButton);
+                });
+
+                it('should display save only radio button', () => {
+                  expect(saveOnlyRadio).toBeTruthy();
+                });
+
+                it('should display save only label', () => {
+                  expect(saveOnlyLabel).toBeTruthy();
+                });
+
+                it('should display save and request edit radio button', () => {
+                  expect(saveAndRequestEditRadio).toBeTruthy();
+                });
+
+                it('should display save and request edit label', () => {
+                  expect(saveAndRequestEditLabel).toBeTruthy();
+                });
+
+                it('should display save and request check radio button', () => {
+                  expect(saveAndRequestCheckRadio).toBeTruthy();
+                });
+
+                it('should display save and request check label', () => {
+                  expect(saveAndRequestCheckLabel).toBeTruthy();
+                });
+
+                it('should display done button', () => {
+                  expect(doneButton).toBeTruthy();
+                });
+
+                describe('save only radio button', () => {
+
+                  thenSaveOnly(() => saveOnlyRadio);
+
+                });
+
+                describe('save and request edit radio button', () => {
+
+                  thenSaveAndRequestEdit(() => saveAndRequestEditRadio);
+
+                  describe('when clicked', () => {
+
+                    let operationValue: string;
+
+                    beforeEach(() => {
+                      saveAndRequestEditRadio.nativeElement.click();
+                      operationValue = component.formGroup.value['operation'];
+                    });
+
+                    it('should update form group', () => {
+                      expect(operationValue).toBe('saveAndRequestEdit');
+                    });
+
+                  });
+
+                });
+
+                describe('save and request check radio button', () => {
+
+                  thenSaveAndRequestCheck(() => saveAndRequestCheckRadio);
+
+                  describe('when clicked', () => {
+
+                    let operationValue: string;
+
+                    beforeEach(() => {
+                      saveAndRequestCheckRadio.nativeElement.click();
+                      operationValue = component.formGroup.value['operation'];
+                    });
+
+                    it('should update form group', () => {
+                      expect(operationValue).toBe('saveAndRequestCheck');
+                    });
+
+                  });
+
+                });
+
+                describe('when user clicks done button', () => {
+
+                  beforeEach(() => {
+                    doneButton.nativeElement.click();
+                  });
+
+                  it('should call save article', () => {
+                    expect(articleService.saveArticleCalled).toBe(1);
+                  });
+
+                  it('should pass article to save article', () => {
+                    expect(articleService.articleToSave).toBeTruthy();
+                  });
+
+                });
+
+              });
+
+              describe('footer', () => {
+
+                let footer: DebugElement;
+
+                beforeEach(() => {
+                  footer = article.query(howToFindArticleFooter);
+                });
+
+                it('should exist', () => {
+                  expect(footer).toBeTruthy();
+                });
+
+                it('should contain text', () => {
+                  expect(footer.nativeElement.innerText).toBeTruthy();
+                });
+
+              });
+
             });
 
-            describe('footer', () => {
+          });
 
-              let footer: DebugElement;
+          describe('footer', () => {
 
-              beforeEach(() => {
-                footer = article.query(howToFindArticleFooter);
-              });
+            let footer: DebugElement;
 
-              it('should exist', () => {
-                expect(footer).toBeTruthy();
-              });
+            beforeEach(() => {
+              footer = fixture.debugElement.query(howToFindPageFooter);
+            });
 
-              it('should contain text', () => {
-                expect(footer.nativeElement.innerText).toBeTruthy();
-              });
+            it('should exist', () => {
+              expect(footer).toBeTruthy();
+            });
 
+            it('should contain text', () => {
+              expect(footer.nativeElement.innerText).toBeTruthy();
             });
 
           });
 
-        });
+          then();
 
-        describe('footer', () => {
-
-          let footer: DebugElement;
-
-          beforeEach(() => {
-            footer = fixture.debugElement.query(howToFindPageFooter);
-          });
-
-          it('should exist', () => {
-            expect(footer).toBeTruthy();
-          });
-
-          it('should contain text', () => {
-            expect(footer.nativeElement.innerText).toBeTruthy();
-          });
-
-        });
-
-        then();
-
-      });
+        }
+      );
 
     };
 
@@ -689,82 +675,69 @@ describe('Write -> Articles Page', () => {
 
   FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
 
-    describe('when passed article identifier "new"', () => {
+    FakeActivatedRoute.whenRouteIsActivated(
+      { paramMap: { articleIdentifier: 'new' } },
+      { paramMap: { articleIdentifier: 1 } },
+      () => [fixture, activatedRoute],
+      () => {
 
-      let hasWasCalledFor: CountContainer;
-      let getWasCalledFor: CountContainer;
-
-      beforeEach(() => {
-        [hasWasCalledFor, getWasCalledFor] = activatedRoute.nextParamMap({
-          articleIdentifier: 'new'
+        it('should not call article service', () => {
+          const times = Object.keys(articleService.articleCalledFor)
+            .map((key: string) => articleService.articleCalledFor[key])
+            .reduce((accumulator, value) => accumulator + value, 0);
+          expect(times).toBe(0);
         });
-        fixture.detectChanges();
-      });
+  
+        it('should not display title edit field', () => {
+          const element = fixture.debugElement;
+          const target = element.query(howToFindTitleInput);
+          expect(target).toBeFalsy();
+        });
+  
+        it('should not display text edit field', () => {
+          const element = fixture.debugElement;
+          const target = element.query(howToFindTextInput);
+          expect(target).toBeFalsy();
+        });
+  
+        it('should not display save only radio button', () => {
+          const element = fixture.debugElement;
+          const target = element.query(howToFindSaveOnlyRadio);
+          expect(target).toBeFalsy();
+        });
+  
+        it('should not display save only label', () => {
+          const element = fixture.debugElement;
+          const target = element.query(howToFindSaveOnlyLabel);
+          expect(target).toBeFalsy();
+        });
+  
+        it('should not display save and request edit radio button', () => {
+          const element = fixture.debugElement;
+          const target = element.query(howToFindSaveAndRequestEditRadio);
+          expect(target).toBeFalsy();
+        });
+  
+        it('should not display save and request edit radio button', () => {
+          const element = fixture.debugElement;
+          const target = element.query(howToFindSaveAndRequestEditLabel);
+          expect(target).toBeFalsy();
+        });
+  
+        it('should not display save and request check radio button', () => {
+          const element = fixture.debugElement;
+          const target = element.query(howToFindSaveAndRequestCheckRadio);
+          expect(target).toBeFalsy();
+        });
+  
+        it('should not display save and request check radio button', () => {
+          const element = fixture.debugElement;
+          const target = element.query(howToFindSaveAndRequestCheckLabel);
+          expect(target).toBeFalsy();
+        });
 
-      it('should call has for article identifier route parameter', () => {
-        expect(hasWasCalledFor['articleIdentifier']).toBeGreaterThan(0);
-      });
-
-      it('should call get for article identifier route parameter', () => {
-        expect(getWasCalledFor['articleIdentifier']).toBeGreaterThan(0);
-      });
-
-      it('should not call article service', () => {
-        const times = Object.keys(articleService.articleCalledFor)
-          .map((key: string) => articleService.articleCalledFor[key])
-          .reduce((accumulator, value) => accumulator + value, 0);
-        expect(times).toBe(0);
-      });
-
-      it('should not display title edit field', () => {
-        const element = fixture.debugElement;
-        const target = element.query(howToFindTitleInput);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not display text edit field', () => {
-        const element = fixture.debugElement;
-        const target = element.query(howToFindTextInput);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not display save only radio button', () => {
-        const element = fixture.debugElement;
-        const target = element.query(howToFindSaveOnlyRadio);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not display save only label', () => {
-        const element = fixture.debugElement;
-        const target = element.query(howToFindSaveOnlyLabel);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not display save and request edit radio button', () => {
-        const element = fixture.debugElement;
-        const target = element.query(howToFindSaveAndRequestEditRadio);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not display save and request edit radio button', () => {
-        const element = fixture.debugElement;
-        const target = element.query(howToFindSaveAndRequestEditLabel);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not display save and request check radio button', () => {
-        const element = fixture.debugElement;
-        const target = element.query(howToFindSaveAndRequestCheckRadio);
-        expect(target).toBeFalsy();
-      });
-
-      it('should not display save and request check radio button', () => {
-        const element = fixture.debugElement;
-        const target = element.query(howToFindSaveAndRequestCheckLabel);
-        expect(target).toBeFalsy();
-      });
-
-    });
+      }
+    );
 
   });
 

@@ -15,7 +15,7 @@ const howToFindPageFooter = (element: DebugElement): boolean =>
   element.name === 'footer'
   && !!element.classes['page'];
 
-const howToFindForm = (element: DebugElement): boolean => 
+const howToFindForm = (element: DebugElement): boolean =>
   element.name === 'form'
   && !!element.classes['template'];
 
@@ -36,7 +36,7 @@ const howToFindInput = (element: DebugElement): boolean =>
   && !!element.attributes['id']
   && !!element.attributes['name'];
 
-const howToFindLabelFor = (input: DebugElement) => 
+const howToFindLabelFor = (input: DebugElement) =>
   (element: DebugElement): boolean =>
     element.name === 'label'
     && !!element.attributes['for']
@@ -106,7 +106,7 @@ describe('Document -> Form Page', () => {
   });
 
   describe('page header', () => {
-    
+
     let header: DebugElement;
 
     beforeEach(() => {
@@ -124,7 +124,7 @@ describe('Document -> Form Page', () => {
   });
 
   describe('page footer', () => {
-    
+
     let footer: DebugElement;
 
     beforeEach(() => {
@@ -141,11 +141,11 @@ describe('Document -> Form Page', () => {
 
   });
 
-  FakeActivatedRoute.whenRouteIsActivated(
-    { 'templateIdentifier': 'asdfasdf' },
-    { 'templateIdentifier': 1 },
+  FakeActivatedRoute.whenRouteIsActivatedVerifyEmittedValue(
+    { paramMap: { 'templateIdentifier': 'asdfasdf' } },
+    { paramMap: { 'templateIdentifier': 1 } },
+    () => [fixture, activatedRoute, component.template$],
     template,
-    () => [fixture, component.template$, activatedRoute],
     () => {
 
       it('should call template for on template service', () => {
@@ -154,11 +154,11 @@ describe('Document -> Form Page', () => {
 
     });
 
-  const getResult = FakeActivatedRoute.whenRouteIsActivated(
-    { 'templateIdentifier': 'asdfasdf' },
-    { 'templateIdentifier': 1 },
+  const getResult = FakeActivatedRoute.whenRouteIsActivatedVerifyEmittedValue(
+    { paramMap: { 'templateIdentifier': 'asdfasdf' } },
+    { paramMap: { 'templateIdentifier': 1 } },
+    () => [fixture, activatedRoute, component.placeholders$],
     expectedPlaceholders,
-    () => [fixture, component.placeholders$, activatedRoute],
     () => {
 
       it('should call extract placeholders from on template service', () => {
@@ -178,15 +178,15 @@ describe('Document -> Form Page', () => {
         });
 
         describe('form', () => {
-          
+
           let form: DebugElement;
-          
+
           beforeEach(() => {
             form = fixture.debugElement.query(howToFindForm);
           });
 
           describe('article', () => {
-            
+
             let article: DebugElement;
 
             beforeEach(() => {
@@ -198,7 +198,7 @@ describe('Document -> Form Page', () => {
             });
 
             describe('header', () => {
-              
+
               let header: DebugElement;
 
               beforeEach(() => {
@@ -216,7 +216,7 @@ describe('Document -> Form Page', () => {
             });
 
             describe('footer', () => {
-              
+
               let footer: DebugElement;
 
               beforeEach(() => {
@@ -237,7 +237,7 @@ describe('Document -> Form Page', () => {
 
               let labels: Array<DebugElement>;
               let inputs: Array<DebugElement>;
-    
+
               beforeEach(() => {
                 inputs = article.queryAll(howToFindInput);
                 labels = inputs.reduce((result, input) => {
@@ -246,25 +246,25 @@ describe('Document -> Form Page', () => {
                   return result;
                 }, new Array<DebugElement>());
               });
-    
+
               it('should exist', () => {
                 expect(form).toBeTruthy();
               });
-    
+
               it('should have an input for each placeholder', () => {
                 expect(inputs.length).toBe(expectedPlaceholders.length);
               });
-    
+
               it('should have a label for each input', () => {
                 expect(labels.length).toBe(expectedPlaceholders.length);
               });
-              
+
             });
 
           });
 
         });
-        
+
       });
 
     });

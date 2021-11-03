@@ -35,6 +35,10 @@ const howToFindEditSection = (element: DebugElement): boolean =>
   element.name === 'section'
   && !!element.classes['edit'];
 
+const howToFindActionSection = (element: DebugElement): boolean =>
+  element.name === 'section'
+  && !!element.classes['action'];
+
 const howToFindInput = (element: DebugElement): boolean =>
   (element.name === 'input' || element.name === 'select' || element.name === 'textarea')
   && !!element.attributes['id']
@@ -324,6 +328,20 @@ describe('Document -> Form Page', () => {
 
                 });
 
+              });
+
+            });
+
+            describe('action section', () => {
+
+              let actionSection: DebugElement;
+
+              beforeEach(() => {
+                actionSection = article.query(howToFindActionSection);
+              });
+
+              it('should exist', () => {
+                expect(actionSection).toBeTruthy();
               });
 
             });

@@ -9,7 +9,8 @@ const dataTypeExpressions = [
   { name: 'date', expression: '(?:date)' },
   { name: 'time', expression: '(?:time)' },
   { name: 'dateTime', expression: '(?:date-time)' },
-  { name: 'address', expression: '(?:address)' }
+  { name: 'address', expression: '(?:address)' },
+  { name: 'select', expression: '(?:select\\[[a-zA-Z0-9, |]*\\])' }
 ]
   .map(dataType => dataType.expression)
   .join('|');
@@ -21,6 +22,8 @@ const breakExpression = '(?:\\,\\s*(break))?';
 const keepExpression = '(?:\\,\\s*(keep))?';
 const tableExpression = '(?:\\,\\s*(table\\[.*?\\]))?';
 const extractPlaceholderDefinitionExpression = `\\$\\{${placeholderNameExpression}${dataTypeExpression}${optionalExpression}${breakExpression}${keepExpression}${tableExpression}\\}`;
+const optionExpression = '[a-zA-Z0-9, ]*';
+const selectExpression = `^select\\[(${optionExpression}(?:\\|${optionExpression})*)\\]$`;
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +33,24 @@ export class TemplateService {
   public templateFor(_templateIdentifier: string): Observable<Template> {
     return of(<Template>{
       title: 'aslkdjfasd',
-      text: '${sdfdfas: string}, ${fjksdsdf: number, break}, ${sdf-asa: string, keep}'
+      text: '${sdfdfas: string}, ${fjksdsdf: number, optional, break}, ${sdf-asa: string, keep}, ${select-with-options: select[|Yes|No|Maybe]}'
     });
+  }
+
+  private extractOptionsFrom(select: string): Array<string> {
+    const selectRegex = RegExp(selectExpression, 'mg');
+
+    const options = new Array<string>();
+
+    let result: RegExpExecArray | null;
+
+    while ((result = selectRegex.exec(select))) {
+      const _match = result[0];
+      const optionsString = result[1];
+      optionsString.split('|').forEach(option => options.push(option));
+    }
+
+    return options;
   }
 
   public extractPlaceholdersFrom(templateText: string): Array<Placeholder> {
@@ -44,18 +63,21 @@ export class TemplateService {
     while ((result = regex.exec(templateText))) {
       const _match = result[0];
       const name = result[1];
-      const dataType = result[2];
+      let dataType = result[2];
       const optional = result[3];
       const hardBreak = result[4];
       const keep = result[5];
       const _table = result[6];
+      const options = this.extractOptionsFrom(dataType);
+      if (options.length > 0) dataType = 'select';
       placeholders.push(<Placeholder>{
         name: name,
         dataType: dataType ? dataType : 'string',
         optional: optional === 'optional',
         break: hardBreak === 'break',
         keep: keep === 'keep',
-        tableDefinition: null
+        tableDefinition: null,
+        options: options
       });
     }
 
@@ -69,7 +91,7 @@ export interface Template {
   text: string;
 }
 
-export type PlaceholderDataType = 'string' | 'number' | 'phone-number' | 'currency' | 'date' | 'time' | 'date-time';
+export type PlaceholderDataType = 'string' | 'number' | 'phone-number' | 'currency' | 'date' | 'time' | 'date-time' | 'select';
 
 export interface SimplePlaceholder {
   name: string;
@@ -81,6 +103,7 @@ export interface Placeholder extends SimplePlaceholder {
   break: boolean;
   keep: boolean;
   tableDefinition: TableDefinition | null;
+  options: Array<string>;
 }
 
 export interface TableDefinition {

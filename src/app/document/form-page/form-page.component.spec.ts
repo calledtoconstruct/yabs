@@ -59,7 +59,7 @@ describe('Document -> Form Page', () => {
 
   const expectedPlaceholders = [
     <Placeholder>{
-      name: 'firstplaceholder',
+      name: 'first_placeholder',
       dataType: 'string'
     }, <Placeholder>{
       name: 'secondplaceholder',
@@ -67,7 +67,7 @@ describe('Document -> Form Page', () => {
       optional: true,
       break: true
     }, <Placeholder>{
-      name: 'thirdplaceholder',
+      name: 'third-placeholder',
       dataType: 'number',
       break: true
     }, <Placeholder>{
@@ -80,9 +80,9 @@ describe('Document -> Form Page', () => {
 
   const getValuesFor = (placeholder: Placeholder): [string, string] => {
     return [
-      { name: 'firstplaceholder', emptyValue: '', validValue: 'asdf' },
+      { name: 'first_placeholder', emptyValue: '', validValue: 'asdf' },
       { name: 'secondplaceholder', emptyValue: '', validValue: '123' },
-      { name: 'thirdplaceholder', emptyValue: '', validValue: '123' },
+      { name: 'third-placeholder', emptyValue: '', validValue: '123' },
       { name: 'fourthplaceholder', emptyValue: '', validValue: 'No' },
     ]
       .filter(data => data.name === placeholder.name)

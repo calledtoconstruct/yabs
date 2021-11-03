@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Observable, of, Subscription } from 'rxjs';
 import { Placeholder, Template, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -104,7 +105,7 @@ describe('Document -> Form Page', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [FormPageComponent],
-      imports: [CommonModule],
+      imports: [CommonModule, ReactiveFormsModule],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: TemplateService, useValue: templateService }
@@ -348,6 +349,25 @@ describe('Document -> Form Page', () => {
 
           });
 
+        });
+
+      });
+
+      describe('form group', () => {
+        
+        let formGroup: FormGroup;
+        let subscription: Subscription;
+
+        beforeEach(() => {
+          subscription = component.formGroup$.subscribe(fg => formGroup = fg);
+        });
+
+        afterEach(() => {
+          subscription.unsubscribe();
+        });
+
+        it('should be emitted', () => {
+          expect(formGroup).toBeTruthy();
         });
 
       });

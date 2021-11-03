@@ -156,8 +156,8 @@ describe('Document -> Form Page', () => {
   });
 
   FakeActivatedRoute.whenRouteIsActivatedVerifyEmittedValue(
-    { paramMap: { } },
-    { paramMap: { } },
+    { paramMap: {} },
+    { paramMap: {} },
     () => [fixture, activatedRoute, component.template$],
     undefined,
     () => {
@@ -265,7 +265,7 @@ describe('Document -> Form Page', () => {
             });
 
             describe('edit section', () => {
-              
+
               let editSection: DebugElement;
 
               beforeEach(() => {
@@ -276,50 +276,50 @@ describe('Document -> Form Page', () => {
                 expect(editSection).toBeTruthy();
               });
 
-            });
+              describe('fields', () => {
 
-            describe('fields', () => {
+                let labels: Array<DebugElement>;
+                let inputs: Array<DebugElement>;
 
-              let labels: Array<DebugElement>;
-              let inputs: Array<DebugElement>;
-
-              beforeEach(() => {
-                inputs = article.queryAll(howToFindInput);
-                labels = inputs.reduce((result, input) => {
-                  const label = form.query(howToFindLabelFor(input));
-                  result.push(label);
-                  return result;
-                }, new Array<DebugElement>());
-              });
-
-              it('should have an input for each placeholder', () => {
-                expect(inputs.length).toBe(expectedPlaceholders.length);
-              });
-
-              it('should have a label for each input', () => {
-                expect(labels.length).toBe(expectedPlaceholders.length);
-              });
-
-              expectedPlaceholders.forEach((placeholder, index) => {
-
-                describe(`label for ${placeholder.name}`, () => {
-
-                  it(`should indicate ${placeholder.optional ? 'optional' : 'required'}`, () => {
-                    const suffix = placeholder.optional ? '' : '*';
-                    const expectedLabel = placeholder.name + suffix;
-                    expect(labels[index].nativeElement.innerText).toBe(expectedLabel);
-                  });
-
+                beforeEach(() => {
+                  inputs = editSection.queryAll(howToFindInput);
+                  labels = inputs.reduce((result, input) => {
+                    const label = editSection.query(howToFindLabelFor(input));
+                    result.push(label);
+                    return result;
+                  }, new Array<DebugElement>());
                 });
 
-                describe(`input for ${placeholder.name}`, () => {
+                it('should have an input for each placeholder', () => {
+                  expect(inputs.length).toBe(expectedPlaceholders.length);
+                });
 
-                  it(`should be ${placeholder.optional ? 'optional' : 'required'}`, () => {
-                    if (placeholder.optional) {
-                      expect(inputs[index].attributes['required']).toBeUndefined();
-                    } else {
-                      expect(inputs[index].attributes['required']).toBe('');
-                    }
+                it('should have a label for each input', () => {
+                  expect(labels.length).toBe(expectedPlaceholders.length);
+                });
+
+                expectedPlaceholders.forEach((placeholder, index) => {
+
+                  describe(`label for ${placeholder.name}`, () => {
+
+                    it(`should indicate ${placeholder.optional ? 'optional' : 'required'}`, () => {
+                      const suffix = placeholder.optional ? '' : '*';
+                      const expectedLabel = placeholder.name + suffix;
+                      expect(labels[index].nativeElement.innerText).toBe(expectedLabel);
+                    });
+
+                  });
+
+                  describe(`input for ${placeholder.name}`, () => {
+
+                    it(`should be ${placeholder.optional ? 'optional' : 'required'}`, () => {
+                      if (placeholder.optional) {
+                        expect(inputs[index].attributes['required']).toBeUndefined();
+                      } else {
+                        expect(inputs[index].attributes['required']).toBe('');
+                      }
+                    });
+
                   });
 
                 });

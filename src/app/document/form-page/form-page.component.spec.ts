@@ -53,33 +53,53 @@ const howToFindLabelFor = (input: DebugElement) =>
 
 describe('Document -> Form Page', () => {
 
-  const firstPlaceholder = '${first-placeholder: string}';
-  const secondPlaceholder = '${second-placeholder: number, break}';
-
   const template = <Template>{
-    text: `${firstPlaceholder} and ${secondPlaceholder}`
+    text: 'ahghnbaisubbaiuybuasdfb'
   };
 
   const expectedPlaceholders = [
     <Placeholder>{
-      name: 'first-placeholder',
+      name: 'firstplaceholder',
       dataType: 'string'
     }, <Placeholder>{
-      name: 'second-placeholder',
+      name: 'secondplaceholder',
       dataType: 'number',
       optional: true,
       break: true
     }, <Placeholder>{
-      name: 'third-placeholder',
+      name: 'thirdplaceholder',
       dataType: 'number',
       break: true
     }, <Placeholder>{
-      name: 'fourth-placeholder',
+      name: 'fourthplaceholder',
       dataType: 'select',
-      options: ['Yes', 'No', 'Maybe'],
+      options: ['', 'Yes', 'No', 'Maybe'],
       break: true
     }
   ];
+
+  const getValuesFor = (placeholder: Placeholder): [string, string] => {
+    return [
+      { name: 'firstplaceholder', emptyValue: '', validValue: 'asdf' },
+      { name: 'secondplaceholder', emptyValue: '', validValue: '123' },
+      { name: 'thirdplaceholder', emptyValue: '', validValue: '123' },
+      { name: 'fourthplaceholder', emptyValue: '', validValue: 'No' },
+    ]
+      .filter(data => data.name === placeholder.name)
+      .map((data): [string, string] => [data.emptyValue, data.validValue])
+      .shift() || ['', '123'];
+  };
+
+  const setValue = (placeholder: Placeholder, input: DebugElement, value: string) => {
+    if (placeholder.dataType === 'select') {
+      input.nativeElement.selectedIndex = placeholder.options
+        .reduce((selectedIndex, option, index) => option === value ? index : selectedIndex, 0);
+      input.nativeElement.dispatchEvent(new Event('change'));
+    } else {
+      input.nativeElement.value = value;
+      input.nativeElement.dispatchEvent(new Event('input'));
+    }
+  };
 
   let activatedRoute: FakeActivatedRoute;
   let templateService: jasmine.SpyObj<{
@@ -173,28 +193,30 @@ describe('Document -> Form Page', () => {
 
     });
 
+  const templateIdentifier = 'asdfasdf';
+
   FakeActivatedRoute.whenRouteIsActivatedVerifyEmittedValue(
-    { paramMap: { 'templateIdentifier': 'asdfasdf' } },
+    { paramMap: { 'templateIdentifier': templateIdentifier } },
     { paramMap: { 'templateIdentifier': 1 } },
     () => [fixture, activatedRoute, component.template$],
     template,
     () => {
 
       it('should call template for on template service', () => {
-        expect(templateService.templateFor).toHaveBeenCalled();
+        expect(templateService.templateFor).toHaveBeenCalledWith(templateIdentifier);
       });
 
     });
 
   const getResult = FakeActivatedRoute.whenRouteIsActivatedVerifyEmittedValue(
-    { paramMap: { 'templateIdentifier': 'asdfasdf' } },
+    { paramMap: { 'templateIdentifier': templateIdentifier } },
     { paramMap: { 'templateIdentifier': 1 } },
     () => [fixture, activatedRoute, component.placeholders$],
     expectedPlaceholders,
     () => {
 
       it('should call extract placeholders from on template service', () => {
-        expect(templateService.extractPlaceholdersFrom).toHaveBeenCalled();
+        expect(templateService.extractPlaceholdersFrom).toHaveBeenCalledWith(template.text);
       });
 
       describe('placeholders', () => {
@@ -209,12 +231,37 @@ describe('Document -> Form Page', () => {
           expect(receivedPlacholders.length).toBe(expectedPlaceholders.length);
         });
 
-        describe('form', () => {
+        describe('form and form group', () => {
 
           let form: DebugElement;
+          let formGroup: FormGroup;
+          let subscription: Subscription;
 
           beforeEach(() => {
             form = fixture.debugElement.query(howToFindForm);
+            subscription = component.formGroup$.subscribe(fg => formGroup = fg);
+          });
+
+          afterEach(() => {
+            subscription.unsubscribe();
+          });
+
+          it('should be emitted', () => {
+            expect(formGroup).toBeTruthy();
+          });
+
+          expectedPlaceholders.forEach(placeholder => {
+
+            let formControl: AbstractControl;
+
+            beforeEach(() => {
+              formControl = formGroup.controls[placeholder.name];
+            });
+
+            it(`should have a form control for ${placeholder.name}`, () => {
+              expect(formControl).toBeTruthy();
+            });
+
           });
 
           it('should exist', () => {
@@ -305,25 +352,97 @@ describe('Document -> Form Page', () => {
 
                 expectedPlaceholders.forEach((placeholder, index) => {
 
+                  const optionalOrRequired = placeholder.optional ? 'optional' : 'required';
+
+                  let formControl: AbstractControl;
+                  let label: DebugElement;
+                  let input: DebugElement;
+
+                  beforeEach(() => {
+                    formControl = formGroup.controls[placeholder.name];
+                    label = labels[index];
+                    input = inputs[index];
+                  });
+
                   describe(`label for ${placeholder.name}`, () => {
 
-                    it(`should indicate ${placeholder.optional ? 'optional' : 'required'}`, () => {
+                    it(`should indicate ${optionalOrRequired}`, () => {
                       const suffix = placeholder.optional ? '' : '*';
                       const expectedLabel = placeholder.name + suffix;
-                      expect(labels[index].nativeElement.innerText).toBe(expectedLabel);
+                      expect(label.nativeElement.innerText).toBe(expectedLabel);
                     });
 
                   });
 
                   describe(`input for ${placeholder.name}`, () => {
 
-                    it(`should be ${placeholder.optional ? 'optional' : 'required'}`, () => {
+                    it(`should be ${optionalOrRequired}`, () => {
+                      const requiredAttribute = input.attributes['required'];
                       if (placeholder.optional) {
-                        expect(inputs[index].attributes['required']).toBeUndefined();
+                        expect(requiredAttribute).toBeUndefined();
                       } else {
-                        expect(inputs[index].attributes['required']).toBe('');
+                        expect(requiredAttribute).toBe('');
                       }
                     });
+
+                    if (!placeholder.optional) {
+
+                      let emptyValue: string;
+                      let validValue: string;
+
+                      beforeEach(() => {
+                        [emptyValue, validValue] = getValuesFor(placeholder);
+                      });
+
+                      describe('when empty', () => {
+
+                        it('form control should not be valid', () => {
+                          expect(formControl.valid).toBeFalsy();
+                        });
+
+                      });
+
+                      describe('and a value is entered', () => {
+
+                        beforeEach(() => {
+                          setValue(placeholder, input, validValue);
+                        });
+
+                        it('form control should be valid', () => {
+                          expect(formControl.valid).toBeTruthy();
+                        });
+
+                        describe('and then cleared', () => {
+
+                          beforeEach(() => {
+                            setValue(placeholder, input, emptyValue);
+                          });
+
+                          it('form control should be invalid', () => {
+                            expect(formControl.valid).toBeFalsy();
+                          });
+
+                        });
+
+                      });
+
+                      describe('and a value is provided', () => {
+
+                        beforeEach(() => {
+                          formControl.setValue(validValue);
+                        });
+
+                        it('form control should be valid', () => {
+                          expect(input.nativeElement.value).toBe(validValue);
+                        });
+
+                        it('form control should be valid', () => {
+                          expect(formControl.valid).toBeTruthy();
+                        });
+
+                      });
+
+                    }
 
                   });
 
@@ -347,39 +466,6 @@ describe('Document -> Form Page', () => {
 
             });
 
-          });
-
-        });
-
-      });
-
-      describe('form group', () => {
-        
-        let formGroup: FormGroup;
-        let subscription: Subscription;
-
-        beforeEach(() => {
-          subscription = component.formGroup$.subscribe(fg => formGroup = fg);
-        });
-
-        afterEach(() => {
-          subscription.unsubscribe();
-        });
-
-        it('should be emitted', () => {
-          expect(formGroup).toBeTruthy();
-        });
-
-        expectedPlaceholders.forEach(placeholder => {
-
-          let formControl: AbstractControl;
-
-          beforeEach(() => {
-            formControl = formGroup.controls[placeholder.name];
-          });
-
-          it(`should have a form control for ${placeholder.name}`, () => {
-            expect(formControl).toBeTruthy();
           });
 
         });

@@ -1,5 +1,5 @@
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Placeholder, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
@@ -29,7 +29,8 @@ export class FormPageComponent {
 
   public readonly formGroup$: Observable<FormGroup> = this.placeholders$.pipe(
     map(placeholders => placeholders.reduce(this.buildControl.bind(this), {})),
-    map(controlsConfiguration => this.formBuilder.group(controlsConfiguration))
+    map(controlsConfiguration => this.formBuilder.group(controlsConfiguration)),
+    shareReplay(1)
   );
 
   constructor(

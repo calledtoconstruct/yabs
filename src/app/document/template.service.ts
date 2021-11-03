@@ -33,11 +33,11 @@ export class TemplateService {
   public templateFor(_templateIdentifier: string): Observable<Template> {
     return of(<Template>{
       title: 'aslkdjfasd',
-      text: '${sdfdfas: string}, ${fjksdsdf: number, break}, ${sdf-asa: string, keep}'
+      text: '${sdfdfas: string}, ${fjksdsdf: number, break}, ${sdf-asa: string, keep}, ${select-with-options: select[|Yes|No|Maybe]}'
     });
   }
 
-  protected extractOptionsFrom(select: string): Array<string> {
+  private extractOptionsFrom(select: string): Array<string> {
     const selectRegex = RegExp(selectExpression, 'mg');
 
     const options = new Array<string>();
@@ -91,7 +91,7 @@ export interface Template {
   text: string;
 }
 
-export type PlaceholderDataType = 'string' | 'number' | 'phone-number' | 'currency' | 'date' | 'time' | 'date-time';
+export type PlaceholderDataType = 'string' | 'number' | 'phone-number' | 'currency' | 'date' | 'time' | 'date-time' | 'select';
 
 export interface SimplePlaceholder {
   name: string;

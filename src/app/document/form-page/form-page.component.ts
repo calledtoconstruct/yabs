@@ -13,14 +13,14 @@ export class FormPageComponent {
   public readonly template$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get('templateIdentifier') || ''),
     distinctUntilChanged(),
-    switchMap(this.templateService.templateFor),
+    switchMap(templateIdentifier => this.templateService.templateFor(templateIdentifier)),
     shareReplay(1)
   );
 
   public readonly placeholders$ = this.template$.pipe(
     distinctUntilChanged(),
     map(template => template.text),
-    map(this.templateService.extractPlaceholdersFrom),
+    map(text => this.templateService.extractPlaceholdersFrom(text)),
     shareReplay(1)
   );
 

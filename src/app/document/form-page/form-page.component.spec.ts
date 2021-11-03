@@ -32,7 +32,7 @@ const howToFindArticleFooter = (element: DebugElement): boolean =>
   && !!element.classes['article'];
 
 const howToFindInput = (element: DebugElement): boolean =>
-  element.name === 'input'
+  (element.name === 'input' || element.name === 'select' || element.name === 'textarea')
   && !!element.attributes['id']
   && !!element.attributes['name'];
 
@@ -58,6 +58,11 @@ describe('Document -> Form Page', () => {
     }, <Placeholder>{
       name: 'second-placeholder',
       dataType: 'number',
+      break: true
+    }, <Placeholder>{
+      name: 'third-placeholder',
+      dataType: 'select',
+      options: ['Yes', 'No', 'Maybe'],
       break: true
     }
   ];
@@ -174,7 +179,7 @@ describe('Document -> Form Page', () => {
         });
 
         it('should have the correct length', () => {
-          expect(receivedPlacholders.length).toBe(2);
+          expect(receivedPlacholders.length).toBe(expectedPlaceholders.length);
         });
 
         describe('form', () => {

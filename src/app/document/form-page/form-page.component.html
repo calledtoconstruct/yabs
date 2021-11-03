@@ -4,7 +4,13 @@
     <header class='article'>article header</header>
     <ng-container *ngFor='let placeholder of placeholders$ | async'>
       <label [for]='placeholder.name'>{{ placeholder.name }}</label>
-      <input [name]='placeholder.name' [id]='placeholder.name' />
+      <ng-container [ngSwitch]='placeholder.dataType'>
+        <input [name]='placeholder.name' [id]='placeholder.name' type='text' *ngSwitchCase='"string"' />
+        <input [name]='placeholder.name' [id]='placeholder.name' type='number' *ngSwitchCase='"number"' />
+        <select [name]='placeholder.name' [id]='placeholder.name' *ngSwitchCase='"select"'>
+          <option *ngFor='let option of placeholder.options'>{{ option }}</option>
+        </select>
+    </ng-container>
     </ng-container>
     <footer class='article'>article footer</footer>
   </article>

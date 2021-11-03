@@ -57,38 +57,39 @@ describe('Document -> Form Page', () => {
     text: 'ahghnbaisubbaiuybuasdfb'
   };
 
+  interface TestPlaceholder extends Placeholder {
+    emptyValue: string;
+    validValue: string;
+  }
+
   const expectedPlaceholders = [
-    <Placeholder>{
+    <TestPlaceholder>{
       name: 'first_placeholder',
-      dataType: 'string'
-    }, <Placeholder>{
+      dataType: 'string',
+      emptyValue: '',
+      validValue: 'guwhyqwhuerhf'
+    }, <TestPlaceholder>{
       name: 'secondplaceholder',
       dataType: 'number',
       optional: true,
-      break: true
-    }, <Placeholder>{
+      break: true,
+      emptyValue: '',
+      validValue: 'biuoaherifg'
+    }, <TestPlaceholder>{
       name: 'third-placeholder',
       dataType: 'number',
-      break: true
-    }, <Placeholder>{
+      break: true,
+      emptyValue: '',
+      validValue: '2345234'
+    }, <TestPlaceholder>{
       name: 'fourthplaceholder',
       dataType: 'select',
       options: ['', 'Yes', 'No', 'Maybe'],
-      break: true
+      break: true,
+      emptyValue: '',
+      validValue: 'No'
     }
   ];
-
-  const getValuesFor = (placeholder: Placeholder): [string, string] => {
-    return [
-      { name: 'first_placeholder', emptyValue: '', validValue: 'asdf' },
-      { name: 'secondplaceholder', emptyValue: '', validValue: '123' },
-      { name: 'third-placeholder', emptyValue: '', validValue: '123' },
-      { name: 'fourthplaceholder', emptyValue: '', validValue: 'No' },
-    ]
-      .filter(data => data.name === placeholder.name)
-      .map((data): [string, string] => [data.emptyValue, data.validValue])
-      .shift() || ['', '123'];
-  };
 
   const setValue = (placeholder: Placeholder, input: DebugElement, value: string) => {
     if (placeholder.dataType === 'select') {
@@ -387,13 +388,6 @@ describe('Document -> Form Page', () => {
 
                     if (!placeholder.optional) {
 
-                      let emptyValue: string;
-                      let validValue: string;
-
-                      beforeEach(() => {
-                        [emptyValue, validValue] = getValuesFor(placeholder);
-                      });
-
                       describe('when empty', () => {
 
                         it('form control should not be valid', () => {
@@ -405,7 +399,7 @@ describe('Document -> Form Page', () => {
                       describe('and a value is entered', () => {
 
                         beforeEach(() => {
-                          setValue(placeholder, input, validValue);
+                          setValue(placeholder, input, placeholder.validValue);
                         });
 
                         it('form control should be valid', () => {
@@ -415,7 +409,7 @@ describe('Document -> Form Page', () => {
                         describe('and then cleared', () => {
 
                           beforeEach(() => {
-                            setValue(placeholder, input, emptyValue);
+                            setValue(placeholder, input, placeholder.emptyValue);
                           });
 
                           it('form control should be invalid', () => {
@@ -429,11 +423,11 @@ describe('Document -> Form Page', () => {
                       describe('and a value is provided', () => {
 
                         beforeEach(() => {
-                          formControl.setValue(validValue);
+                          formControl.setValue(placeholder.validValue);
                         });
 
                         it('form control should be valid', () => {
-                          expect(input.nativeElement.value).toBe(validValue);
+                          expect(input.nativeElement.value).toBe(placeholder.validValue);
                         });
 
                         it('form control should be valid', () => {

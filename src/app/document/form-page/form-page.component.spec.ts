@@ -31,6 +31,10 @@ const howToFindArticleFooter = (element: DebugElement): boolean =>
   element.name === 'footer'
   && !!element.classes['article'];
 
+const howToFindEditSection = (element: DebugElement): boolean =>
+  element.name === 'section'
+  && !!element.classes['edit'];
+
 const howToFindInput = (element: DebugElement): boolean =>
   (element.name === 'input' || element.name === 'select' || element.name === 'textarea')
   && !!element.attributes['id']
@@ -256,6 +260,20 @@ describe('Document -> Form Page', () => {
 
               it('should contain text', () => {
                 expect(footer.nativeElement.innerText).toBeTruthy();
+              });
+
+            });
+
+            describe('edit section', () => {
+              
+              let editSection: DebugElement;
+
+              beforeEach(() => {
+                editSection = article.query(howToFindEditSection);
+              });
+
+              it('should exist', () => {
+                expect(editSection).toBeTruthy();
               });
 
             });

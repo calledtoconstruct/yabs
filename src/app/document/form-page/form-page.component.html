@@ -3,14 +3,16 @@
   <article class='template'>
     <header class='article'>article header</header>
     <ng-container *ngFor='let placeholder of placeholders$ | async'>
-      <label [for]='placeholder.name'>{{ placeholder.name }}{{ placeholder.optional ? '' : '*' }}</label>
-      <ng-container [ngSwitch]='placeholder.dataType'>
-        <input [name]='placeholder.name' [id]='placeholder.name' type='text' *ngSwitchCase='"string"' [required]='placeholder.optional ? "" : "required"' />
-        <input [name]='placeholder.name' [id]='placeholder.name' type='number' *ngSwitchCase='"number"' [required]='placeholder.optional ? "" : "required"' />
-        <select [name]='placeholder.name' [id]='placeholder.name' *ngSwitchCase='"select"' [required]='placeholder.optional ? "" : "required"'>
-          <option *ngFor='let option of placeholder.options'>{{ option }}</option>
-        </select>
-    </ng-container>
+      <section class='edit'>
+        <label [for]='placeholder.name'>{{ placeholder.name }}{{ placeholder.optional ? '' : '*' }}</label>
+        <ng-container [ngSwitch]='placeholder.dataType'>
+          <input [name]='placeholder.name' [id]='placeholder.name' type='text' *ngSwitchCase='"string"' [required]='placeholder.optional ? "" : "required"' />
+          <input [name]='placeholder.name' [id]='placeholder.name' type='number' *ngSwitchCase='"number"' [required]='placeholder.optional ? "" : "required"' />
+          <select [name]='placeholder.name' [id]='placeholder.name' *ngSwitchCase='"select"' [required]='placeholder.optional ? "" : "required"'>
+            <option *ngFor='let option of placeholder.options'>{{ option }}</option>
+          </select>
+        </ng-container>
+      </section>
     </ng-container>
     <footer class='article'>article footer</footer>
   </article>

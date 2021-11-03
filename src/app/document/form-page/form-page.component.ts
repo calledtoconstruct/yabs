@@ -1,8 +1,9 @@
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { FormBuilder, FormControl, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Placeholder, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-form-page',
@@ -26,16 +27,7 @@ export class FormPageComponent {
     shareReplay(1)
   );
 
-  private getValidator(placeholder: Placeholder): ValidatorFn | null {
-    return placeholder.optional ? null : Validators.required;
-  }
-
-  private buildControl(configuration: { [key: string]: FormControl }, placeholder: Placeholder): { [key: string]: FormControl } {
-    configuration[placeholder.name] = this.formBuilder.control({}, this.getValidator(placeholder));
-    return configuration;
-  }
-
-  public readonly formGroup$ = this.placeholders$.pipe(
+  public readonly formGroup$: Observable<FormGroup> = this.placeholders$.pipe(
     map(placeholders => placeholders.reduce(this.buildControl.bind(this), {})),
     map(controlsConfiguration => this.formBuilder.group(controlsConfiguration))
   );
@@ -45,6 +37,13 @@ export class FormPageComponent {
     private readonly templateService: TemplateService,
     private readonly formBuilder: FormBuilder
   ) {
+  }
+
+  private buildControl(configuration: { [key: string]: FormControl }, placeholder: Placeholder): { [key: string]: FormControl } {
+    configuration[placeholder.name] = placeholder.optional
+      ? this.formBuilder.control('')
+      : this.formBuilder.control('', Validators.required);
+    return configuration;
   }
 
 }

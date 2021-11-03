@@ -1,5 +1,5 @@
+import { AbstractControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
 import { Placeholder, Template, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
@@ -368,6 +368,20 @@ describe('Document -> Form Page', () => {
 
         it('should be emitted', () => {
           expect(formGroup).toBeTruthy();
+        });
+
+        expectedPlaceholders.forEach(placeholder => {
+
+          let formControl: AbstractControl;
+
+          beforeEach(() => {
+            formControl = formGroup.controls[placeholder.name];
+          });
+
+          it(`should have a form control for ${placeholder.name}`, () => {
+            expect(formControl).toBeTruthy();
+          });
+
         });
 
       });

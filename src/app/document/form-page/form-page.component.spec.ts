@@ -58,9 +58,14 @@ describe('Document -> Form Page', () => {
     }, <Placeholder>{
       name: 'second-placeholder',
       dataType: 'number',
+      optional: true,
       break: true
     }, <Placeholder>{
       name: 'third-placeholder',
+      dataType: 'number',
+      break: true
+    }, <Placeholder>{
+      name: 'fourth-placeholder',
       dataType: 'select',
       options: ['Yes', 'No', 'Maybe'],
       break: true
@@ -262,6 +267,32 @@ describe('Document -> Form Page', () => {
 
               it('should have a label for each input', () => {
                 expect(labels.length).toBe(expectedPlaceholders.length);
+              });
+
+              expectedPlaceholders.forEach((placeholder, index) => {
+
+                describe(`label for ${placeholder.name}`, () => {
+
+                  it(`should indicate ${placeholder.optional ? 'optional' : 'required'}`, () => {
+                    const suffix = placeholder.optional ? '' : '*';
+                    const expectedLabel = placeholder.name + suffix;
+                    expect(labels[index].nativeElement.innerText).toBe(expectedLabel);
+                  });
+
+                });
+
+                describe(`input for ${placeholder.name}`, () => {
+
+                  it(`should be ${placeholder.optional ? 'optional' : 'required'}`, () => {
+                    if (placeholder.optional) {
+                      expect(inputs[index].attributes['required']).toBeUndefined();
+                    } else {
+                      expect(inputs[index].attributes['required']).toBe('');
+                    }
+                  });
+
+                });
+
               });
 
             });

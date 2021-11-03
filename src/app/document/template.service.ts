@@ -33,7 +33,7 @@ export class TemplateService {
   public templateFor(_templateIdentifier: string): Observable<Template> {
     return of(<Template>{
       title: 'aslkdjfasd',
-      text: '${sdfdfas: string}, ${fjksdsdf: number, break}, ${sdf-asa: string, keep}, ${select-with-options: select[|Yes|No|Maybe]}'
+      text: '${sdfdfas: string}, ${fjksdsdf: number, optional, break}, ${sdf-asa: string, keep}, ${select-with-options: select[|Yes|No|Maybe]}'
     });
   }
 

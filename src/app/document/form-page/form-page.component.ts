@@ -1,4 +1,4 @@
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
 import { TemplateService } from '../template.service';
@@ -12,6 +12,7 @@ export class FormPageComponent {
 
   public readonly template$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get('templateIdentifier') || ''),
+    filter(templateIdentifier => templateIdentifier !== ''),
     distinctUntilChanged(),
     switchMap(templateIdentifier => this.templateService.templateFor(templateIdentifier)),
     shareReplay(1)

@@ -152,6 +152,19 @@ describe('Document -> Form Page', () => {
   });
 
   FakeActivatedRoute.whenRouteIsActivatedVerifyEmittedValue(
+    { paramMap: { } },
+    { paramMap: { } },
+    () => [fixture, activatedRoute, component.template$],
+    undefined,
+    () => {
+
+      it('should not call template for on template service', () => {
+        expect(templateService.templateFor).not.toHaveBeenCalled();
+      });
+
+    });
+
+  FakeActivatedRoute.whenRouteIsActivatedVerifyEmittedValue(
     { paramMap: { 'templateIdentifier': 'asdfasdf' } },
     { paramMap: { 'templateIdentifier': 1 } },
     () => [fixture, activatedRoute, component.template$],

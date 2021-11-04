@@ -561,6 +561,10 @@ describe('Document -> Form Page', () => {
                   expect(createButton).toBeTruthy();
                 });
 
+                it('should contain a label', () => {
+                  expect(createButton.nativeElement.innerText).toBeTruthy();
+                });
+
               });
 
             });

@@ -87,4 +87,23 @@ describe('TemplateService', () => {
 
   });
 
+  describe('create document', () => {
+
+    const templateText = 'Some text ${and-a-placeholder: string} and some more text ${and-another-placeholder: number}.';
+    const replacements = {
+      'and-a-placeholder': 'here',
+      'and-another-placeholder': 'over here'
+    };
+    let document: string;
+
+    beforeEach(() => {
+      document = service.createDocument(templateText, replacements);
+    });
+
+    it('should produce a document', () => {
+      expect(document).toBeTruthy();
+    });
+    
+  });
+
 });

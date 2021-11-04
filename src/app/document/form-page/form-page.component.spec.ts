@@ -40,10 +40,16 @@ const howToFindActionSection = (element: DebugElement): boolean =>
   element.name === 'section'
   && !!element.classes['action'];
 
-const howToFindInput = (element: DebugElement): boolean =>
-  (element.name === 'input' || element.name === 'select' || element.name === 'textarea')
-  && !!element.attributes['id']
-  && !!element.attributes['name'];
+const howToFindAllInput = (element: DebugElement): boolean =>
+  (element.name === 'input' || element.name === 'select' || element.name === 'textarea');
+
+const howToFindInputFor = (placeholder: Placeholder) =>
+  (element: DebugElement): boolean =>
+    (element.name === 'input' || element.name === 'select' || element.name === 'textarea')
+    && !!element.attributes['id']
+    && element.attributes['id'] === placeholder.name
+    && !!element.attributes['name']
+    && element.attributes['name'] === placeholder.name;
 
 const howToFindLabelFor = (input: DebugElement) =>
   (element: DebugElement): boolean =>
@@ -335,7 +341,7 @@ describe('Document -> Form Page', () => {
                 let inputs: Array<DebugElement>;
 
                 beforeEach(() => {
-                  inputs = editSection.queryAll(howToFindInput);
+                  inputs = editSection.queryAll(howToFindAllInput);
                   labels = inputs.reduce((result, input) => {
                     const label = editSection.query(howToFindLabelFor(input));
                     result.push(label);
@@ -351,9 +357,11 @@ describe('Document -> Form Page', () => {
                   expect(labels.length).toBe(expectedPlaceholders.length);
                 });
 
-                expectedPlaceholders.forEach((placeholder, index) => {
+              });
 
-                  const optionalOrRequired = placeholder.optional ? 'optional' : 'required';
+              expectedPlaceholders.forEach((placeholder) => {
+
+                describe(placeholder.name, () => {
 
                   let formControl: AbstractControl;
                   let label: DebugElement;
@@ -361,32 +369,63 @@ describe('Document -> Form Page', () => {
 
                   beforeEach(() => {
                     formControl = formGroup.controls[placeholder.name];
-                    label = labels[index];
-                    input = inputs[index];
+                    input = form.query(howToFindInputFor(placeholder));
+                    label = form.query(howToFindLabelFor(input));
                   });
 
-                  describe(`label for ${placeholder.name}`, () => {
+                  const whenClicked = () => {
 
-                    it(`should indicate ${optionalOrRequired}`, () => {
-                      const suffix = placeholder.optional ? '' : '*';
-                      const expectedLabel = placeholder.name + suffix;
-                      expect(label.nativeElement.innerText).toBe(expectedLabel);
+                    describe('when clicked', () => {
+
+                      beforeEach(() => {
+                        label.nativeElement.click();
+                      });
+                      
+                      it('should focus input', () => {
+                        expect(input.nativeElement).toBe(document.activeElement);
+                      });
+
                     });
 
-                  });
+                  };
 
-                  describe(`input for ${placeholder.name}`, () => {
+                  if (placeholder.optional) {
 
-                    it(`should be ${optionalOrRequired}`, () => {
-                      const requiredAttribute = input.attributes['required'];
-                      if (placeholder.optional) {
-                        expect(requiredAttribute).toBeUndefined();
-                      } else {
-                        expect(requiredAttribute).toBe('');
-                      }
+                    describe('label', () => {
+
+                      it('should not have required indicator', () => {
+                        expect(label.nativeElement.innerText).toBe(placeholder.name);
+                      });
+
+                      whenClicked();
+
                     });
 
-                    if (!placeholder.optional) {
+                    describe('input', () => {
+
+                      it('should not be required', () => {
+                        expect(input.attributes['required']).toBeUndefined();
+                      });
+
+                    });
+
+                  } else {
+
+                    describe('label', () => {
+
+                      it('should have required indicator', () => {
+                        expect(label.nativeElement.innerText).toBe(`${placeholder.name}*`);
+                      });
+
+                      whenClicked();
+
+                    });
+
+                    describe('input', () => {
+
+                      it('should be required', () => {
+                        expect(input.attributes['required']).toBeDefined();
+                      });
 
                       describe('when empty', () => {
 
@@ -436,9 +475,9 @@ describe('Document -> Form Page', () => {
 
                       });
 
-                    }
+                    });
 
-                  });
+                  }
 
                 });
 

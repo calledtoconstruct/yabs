@@ -5,12 +5,13 @@
       <article class='template'>
         <header class='article'>article header</header>
         <section class='edit'>
-          <fieldset class='document'></fieldset>
-          <input
-            name='*-document-name'
-            id='*-document-name'
-            formControlName='*-document-name'
-            type='text' />
+          <fieldset class='document'>
+            <input
+              name='*-document-name'
+              id='*-document-name'
+              formControlName='*-document-name'
+              type='text' />
+          </fieldset>
           <fieldset class='placeholders'>
             <ng-container *ngFor='let placeholder of placeholders$ | async'>
               <div>

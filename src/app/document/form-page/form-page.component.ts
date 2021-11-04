@@ -47,7 +47,13 @@ export class FormPageComponent {
     return configuration;
   }
 
-  public createDocument(): void {
+  public createDocument(templateText: string, formGroup: FormGroup): void {
+    const replacements = Object.keys(formGroup.controls)
+      .reduce((result: { [key: string]: string }, key) => {
+        result[key] = formGroup.controls?.[key].value;
+        return result;
+      }, {});
+    const _document = this.templateService.createDocument(templateText, replacements);
   }
 
 }

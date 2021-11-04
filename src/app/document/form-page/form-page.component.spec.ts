@@ -116,17 +116,21 @@ describe('Document -> Form Page', () => {
     }
   };
 
+  const expectedDocument = 'avnaoiusdnfasdfasdfasdfa';
+
   let activatedRoute: FakeActivatedRoute;
   let templateService: jasmine.SpyObj<{
     templateFor: (templateIdentifier: string) => Observable<Template>,
-    extractPlaceholdersFrom: (text: string) => Observable<Array<Placeholder>>
+    extractPlaceholdersFrom: (text: string) => Observable<Array<Placeholder>>,
+    createDocument: (templateText: string, replacements: { [key: string]: string }) => string
   }>;
 
   beforeEach(() => {
     activatedRoute = new FakeActivatedRoute();
     templateService = jasmine.createSpyObj('TemplateService', {
       'templateFor': of(template),
-      'extractPlaceholdersFrom': expectedPlaceholders
+      'extractPlaceholdersFrom': expectedPlaceholders,
+      'createDocument': expectedDocument
     });
   });
 
@@ -550,7 +554,7 @@ describe('Document -> Form Page', () => {
               });
 
               describe('create button', () => {
-                
+
                 let createButton: DebugElement;
 
                 beforeEach(() => {
@@ -570,11 +574,11 @@ describe('Document -> Form Page', () => {
                   it('should be disabled', () => {
                     expect(createButton.nativeElement.disabled).toBeTruthy();
                   });
-                  
+
                 });
 
                 describe('when form is valid', () => {
-                  
+
                   beforeEach(() => {
                     expectedPlaceholders.forEach(placeholder => {
                       formGroup.get(placeholder.name)?.setValue(placeholder.validValue);
@@ -589,7 +593,7 @@ describe('Document -> Form Page', () => {
                   describe('and is clicked', () => {
 
                     let createDocumentSpy: jasmine.Spy;
-                    
+
                     beforeEach(() => {
                       createDocumentSpy = spyOn(component, 'createDocument');
                       createButton.nativeElement.click();
@@ -609,6 +613,32 @@ describe('Document -> Form Page', () => {
 
           });
 
+        });
+
+      });
+
+      describe('create document', () => {
+
+        let formGroup: FormGroup;
+        let subscription: Subscription;
+
+        beforeEach(() => {
+          subscription = component.formGroup$.subscribe(fg => formGroup = fg);
+        });
+
+        afterEach(() => {
+          subscription.unsubscribe();
+        });
+
+        beforeEach(() => {
+          expectedPlaceholders.forEach(placeholder => {
+            formGroup.get(placeholder.name)?.setValue(placeholder.validValue);
+          });
+          component.createDocument(template.text, formGroup);
+        });
+
+        it('should invoke create document on service', () => {
+          expect(templateService.createDocument).toHaveBeenCalledTimes(1);
         });
 
       });

@@ -53,7 +53,7 @@ describe('TemplateService', () => {
         expect(placeholders).toBeTruthy();
       });
 
-      it('should return twenty four placeholders', () => {
+      it('should return twenty five placeholders', () => {
         expect(placeholders.length).toBe(25);
       });
 

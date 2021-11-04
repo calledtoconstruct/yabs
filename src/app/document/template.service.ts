@@ -84,6 +84,10 @@ export class TemplateService {
     return placeholders;
   }
 
+  public createDocument(_templateText: string, _replacements: { [key: string]: string }): string {
+    return 'auisahbvgusadfhhsdagasjdfghasdfjaskdjf';
+  }
+
 }
 
 export interface Template {

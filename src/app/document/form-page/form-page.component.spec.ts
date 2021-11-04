@@ -586,6 +586,21 @@ describe('Document -> Form Page', () => {
                     expect(createButton.nativeElement.disabled).toBeFalsy();
                   });
 
+                  describe('and is clicked', () => {
+
+                    let createDocumentSpy: jasmine.Spy;
+                    
+                    beforeEach(() => {
+                      createDocumentSpy = spyOn(component, 'createDocument');
+                      createButton.nativeElement.click();
+                    });
+
+                    it('should invoke create document method', () => {
+                      expect(createDocumentSpy).toHaveBeenCalled();
+                    });
+
+                  });
+
                 });
 
               });

@@ -565,6 +565,14 @@ describe('Document -> Form Page', () => {
                   expect(createButton.nativeElement.innerText).toBeTruthy();
                 });
 
+                describe('when form is invalid', () => {
+
+                  it('should be disabled', () => {
+                    expect(createButton.nativeElement.disabled).toBeTruthy();
+                  });
+                  
+                });
+
               });
 
             });

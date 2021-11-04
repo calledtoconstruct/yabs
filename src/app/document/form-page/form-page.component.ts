@@ -47,4 +47,7 @@ export class FormPageComponent {
     return configuration;
   }
 
+  public createDocument(): void {
+  }
+
 }

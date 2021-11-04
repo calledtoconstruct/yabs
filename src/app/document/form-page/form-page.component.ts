@@ -12,6 +12,8 @@ import { Observable } from 'rxjs';
 })
 export class FormPageComponent {
 
+  public readonly documentNameInputIdentifier = '*-document-name';
+
   public readonly template$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get('templateIdentifier') || ''),
     filter(templateIdentifier => templateIdentifier !== ''),
@@ -29,6 +31,10 @@ export class FormPageComponent {
 
   public readonly formGroup$: Observable<FormGroup> = this.placeholders$.pipe(
     map(placeholders => placeholders.reduce(this.buildControl.bind(this), {})),
+    map(controlsConfiguration => {
+      controlsConfiguration['*-document-name'] = this.formBuilder.control('', Validators.required);
+      return controlsConfiguration;
+    }),
     map(controlsConfiguration => this.formBuilder.group(controlsConfiguration)),
     shareReplay(1)
   );
@@ -47,7 +53,15 @@ export class FormPageComponent {
     return configuration;
   }
 
-  public createDocument(): void {
+  public createDocument(templateText: string, formGroup: FormGroup): void {
+    const replacements = Object.keys(formGroup.controls)
+      .reduce((result: { [key: string]: string }, key) => {
+        if (!key.startsWith('*-')) {
+          result[key] = formGroup.controls?.[key].value;
+        }
+        return result;
+      }, {});
+    const _document = this.templateService.createDocument(templateText, replacements);
   }
 
 }

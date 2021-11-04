@@ -36,7 +36,7 @@
         </ng-container>
       </section>
       <section class='action'>
-        <button class='create' disabled>Create Document</button>
+        <button class='create' [disabled]='!formGroup.valid'>Create Document</button>
       </section>
       <footer class='article'>article footer</footer>
     </article>

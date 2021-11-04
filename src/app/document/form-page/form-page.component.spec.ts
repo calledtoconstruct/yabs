@@ -573,6 +573,21 @@ describe('Document -> Form Page', () => {
                   
                 });
 
+                describe('when form is valid', () => {
+                  
+                  beforeEach(() => {
+                    expectedPlaceholders.forEach(placeholder => {
+                      formGroup.get(placeholder.name)?.setValue(placeholder.validValue);
+                    });
+                    fixture.detectChanges();
+                  });
+
+                  it('should be enabled', () => {
+                    expect(createButton.nativeElement.disabled).toBeFalsy();
+                  });
+
+                });
+
               });
 
             });

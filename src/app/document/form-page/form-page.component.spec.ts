@@ -36,6 +36,17 @@ const howToFindEditSection = (element: DebugElement): boolean =>
   element.name === 'section'
   && !!element.classes['edit'];
 
+const howToFindDocumentNameInput = (element: DebugElement): boolean =>
+  element.name === 'input'
+  && !!element.attributes['id']
+  && element.attributes['id'] === '*-document-name'
+  && !!element.attributes['name']
+  && element.attributes['name'] === '*-document-name';
+
+const howToFindPlaceholderFieldset = (element: DebugElement): boolean =>
+  element.name === 'fieldset'
+  && !!element.classes['placeholders'];
+
 const howToFindAllInput = (element: DebugElement): boolean =>
   (element.name === 'input' || element.name === 'select' || element.name === 'textarea');
 
@@ -348,196 +359,224 @@ describe('Document -> Form Page', () => {
                 expect(editSection).toBeTruthy();
               });
 
-              describe('fields', () => {
+              describe('document name field', () => {
 
-                let labels: Array<DebugElement>;
-                let inputs: Array<DebugElement>;
+                let documentNameInput: DebugElement;
 
                 beforeEach(() => {
-                  inputs = editSection.queryAll(howToFindAllInput);
-                  labels = inputs.reduce((result, input) => {
-                    const label = editSection.query(howToFindLabelFor(input));
-                    result.push(label);
-                    return result;
-                  }, new Array<DebugElement>());
+                  documentNameInput = editSection.query(howToFindDocumentNameInput);
                 });
 
-                it('should have an input for each placeholder', () => {
-                  expect(inputs.length).toBe(expectedPlaceholders.length);
+                it('should exist', () => {
+                  expect(documentNameInput).toBeTruthy();
                 });
-
-                it('should have a label for each input', () => {
-                  expect(labels.length).toBe(expectedPlaceholders.length);
-                });
-
+                
               });
 
-              expectedPlaceholders.forEach((placeholder) => {
+              describe('placeholder field set', () => {
 
-                describe(placeholder.name, () => {
+                let fieldset: DebugElement;
 
-                  let formControl: AbstractControl;
-                  let label: DebugElement;
-                  let input: DebugElement;
-                  let errorParagraph: DebugElement;
+                beforeEach(() => {
+                  fieldset = editSection.query(howToFindPlaceholderFieldset);
+                });
 
+                it('should exist', () => {
+                  expect(fieldset).toBeTruthy();
+                });
+
+                describe('placeholder fields', () => {
+  
+                  let labels: Array<DebugElement>;
+                  let inputs: Array<DebugElement>;
+  
                   beforeEach(() => {
-                    formControl = formGroup.controls[placeholder.name];
-                    input = form.query(howToFindInputFor(placeholder));
-                    if (input.parent) {
-                      label = input.parent.query(howToFindLabelFor(input));
-                      errorParagraph = input.parent.query(howToFindErrorParagraph);
-                    }
+                    inputs = fieldset.queryAll(howToFindAllInput);
+                    labels = inputs.reduce((result, input) => {
+                      const label = fieldset.query(howToFindLabelFor(input));
+                      result.push(label);
+                      return result;
+                    }, new Array<DebugElement>());
                   });
-
-                  const whenClicked = () => {
-
-                    describe('when clicked', () => {
-
-                      beforeEach(() => {
-                        label.nativeElement.click();
-                      });
-
-                      it('should focus input', () => {
-                        expect(input.nativeElement).toBe(document.activeElement);
-                      });
-
+  
+                  it('should have an input for each placeholder', () => {
+                    expect(inputs.length).toBe(expectedPlaceholders.length);
+                  });
+  
+                  it('should have a label for each input', () => {
+                    expect(labels.length).toBe(expectedPlaceholders.length);
+                  });
+  
+                });
+  
+                expectedPlaceholders.forEach((placeholder) => {
+  
+                  describe(placeholder.name, () => {
+  
+                    let formControl: AbstractControl;
+                    let label: DebugElement;
+                    let input: DebugElement;
+                    let errorParagraph: DebugElement;
+  
+                    beforeEach(() => {
+                      formControl = formGroup.controls[placeholder.name];
+                      input = form.query(howToFindInputFor(placeholder));
+                      if (input.parent) {
+                        label = input.parent.query(howToFindLabelFor(input));
+                        errorParagraph = input.parent.query(howToFindErrorParagraph);
+                      }
                     });
-
-                  };
-
-                  if (placeholder.optional) {
-
-                    describe('label', () => {
-
-                      it('should not have required indicator', () => {
-                        expect(label.nativeElement.innerText).toBe(placeholder.name);
-                      });
-
-                      whenClicked();
-
-                    });
-
-                    describe('input', () => {
-
-                      it('should not be required', () => {
-                        expect(input.attributes['required']).toBeUndefined();
-                      });
-
-                      it('error message should not be displayed', () => {
-                        expect(errorParagraph).toBeFalsy();
-                      });
-
-                    });
-
-                  } else {
-
-                    describe('label', () => {
-
-                      it('should have required indicator', () => {
-                        expect(label.nativeElement.innerText).toBe(`${placeholder.name}*`);
-                      });
-
-                      whenClicked();
-
-                    });
-
-                    describe('input', () => {
-
-                      it('should be required', () => {
-                        expect(input.attributes['required']).toBeDefined();
-                      });
-
-                      describe('when empty', () => {
-
-                        it('form control should not be valid', () => {
-                          expect(formControl.valid).toBeFalsy();
-                        });
-
-                        it('form control errors should contain required', () => {
-                          expect(formControl.errors?.['required']).toBeDefined();
-                        });
-
-                        it('error message should be displayed', () => {
-                          expect(errorParagraph).toBeTruthy();
-                        });
-
-                      });
-
-                      describe('and a value is entered', () => {
-
+  
+                    const whenClicked = () => {
+  
+                      describe('when clicked', () => {
+  
                         beforeEach(() => {
-                          setValue(placeholder, input, placeholder.validValue);
-                          fixture.detectChanges();
-                          if (input.parent) {
-                            errorParagraph = input.parent.query(howToFindErrorParagraph);
-                          }
+                          label.nativeElement.click();
                         });
-
-                        it('form control should be valid', () => {
-                          expect(formControl.valid).toBeTruthy();
+  
+                        it('should focus input', () => {
+                          expect(input.nativeElement).toBe(document.activeElement);
                         });
-
-                        it('form control errors should not contain required', () => {
-                          expect(formControl.errors?.['required']).toBeUndefined();
+  
+                      });
+  
+                    };
+  
+                    if (placeholder.optional) {
+  
+                      describe('label', () => {
+  
+                        it('should not have required indicator', () => {
+                          expect(label.nativeElement.innerText).toBe(placeholder.name);
                         });
-
-                        it('form control should be dirty', () => {
-                          expect(formControl.dirty).toBeTruthy();
+  
+                        whenClicked();
+  
+                      });
+  
+                      describe('input', () => {
+  
+                        it('should not be required', () => {
+                          expect(input.attributes['required']).toBeUndefined();
                         });
-
+  
                         it('error message should not be displayed', () => {
                           expect(errorParagraph).toBeFalsy();
                         });
-
-                        describe('and then cleared', () => {
-
+  
+                      });
+  
+                    } else {
+  
+                      describe('label', () => {
+  
+                        it('should have required indicator', () => {
+                          expect(label.nativeElement.innerText).toBe(`${placeholder.name}*`);
+                        });
+  
+                        whenClicked();
+  
+                      });
+  
+                      describe('input', () => {
+  
+                        it('should be required', () => {
+                          expect(input.attributes['required']).toBeDefined();
+                        });
+  
+                        describe('when empty', () => {
+  
+                          it('form control should not be valid', () => {
+                            expect(formControl.valid).toBeFalsy();
+                          });
+  
+                          it('form control errors should contain required', () => {
+                            expect(formControl.errors?.['required']).toBeDefined();
+                          });
+  
+                          it('error message should be displayed', () => {
+                            expect(errorParagraph).toBeTruthy();
+                          });
+  
+                        });
+  
+                        describe('and a value is entered', () => {
+  
                           beforeEach(() => {
-                            setValue(placeholder, input, placeholder.emptyValue);
+                            setValue(placeholder, input, placeholder.validValue);
                             fixture.detectChanges();
                             if (input.parent) {
                               errorParagraph = input.parent.query(howToFindErrorParagraph);
                             }
                           });
-
-                          it('form control should not be valid', () => {
-                            expect(formControl.valid).toBeFalsy();
+  
+                          it('form control should be valid', () => {
+                            expect(formControl.valid).toBeTruthy();
                           });
-
-                          it('form control errors should contain required', () => {
-                            expect(formControl.errors?.['required']).toBeDefined();
+  
+                          it('form control errors should not contain required', () => {
+                            expect(formControl.errors?.['required']).toBeUndefined();
                           });
-
-                          it('error message should be displayed', () => {
-                            expect(errorParagraph).toBeTruthy();
+  
+                          it('form control should be dirty', () => {
+                            expect(formControl.dirty).toBeTruthy();
                           });
-
+  
+                          it('error message should not be displayed', () => {
+                            expect(errorParagraph).toBeFalsy();
+                          });
+  
+                          describe('and then cleared', () => {
+  
+                            beforeEach(() => {
+                              setValue(placeholder, input, placeholder.emptyValue);
+                              fixture.detectChanges();
+                              if (input.parent) {
+                                errorParagraph = input.parent.query(howToFindErrorParagraph);
+                              }
+                            });
+  
+                            it('form control should not be valid', () => {
+                              expect(formControl.valid).toBeFalsy();
+                            });
+  
+                            it('form control errors should contain required', () => {
+                              expect(formControl.errors?.['required']).toBeDefined();
+                            });
+  
+                            it('error message should be displayed', () => {
+                              expect(errorParagraph).toBeTruthy();
+                            });
+  
+                          });
+  
                         });
-
+  
+                        describe('and a value is provided', () => {
+  
+                          beforeEach(() => {
+                            formControl.setValue(placeholder.validValue);
+                          });
+  
+                          it('form control should be valid', () => {
+                            expect(input.nativeElement.value).toBe(placeholder.validValue);
+                          });
+  
+                          it('form control should be valid', () => {
+                            expect(formControl.valid).toBeTruthy();
+                          });
+  
+                        });
+  
                       });
-
-                      describe('and a value is provided', () => {
-
-                        beforeEach(() => {
-                          formControl.setValue(placeholder.validValue);
-                        });
-
-                        it('form control should be valid', () => {
-                          expect(input.nativeElement.value).toBe(placeholder.validValue);
-                        });
-
-                        it('form control should be valid', () => {
-                          expect(formControl.valid).toBeTruthy();
-                        });
-
-                      });
-
-                    });
-
-                  }
-
+  
+                    }
+  
+                  });
+  
                 });
-
+                
               });
 
             });

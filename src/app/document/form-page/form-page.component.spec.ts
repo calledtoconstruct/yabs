@@ -57,6 +57,10 @@ const howToFindLabelFor = (input: DebugElement) =>
     && !!element.attributes['for']
     && element.attributes['for'] === input.attributes['id'];
 
+const howToFindErrorParagraph = (element: DebugElement): boolean =>
+  element.name === 'p'
+  && !!element.classes['error-message'];
+
 describe('Document -> Form Page', () => {
 
   const template = <Template>{
@@ -366,11 +370,15 @@ describe('Document -> Form Page', () => {
                   let formControl: AbstractControl;
                   let label: DebugElement;
                   let input: DebugElement;
+                  let errorParagraph: DebugElement;
 
                   beforeEach(() => {
                     formControl = formGroup.controls[placeholder.name];
                     input = form.query(howToFindInputFor(placeholder));
-                    label = form.query(howToFindLabelFor(input));
+                    if (input.parent) {
+                      label = input.parent.query(howToFindLabelFor(input));
+                      errorParagraph = input.parent.query(howToFindErrorParagraph);
+                    }
                   });
 
                   const whenClicked = () => {
@@ -380,7 +388,7 @@ describe('Document -> Form Page', () => {
                       beforeEach(() => {
                         label.nativeElement.click();
                       });
-                      
+
                       it('should focus input', () => {
                         expect(input.nativeElement).toBe(document.activeElement);
                       });
@@ -405,6 +413,10 @@ describe('Document -> Form Page', () => {
 
                       it('should not be required', () => {
                         expect(input.attributes['required']).toBeUndefined();
+                      });
+
+                      it('error message should not be displayed', () => {
+                        expect(errorParagraph).toBeFalsy();
                       });
 
                     });
@@ -433,26 +445,62 @@ describe('Document -> Form Page', () => {
                           expect(formControl.valid).toBeFalsy();
                         });
 
+                        it('form control errors should contain required', () => {
+                          expect(formControl.errors?.['required']).toBeDefined();
+                        });
+
+                        it('error message should be displayed', () => {
+                          expect(errorParagraph).toBeTruthy();
+                        });
+
                       });
 
                       describe('and a value is entered', () => {
 
                         beforeEach(() => {
                           setValue(placeholder, input, placeholder.validValue);
+                          fixture.detectChanges();
+                          if (input.parent) {
+                            errorParagraph = input.parent.query(howToFindErrorParagraph);
+                          }
                         });
 
                         it('form control should be valid', () => {
                           expect(formControl.valid).toBeTruthy();
                         });
 
+                        it('form control errors should not contain required', () => {
+                          expect(formControl.errors?.['required']).toBeUndefined();
+                        });
+
+                        it('form control should be dirty', () => {
+                          expect(formControl.dirty).toBeTruthy();
+                        });
+
+                        it('error message should not be displayed', () => {
+                          expect(errorParagraph).toBeFalsy();
+                        });
+
                         describe('and then cleared', () => {
 
                           beforeEach(() => {
                             setValue(placeholder, input, placeholder.emptyValue);
+                            fixture.detectChanges();
+                            if (input.parent) {
+                              errorParagraph = input.parent.query(howToFindErrorParagraph);
+                            }
                           });
 
-                          it('form control should be invalid', () => {
+                          it('form control should not be valid', () => {
                             expect(formControl.valid).toBeFalsy();
+                          });
+
+                          it('form control errors should contain required', () => {
+                            expect(formControl.errors?.['required']).toBeDefined();
+                          });
+
+                          it('error message should be displayed', () => {
+                            expect(errorParagraph).toBeTruthy();
                           });
 
                         });

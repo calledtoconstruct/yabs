@@ -5,31 +5,34 @@
       <header class='article'>article header</header>
       <section class='edit'>
         <ng-container *ngFor='let placeholder of placeholders$ | async'>
-          <label [for]='placeholder.name'>{{ placeholder.name }}{{ placeholder.optional ? '' : '*' }}</label>
-          <ng-container [ngSwitch]='placeholder.dataType'>
-            <input
-              [name]='placeholder.name'
-              [id]='placeholder.name'
-              [formControlName]='placeholder.name'
-              type='text'
-              *ngSwitchCase='"string"'
-              [required]='placeholder.optional ? false : "required"' />
-            <input
-              [name]='placeholder.name'
-              [id]='placeholder.name'
-              [formControlName]='placeholder.name'
-              type='number'
-              *ngSwitchCase='"number"'
-              [required]='placeholder.optional ? false : "required"' />
-            <select
-              [name]='placeholder.name'
-              [id]='placeholder.name'
-              [formControlName]='placeholder.name'
-              *ngSwitchCase='"select"'
-              [required]='placeholder.optional ? false : "required"'>
-              <option *ngFor='let option of placeholder.options' [value]='option'>{{ option }}</option>
-            </select>
-          </ng-container>
+          <div>
+            <label [for]='placeholder.name'>{{ placeholder.name }}{{ placeholder.optional ? '' : '*' }}</label>
+            <ng-container [ngSwitch]='placeholder.dataType'>
+              <input
+                [name]='placeholder.name'
+                [id]='placeholder.name'
+                [formControlName]='placeholder.name'
+                type='text'
+                *ngSwitchCase='"string"'
+                [required]='placeholder.optional ? false : "required"' />
+              <input
+                [name]='placeholder.name'
+                [id]='placeholder.name'
+                [formControlName]='placeholder.name'
+                type='number'
+                *ngSwitchCase='"number"'
+                [required]='placeholder.optional ? false : "required"' />
+              <select
+                [name]='placeholder.name'
+                [id]='placeholder.name'
+                [formControlName]='placeholder.name'
+                *ngSwitchCase='"select"'
+                [required]='placeholder.optional ? false : "required"'>
+                <option *ngFor='let option of placeholder.options' [value]='option'>{{ option }}</option>
+              </select>
+              <p class='error-message' *ngIf='formGroup.get(placeholder.name)?.errors?.required'>A value for this placeholder is required.</p>
+            </ng-container>
+          </div>
         </ng-container>
       </section>
       <section class='action'></section>

@@ -29,6 +29,10 @@ export class FormPageComponent {
 
   public readonly formGroup$: Observable<FormGroup> = this.placeholders$.pipe(
     map(placeholders => placeholders.reduce(this.buildControl.bind(this), {})),
+    map(controlsConfiguration => {
+      controlsConfiguration['*-document-name'] = this.formBuilder.control('', Validators.required);
+      return controlsConfiguration;
+    }),
     map(controlsConfiguration => this.formBuilder.group(controlsConfiguration)),
     shareReplay(1)
   );
@@ -50,7 +54,9 @@ export class FormPageComponent {
   public createDocument(templateText: string, formGroup: FormGroup): void {
     const replacements = Object.keys(formGroup.controls)
       .reduce((result: { [key: string]: string }, key) => {
-        result[key] = formGroup.controls?.[key].value;
+        if (!key.startsWith('*-')) {
+          result[key] = formGroup.controls?.[key].value;
+        }
         return result;
       }, {});
     const _document = this.templateService.createDocument(templateText, replacements);

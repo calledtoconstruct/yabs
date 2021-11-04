@@ -67,6 +67,7 @@ const howToFindCreateButton = (element: DebugElement): boolean =>
 
 describe('Document -> Form Page', () => {
 
+  const documentName = 'some-document-name';
   const template = <Template>{
     text: 'ahghnbaisubbaiuybuasdfb'
   };
@@ -583,6 +584,7 @@ describe('Document -> Form Page', () => {
                     expectedPlaceholders.forEach(placeholder => {
                       formGroup.get(placeholder.name)?.setValue(placeholder.validValue);
                     });
+                    formGroup.get('*-document-name')?.setValue(documentName);
                     fixture.detectChanges();
                   });
 
@@ -621,24 +623,29 @@ describe('Document -> Form Page', () => {
 
         let formGroup: FormGroup;
         let subscription: Subscription;
+        let replacements: { [key: string]: string };
 
         beforeEach(() => {
           subscription = component.formGroup$.subscribe(fg => formGroup = fg);
+          replacements = {};
+          expectedPlaceholders.forEach(placeholder => {
+            formGroup.get(placeholder.name)?.setValue(placeholder.validValue);
+            replacements[placeholder.name] = placeholder.validValue;
+          });
+          formGroup.get('*-document-name')?.setValue(documentName);
+          component.createDocument(template.text, formGroup);
         });
 
         afterEach(() => {
           subscription.unsubscribe();
         });
 
-        beforeEach(() => {
-          expectedPlaceholders.forEach(placeholder => {
-            formGroup.get(placeholder.name)?.setValue(placeholder.validValue);
-          });
-          component.createDocument(template.text, formGroup);
-        });
-
         it('should invoke create document on service', () => {
           expect(templateService.createDocument).toHaveBeenCalledTimes(1);
+        });
+
+        it('should invoke create document on service with template text and form group', () => {
+          expect(templateService.createDocument).toHaveBeenCalledWith(template.text, replacements);
         });
 
       });

@@ -40,12 +40,14 @@ const howToFindDocumentFieldset = (element: DebugElement): boolean =>
   element.name === 'fieldset'
   && !!element.classes['document'];
 
+const documentNameInputIdentifier = '*-document-name';
+
 const howToFindDocumentNameInput = (element: DebugElement): boolean =>
   element.name === 'input'
   && !!element.attributes['id']
-  && element.attributes['id'] === '*-document-name'
+  && element.attributes['id'] === documentNameInputIdentifier
   && !!element.attributes['name']
-  && element.attributes['name'] === '*-document-name';
+  && element.attributes['name'] === documentNameInputIdentifier;
 
 const howToFindPlaceholderFieldset = (element: DebugElement): boolean =>
   element.name === 'fieldset'
@@ -378,13 +380,49 @@ describe('Document -> Form Page', () => {
                 describe('document name field', () => {
 
                   let documentNameInput: DebugElement;
+                  let errorParagraph: DebugElement;
 
                   beforeEach(() => {
                     documentNameInput = documentFieldset.query(howToFindDocumentNameInput);
+                    if (documentNameInput.parent) {
+                      errorParagraph = documentNameInput.parent.query(howToFindErrorParagraph);
+                    }
                   });
 
                   it('should exist', () => {
                     expect(documentNameInput).toBeTruthy();
+                  });
+
+                  describe('when empty', () => {
+                    
+                    it('should be invalid', () => {
+                      expect(formGroup.get(documentNameInputIdentifier)?.valid).toBeFalsy();
+                    });
+
+                    it('should display error message', () => {
+                      expect(errorParagraph).toBeTruthy();
+                    });
+
+                  });
+
+                  describe('when a value is provided', () => {
+                    
+                    beforeEach(() => {
+                      formGroup.get(documentNameInputIdentifier)?.setValue(documentName);
+                      fixture.detectChanges();
+                      if (documentNameInput.parent) {
+                        errorParagraph = documentNameInput.parent.query(howToFindErrorParagraph);
+                      }
+                    });
+                    
+                    it('should be valid', () => {
+                      expect(formGroup.get(documentNameInputIdentifier)?.valid).toBeTruthy();
+                    });
+
+                    it('should not display error message', () => {
+                      expect(errorParagraph).toBeFalsy();
+                    });
+
                   });
 
                 });

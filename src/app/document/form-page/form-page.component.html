@@ -6,11 +6,14 @@
         <header class='article'>article header</header>
         <section class='edit'>
           <fieldset class='document'>
-            <input
-              name='*-document-name'
-              id='*-document-name'
-              formControlName='*-document-name'
-              type='text' />
+            <div>
+              <input
+                [name]='documentNameInputIdentifier'
+                [id]='documentNameInputIdentifier'
+                [formControlName]='documentNameInputIdentifier'
+                type='text' />
+              <p class='error-message' *ngIf='formGroup.get(documentNameInputIdentifier)?.errors?.required'>Please provide a name for the document.</p>
+            </div>
           </fieldset>
           <fieldset class='placeholders'>
             <ng-container *ngFor='let placeholder of placeholders$ | async'>

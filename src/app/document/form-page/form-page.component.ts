@@ -12,6 +12,8 @@ import { Observable } from 'rxjs';
 })
 export class FormPageComponent {
 
+  public readonly documentNameInputIdentifier = '*-document-name';
+
   public readonly template$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get('templateIdentifier') || ''),
     filter(templateIdentifier => templateIdentifier !== ''),

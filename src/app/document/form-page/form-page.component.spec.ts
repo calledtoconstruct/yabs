@@ -82,6 +82,26 @@ const howToFindCreateButton = (element: DebugElement): boolean =>
   element.name === 'button'
   && !!element.classes['create'];
 
+const whenLabelIsClicked = (getFields: () => [DebugElement, DebugElement]) => {
+
+  describe('when clicked', () => {
+
+    let label: DebugElement;
+    let input: DebugElement;
+
+    beforeEach(() => {
+      [label, input] = getFields();
+      label.nativeElement.click();
+    });
+
+    it('should focus input', () => {
+      expect(input.nativeElement).toBe(document.activeElement);
+    });
+
+  });
+
+};
+
 describe('Document -> Form Page', () => {
 
   const documentName = 'some-document-name';
@@ -379,12 +399,14 @@ describe('Document -> Form Page', () => {
 
                 describe('document name field', () => {
 
+                  let documentNameInputLabel: DebugElement;
                   let documentNameInput: DebugElement;
                   let errorParagraph: DebugElement;
 
                   beforeEach(() => {
                     documentNameInput = documentFieldset.query(howToFindDocumentNameInput);
                     if (documentNameInput.parent) {
+                      documentNameInputLabel = documentNameInput.parent.query(howToFindLabelFor(documentNameInput));
                       errorParagraph = documentNameInput.parent.query(howToFindErrorParagraph);
                     }
                   });
@@ -393,8 +415,26 @@ describe('Document -> Form Page', () => {
                     expect(documentNameInput).toBeTruthy();
                   });
 
+                  describe('label', () => {
+
+                    it('should exist', () => {
+                      expect(documentNameInputLabel).toBeTruthy();
+                    });
+
+                    it('should contain text', () => {
+                      expect(documentNameInputLabel.nativeElement.innerText).toBeTruthy();
+                    });
+
+                    it('should indicate that it is required', () => {
+                      expect(documentNameInputLabel.nativeElement.innerText.endsWith('*')).toBeTruthy();
+                    });
+
+                    whenLabelIsClicked(() => [documentNameInputLabel, documentNameInput]);
+
+                  });
+
                   describe('when empty', () => {
-                    
+
                     it('should be invalid', () => {
                       expect(formGroup.get(documentNameInputIdentifier)?.valid).toBeFalsy();
                     });
@@ -406,7 +446,7 @@ describe('Document -> Form Page', () => {
                   });
 
                   describe('when a value is provided', () => {
-                    
+
                     beforeEach(() => {
                       formGroup.get(documentNameInputIdentifier)?.setValue(documentName);
                       fixture.detectChanges();
@@ -414,7 +454,7 @@ describe('Document -> Form Page', () => {
                         errorParagraph = documentNameInput.parent.query(howToFindErrorParagraph);
                       }
                     });
-                    
+
                     it('should be valid', () => {
                       expect(formGroup.get(documentNameInputIdentifier)?.valid).toBeTruthy();
                     });
@@ -483,22 +523,6 @@ describe('Document -> Form Page', () => {
                       }
                     });
 
-                    const whenClicked = () => {
-
-                      describe('when clicked', () => {
-
-                        beforeEach(() => {
-                          label.nativeElement.click();
-                        });
-
-                        it('should focus input', () => {
-                          expect(input.nativeElement).toBe(document.activeElement);
-                        });
-
-                      });
-
-                    };
-
                     if (placeholder.optional) {
 
                       describe('label', () => {
@@ -507,7 +531,7 @@ describe('Document -> Form Page', () => {
                           expect(label.nativeElement.innerText).toBe(placeholder.name);
                         });
 
-                        whenClicked();
+                        whenLabelIsClicked(() => [label, input]);
 
                       });
 
@@ -528,10 +552,10 @@ describe('Document -> Form Page', () => {
                       describe('label', () => {
 
                         it('should have required indicator', () => {
-                          expect(label.nativeElement.innerText).toBe(`${placeholder.name}*`);
+                          expect(label.nativeElement.innerText.endsWith('*')).toBeTruthy();
                         });
 
-                        whenClicked();
+                        whenLabelIsClicked(() => [label, input]);
 
                       });
 

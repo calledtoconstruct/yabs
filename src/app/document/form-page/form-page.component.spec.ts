@@ -36,10 +36,6 @@ const howToFindEditSection = (element: DebugElement): boolean =>
   element.name === 'section'
   && !!element.classes['edit'];
 
-const howToFindActionSection = (element: DebugElement): boolean =>
-  element.name === 'section'
-  && !!element.classes['action'];
-
 const howToFindAllInput = (element: DebugElement): boolean =>
   (element.name === 'input' || element.name === 'select' || element.name === 'textarea');
 
@@ -60,6 +56,14 @@ const howToFindLabelFor = (input: DebugElement) =>
 const howToFindErrorParagraph = (element: DebugElement): boolean =>
   element.name === 'p'
   && !!element.classes['error-message'];
+
+const howToFindActionSection = (element: DebugElement): boolean =>
+  element.name === 'section'
+  && !!element.classes['action'];
+
+const howToFindCreateButton = (element: DebugElement): boolean =>
+  element.name === 'button'
+  && !!element.classes['create'];
 
 describe('Document -> Form Page', () => {
 
@@ -543,6 +547,20 @@ describe('Document -> Form Page', () => {
 
               it('should exist', () => {
                 expect(actionSection).toBeTruthy();
+              });
+
+              describe('create button', () => {
+                
+                let createButton: DebugElement;
+
+                beforeEach(() => {
+                  createButton = actionSection.query(howToFindCreateButton);
+                });
+
+                it('should exist', () => {
+                  expect(createButton).toBeTruthy();
+                });
+
               });
 
             });

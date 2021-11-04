@@ -36,6 +36,10 @@ const howToFindEditSection = (element: DebugElement): boolean =>
   element.name === 'section'
   && !!element.classes['edit'];
 
+const howToFindDocumentFieldset = (element: DebugElement): boolean =>
+  element.name === 'fieldset'
+  && !!element.classes['document'];
+
 const howToFindDocumentNameInput = (element: DebugElement): boolean =>
   element.name === 'input'
   && !!element.attributes['id']
@@ -357,6 +361,20 @@ describe('Document -> Form Page', () => {
 
               it('should exist', () => {
                 expect(editSection).toBeTruthy();
+              });
+
+              describe('document fieldset', () => {
+                
+                let documentFieldset: DebugElement;
+
+                beforeEach(() => {
+                  documentFieldset = editSection.query(howToFindDocumentFieldset);
+                });
+
+                it('should exist', () => {
+                  expect(documentFieldset).toBeTruthy();
+                });
+
               });
 
               describe('document name field', () => {

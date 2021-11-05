@@ -1,9 +1,9 @@
+import { Component, OnDestroy } from '@angular/core';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Placeholder, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component } from '@angular/core';
 
 export type Step = 'form' | 'review' | 'save';
 @Component({
@@ -11,7 +11,7 @@ export type Step = 'form' | 'review' | 'save';
   templateUrl: './form-page.component.html',
   styleUrls: ['./form-page.component.scss']
 })
-export class FormPageComponent {
+export class FormPageComponent implements OnDestroy {
 
   public readonly documentNameInputIdentifier = '*-document-name';
 
@@ -50,6 +50,10 @@ export class FormPageComponent {
     this.step$.next('form');
   }
 
+  public ngOnDestroy(): void {
+    this.step$.complete();
+  }
+
   private buildControl(configuration: { [key: string]: FormControl }, placeholder: Placeholder): { [key: string]: FormControl } {
     configuration[placeholder.name] = placeholder.optional
       ? this.formBuilder.control('')
@@ -66,6 +70,7 @@ export class FormPageComponent {
         return result;
       }, {});
     const _document = this.templateService.hydrateTemplate(templateText, replacements);
+    this.step$.next('review');
   }
 
 }

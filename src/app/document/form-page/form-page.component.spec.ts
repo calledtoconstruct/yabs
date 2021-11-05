@@ -197,6 +197,10 @@ describe('Document -> Form Page', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    component.ngOnDestroy();
+  });
+
   it('should exist', () => {
     expect(component).toBeTruthy();
   });
@@ -760,11 +764,14 @@ describe('Document -> Form Page', () => {
       describe('hydrate document', () => {
 
         let formGroup: FormGroup;
-        let subscription: Subscription;
+        let formGroupSubscription: Subscription;
         let replacements: { [key: string]: string };
+        let step: Step;
+        let stepSubscription: Subscription;
 
         beforeEach(() => {
-          subscription = component.formGroup$.subscribe(fg => formGroup = fg);
+          formGroupSubscription = component.formGroup$.subscribe(fg => formGroup = fg);
+          stepSubscription = component.step$.subscribe(stp => step = stp);
           replacements = {};
           expectedPlaceholders.forEach(placeholder => {
             formGroup.get(placeholder.name)?.setValue(placeholder.validValue);
@@ -775,7 +782,8 @@ describe('Document -> Form Page', () => {
         });
 
         afterEach(() => {
-          subscription.unsubscribe();
+          formGroupSubscription.unsubscribe();
+          stepSubscription.unsubscribe();
         });
 
         it('should invoke hydrate template on service', () => {
@@ -784,6 +792,10 @@ describe('Document -> Form Page', () => {
 
         it('should invoke hydrate template on service with template text and form group', () => {
           expect(templateService.hydrateTemplate).toHaveBeenCalledWith(template.text, replacements);
+        });
+
+        it('should progress to the review step', () => {
+          expect(step).toBe('review');
         });
 
       });

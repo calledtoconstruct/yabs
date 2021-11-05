@@ -1,7 +1,9 @@
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Placeholder, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
-import { TemplateService } from '../template.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-form-page',
@@ -10,24 +12,56 @@ import { TemplateService } from '../template.service';
 })
 export class FormPageComponent {
 
+  public readonly documentNameInputIdentifier = '*-document-name';
+
   public readonly template$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get('templateIdentifier') || ''),
+    filter(templateIdentifier => templateIdentifier !== ''),
     distinctUntilChanged(),
-    switchMap(this.templateService.templateFor),
+    switchMap(templateIdentifier => this.templateService.templateFor(templateIdentifier)),
     shareReplay(1)
   );
 
   public readonly placeholders$ = this.template$.pipe(
     distinctUntilChanged(),
     map(template => template.text),
-    map(this.templateService.extractPlaceholdersFrom),
+    map(text => this.templateService.extractPlaceholdersFrom(text)),
+    shareReplay(1)
+  );
+
+  public readonly formGroup$: Observable<FormGroup> = this.placeholders$.pipe(
+    map(placeholders => placeholders.reduce(this.buildControl.bind(this), {})),
+    map(controlsConfiguration => {
+      controlsConfiguration['*-document-name'] = this.formBuilder.control('', Validators.required);
+      return controlsConfiguration;
+    }),
+    map(controlsConfiguration => this.formBuilder.group(controlsConfiguration)),
     shareReplay(1)
   );
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
-    private readonly templateService: TemplateService
+    private readonly templateService: TemplateService,
+    private readonly formBuilder: FormBuilder
   ) {
+  }
+
+  private buildControl(configuration: { [key: string]: FormControl }, placeholder: Placeholder): { [key: string]: FormControl } {
+    configuration[placeholder.name] = placeholder.optional
+      ? this.formBuilder.control('')
+      : this.formBuilder.control('', Validators.required);
+    return configuration;
+  }
+
+  public createDocument(templateText: string, formGroup: FormGroup): void {
+    const replacements = Object.keys(formGroup.controls)
+      .reduce((result: { [key: string]: string }, key) => {
+        if (!key.startsWith('*-')) {
+          result[key] = formGroup.controls?.[key].value;
+        }
+        return result;
+      }, {});
+    const _document = this.templateService.createDocument(templateText, replacements);
   }
 
 }

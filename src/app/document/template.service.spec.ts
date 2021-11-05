@@ -41,6 +41,7 @@ describe('TemplateService', () => {
       \${pattern-to-match: string, keep, table[abc,asf]}.
       \${pattern-to-match: string,  break,\tkeep}
       \${pattern-to-match: string, break, keep, table[asdf]}
+      \${placeholder-name: select[Yes|No|Maybe]}
       `;
       let placeholders: Array<Placeholder>;
 
@@ -52,26 +53,57 @@ describe('TemplateService', () => {
         expect(placeholders).toBeTruthy();
       });
 
-      it('should return twenty four placeholders', () => {
-        expect(placeholders.length).toBe(24);
+      it('should return twenty five placeholders', () => {
+        expect(placeholders.length).toBe(25);
       });
 
       it('should return placeholder for pattern-to-match with break option', () => {
-        expect(placeholders[14].name).toBe('pattern-to-match');
-        expect(placeholders[14].dataType).toBe('string');
-        expect(placeholders[14].break).toBe(true);
-        expect(placeholders[14].keep).toBe(false);
+        const placeholder = placeholders[14];
+        expect(placeholder.name).toBe('pattern-to-match');
+        expect(placeholder.dataType).toBe('string');
+        expect(placeholder.break).toBe(true);
+        expect(placeholder.keep).toBe(false);
       });
 
       it('should return placeholder for pattern-to-match of type string with break and keep options', () => {
-        expect(placeholders[22].name).toBe('pattern-to-match');
-        expect(placeholders[22].dataType).toBe('string');
-        expect(placeholders[22].break).toBe(true);
-        expect(placeholders[22].keep).toBe(true);
+        const placeholder = placeholders[22];
+        expect(placeholder.name).toBe('pattern-to-match');
+        expect(placeholder.dataType).toBe('string');
+        expect(placeholder.break).toBe(true);
+        expect(placeholder.keep).toBe(true);
+      });
+
+      it('should return placeholder for placeholder-name of type select with three options', () => {
+        const placeholder = placeholders[24];
+        expect(placeholder.name).toBe('placeholder-name');
+        expect(placeholder.dataType).toBe('select');
+        expect(placeholder.options.length).toBe(3);
+        expect(placeholder.options[0]).toBe('Yes');
+        expect(placeholder.options[1]).toBe('No');
+        expect(placeholder.options[2]).toBe('Maybe');
       });
 
     });
 
+  });
+
+  describe('create document', () => {
+
+    const templateText = 'Some text ${and-a-placeholder: string} and some more text ${and-another-placeholder: number}.';
+    const replacements = {
+      'and-a-placeholder': 'here',
+      'and-another-placeholder': 'over here'
+    };
+    let document: string;
+
+    beforeEach(() => {
+      document = service.createDocument(templateText, replacements);
+    });
+
+    it('should produce a document', () => {
+      expect(document).toBeTruthy();
+    });
+    
   });
 
 });

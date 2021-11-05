@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
-import { FakeTemplateService } from '../fake/template-service.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TemplatePageComponent } from './template-page.component';
@@ -11,18 +10,22 @@ import { UserService } from 'src/app/user.service';
 describe('Document -> Template Page', () => {
 
   let userService: FakeUserService;
-  let templateService: FakeTemplateService;
+  let templateService: jasmine.SpyObj<{
+    temporary: () => void
+  }>;
   let activatedRoute: FakeActivatedRoute;
 
   beforeEach(() => {
     userService = new FakeUserService();
-    templateService = new FakeTemplateService();
+    templateService = jasmine.createSpyObj('TemplateService', {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      temporary: () => {}
+    });
     activatedRoute = new FakeActivatedRoute();
   });
 
   afterEach(() => {
     userService.tearDown();
-    templateService.tearDown();
     activatedRoute.tearDown();
   });
 

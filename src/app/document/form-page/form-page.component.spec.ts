@@ -1,12 +1,13 @@
 import { AbstractControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormPageComponent, Step } from './form-page.component';
 import { Observable, of, Subscription } from 'rxjs';
 import { Placeholder, Template, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
-import { FormPageComponent } from './form-page.component';
+import { SafeHtml } from '@angular/platform-browser';
 
 const howToFindPageHeader = (element: DebugElement): boolean =>
   element.name === 'header'
@@ -78,9 +79,13 @@ const howToFindActionSection = (element: DebugElement): boolean =>
   element.name === 'section'
   && !!element.classes['action'];
 
-const howToFindCreateButton = (element: DebugElement): boolean =>
+const howToFindHydrateButton = (element: DebugElement): boolean =>
   element.name === 'button'
-  && !!element.classes['create'];
+  && !!element.classes['hydrate'];
+
+const howToFindReviewArticle = (element: DebugElement): boolean =>
+  element.name === 'article'
+  && !!element.classes['review'];
 
 const whenLabelIsClicked = (getFields: () => [DebugElement, DebugElement]) => {
 
@@ -160,7 +165,7 @@ describe('Document -> Form Page', () => {
   let templateService: jasmine.SpyObj<{
     templateFor: (templateIdentifier: string) => Observable<Template>,
     extractPlaceholdersFrom: (text: string) => Observable<Array<Placeholder>>,
-    createDocument: (templateText: string, replacements: { [key: string]: string }) => string
+    hydrateTemplate: (templateText: string, replacements: { [key: string]: string }) => string
   }>;
 
   beforeEach(() => {
@@ -168,7 +173,7 @@ describe('Document -> Form Page', () => {
     templateService = jasmine.createSpyObj('TemplateService', {
       'templateFor': of(template),
       'extractPlaceholdersFrom': expectedPlaceholders,
-      'createDocument': expectedDocument
+      'hydrateTemplate': expectedDocument
     });
   });
 
@@ -195,6 +200,10 @@ describe('Document -> Form Page', () => {
     fixture = TestBed.createComponent(FormPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    component.ngOnDestroy();
   });
 
   it('should exist', () => {
@@ -233,6 +242,25 @@ describe('Document -> Form Page', () => {
 
     it('should contain text', () => {
       expect(footer.nativeElement.innerText).toBeTruthy();
+    });
+
+  });
+
+  describe('step', () => {
+
+    let step: Step;
+    let subscription: Subscription;
+
+    beforeEach(() => {
+      subscription = component.step$.subscribe(data => step = data);
+    });
+
+    afterEach(() => {
+      subscription.unsubscribe();
+    });
+
+    it('should default to form', () => {
+      expect(step).toBe('form');
     });
 
   });
@@ -673,26 +701,26 @@ describe('Document -> Form Page', () => {
                 expect(actionSection).toBeTruthy();
               });
 
-              describe('create button', () => {
+              describe('hydrate button', () => {
 
-                let createButton: DebugElement;
+                let hydrateButton: DebugElement;
 
                 beforeEach(() => {
-                  createButton = actionSection.query(howToFindCreateButton);
+                  hydrateButton = actionSection.query(howToFindHydrateButton);
                 });
 
                 it('should exist', () => {
-                  expect(createButton).toBeTruthy();
+                  expect(hydrateButton).toBeTruthy();
                 });
 
                 it('should contain a label', () => {
-                  expect(createButton.nativeElement.innerText).toBeTruthy();
+                  expect(hydrateButton.nativeElement.innerText).toBeTruthy();
                 });
 
                 describe('when form is invalid', () => {
 
                   it('should be disabled', () => {
-                    expect(createButton.nativeElement.disabled).toBeTruthy();
+                    expect(hydrateButton.nativeElement.disabled).toBeTruthy();
                   });
 
                 });
@@ -708,20 +736,20 @@ describe('Document -> Form Page', () => {
                   });
 
                   it('should be enabled', () => {
-                    expect(createButton.nativeElement.disabled).toBeFalsy();
+                    expect(hydrateButton.nativeElement.disabled).toBeFalsy();
                   });
 
                   describe('and is clicked', () => {
 
-                    let createDocumentSpy: jasmine.Spy;
+                    let hydrateTemplateSpy: jasmine.Spy;
 
                     beforeEach(() => {
-                      createDocumentSpy = spyOn(component, 'createDocument');
-                      createButton.nativeElement.click();
+                      hydrateTemplateSpy = spyOn(component, 'hydrateTemplate');
+                      hydrateButton.nativeElement.click();
                     });
 
-                    it('should invoke create document method', () => {
-                      expect(createDocumentSpy).toHaveBeenCalled();
+                    it('should invoke hydrate document method', () => {
+                      expect(hydrateTemplateSpy).toHaveBeenCalled();
                     });
 
                   });
@@ -738,33 +766,85 @@ describe('Document -> Form Page', () => {
 
       });
 
-      describe('create document', () => {
+      describe('hydrate document', () => {
 
         let formGroup: FormGroup;
-        let subscription: Subscription;
+        let formGroupSubscription: Subscription;
         let replacements: { [key: string]: string };
+        let step: Step;
+        let stepSubscription: Subscription;
 
         beforeEach(() => {
-          subscription = component.formGroup$.subscribe(fg => formGroup = fg);
+          formGroupSubscription = component.formGroup$.subscribe(fg => formGroup = fg);
+          stepSubscription = component.step$.subscribe(stp => step = stp);
           replacements = {};
           expectedPlaceholders.forEach(placeholder => {
             formGroup.get(placeholder.name)?.setValue(placeholder.validValue);
             replacements[placeholder.name] = placeholder.validValue;
           });
           formGroup.get('*-document-name')?.setValue(documentName);
-          component.createDocument(template.text, formGroup);
+          component.hydrateTemplate(template.text, formGroup);
         });
 
         afterEach(() => {
-          subscription.unsubscribe();
+          formGroupSubscription.unsubscribe();
+          stepSubscription.unsubscribe();
         });
 
-        it('should invoke create document on service', () => {
-          expect(templateService.createDocument).toHaveBeenCalledTimes(1);
+        it('should invoke hydrate template on service', () => {
+          expect(templateService.hydrateTemplate).toHaveBeenCalledTimes(1);
         });
 
-        it('should invoke create document on service with template text and form group', () => {
-          expect(templateService.createDocument).toHaveBeenCalledWith(template.text, replacements);
+        it('should invoke hydrate template on service with template text and form group', () => {
+          expect(templateService.hydrateTemplate).toHaveBeenCalledWith(template.text, replacements);
+        });
+
+        it('should progress to the review step', () => {
+          expect(step).toBe('review');
+        });
+
+      });
+
+      describe('when step is review and markdown is emitted', () => {
+
+        const markdown = '# some document\n## with markdown';
+
+        let form: DebugElement;
+        let html: SafeHtml;
+        let htmlSubscription: Subscription;
+
+        beforeEach(() => {
+          htmlSubscription = component.html$.subscribe(data => html = data);
+          component.step$.next('review');
+          component.markdown$.next(markdown);
+          fixture.detectChanges();
+          form = fixture.debugElement.query(howToFindForm);
+        });
+
+        afterEach(() => {
+          htmlSubscription.unsubscribe();
+        });
+
+        it('should not show form', () => {
+          expect(form).toBeFalsy();
+        });
+
+        it('should produce html', () => {
+          expect(html).toBeTruthy();
+        });
+
+        describe('review article', () => {
+
+          let article: DebugElement;
+
+          beforeEach(() => {
+            article = fixture.debugElement.query(howToFindReviewArticle);
+          });
+
+          it('should exist', () => {
+            expect(article).toBeTruthy();
+          });
+
         });
 
       });

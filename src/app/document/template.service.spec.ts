@@ -1,4 +1,5 @@
-import { Placeholder, TemplateService } from './template.service';
+import { Placeholder, Template, TemplateService } from './template.service';
+import { Subscription } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 
 describe('TemplateService', () => {
@@ -13,36 +14,62 @@ describe('TemplateService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('extract placeholders for', () => {
+  describe('template for', () => {
 
-    describe('when given a valid template', () => {
+    const templateIdentifier = 'asdkfjasdf';
 
-      const template = `
-      This is some text for the test template named \${name}.  It is expected to have a number of
-      \${placeholders: string}.  Some of which may be optional, as in \${this-one: number, optional}.
-      \${valida-tion}
-      \${valida_tion}
-      \${Validation}
-      \${validation}
-      \${validation: string}
-      \${validation: number}
-      \${validation: phone-number}
-      \${validation: currency}
-      \${validation: date}
-      \${validation: time}
-      \${validation: date-time}
-      \${pattern-to-match, break}
-      \${pattern-to-match, keep}
-      \${pattern-to-match, table[abc,asf]}
-      \${pattern-to-match:string, break}
-      \${pattern-to-match: string, keep}
-      \${pattern-to-match: string, table[abc,asf]}
-      \${pattern-to-match: string, break, table[asdf]}
-      \${pattern-to-match: string, keep, table[abc,asf]}.
-      \${pattern-to-match: string,  break,\tkeep}
-      \${pattern-to-match: string, break, keep, table[asdf]}
-      \${placeholder-name: select[Yes|No|Maybe]}
-      `;
+    let template: Template;
+    let subscription: Subscription;
+
+    beforeEach(() => {
+      const observable = service.templateFor(templateIdentifier);
+      subscription = observable.subscribe(data => template = data);
+    });
+
+    afterEach(() => {
+      subscription.unsubscribe();
+    });
+
+    it('should emit template', () => {
+      expect(template).toBeTruthy();
+    });
+
+  });
+
+  describe('kitchen sink template', () => {
+
+    const validPlaceholders = Array<string>(
+      '${name}',
+      '${placeholders: string}',
+      '${this-one: number, optional}',
+      '${valida-tion}',
+      '${valida_tion}',
+      '${Validation}',
+      '${validation}',
+      '${validation: string}',
+      '${validation: number}',
+      '${validation: phone-number}',
+      '${validation: currency}',
+      '${validation: date}',
+      '${validation: time}',
+      '${validation: date-time}',
+      '${pattern-to-match, break}',
+      '${pattern-to-match, keep}',
+      '${pattern-to-match, table[abc,asf]}',
+      '${pattern-to-match:string, break}',
+      '${pattern-to-match: string, keep}',
+      '${pattern-to-match: string, table[abc,asf]}',
+      '${pattern-to-match: string, break, table[asdf]}',
+      '${pattern-to-match: string, keep, table[abc,asf]}.',
+      '${pattern-to-match: string,  break,\tkeep}',
+      '${pattern-to-match: string, break, keep, table[asdf]}',
+      '${placeholder-name: select[Yes|No|Maybe]}'
+    );
+
+    const template = validPlaceholders.join(' asdfadf ');
+
+    describe('extract placeholders for', () => {
+
       let placeholders: Array<Placeholder>;
 
       beforeEach(() => {
@@ -89,21 +116,38 @@ describe('TemplateService', () => {
 
   describe('create document', () => {
 
-    const templateText = 'Some text ${and-a-placeholder: string} and some more text ${and-another-placeholder: number}.';
-    const replacements = {
-      'and-a-placeholder': 'here',
-      'and-another-placeholder': 'over here'
-    };
-    let document: string;
+    [{
+      templateText: 'Some text ${and-a-placeholder: string} and some more text ${and-another-placeholder: number}.',
+      replacements: {
+        'and-a-placeholder': 'here',
+        'and-another-placeholder': 'over here'
+      },
+      result: 'Some text here and some more text over here.'
+    }, {
+      templateText: '${and-a-placeholder: string}${and-another-placeholder: number}',
+      replacements: {
+        'and-a-placeholder': 'here',
+        'and-another-placeholder': 'over here'
+      },
+      result: 'hereover here'
+    }].forEach(scenario => {
 
-    beforeEach(() => {
-      document = service.createDocument(templateText, replacements);
+      let document: string;
+
+      beforeEach(() => {
+        document = service.hydrateTemplate(scenario.templateText, scenario.replacements);
+      });
+
+      it('should produce a document', () => {
+        expect(document).toBeTruthy();
+      });
+
+      it('should produce correct output', () => {
+        expect(document).toBe(scenario.result);
+      });
+
     });
 
-    it('should produce a document', () => {
-      expect(document).toBeTruthy();
-    });
-    
   });
 
 });

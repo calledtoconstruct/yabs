@@ -1,18 +1,31 @@
+import * as MarkdownIt from 'markdown-it';
+import { Component, OnDestroy } from '@angular/core';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable, ReplaySubject } from 'rxjs';
 import { Placeholder, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
 
+export type Step = 'form' | 'review' | 'save';
 @Component({
   selector: 'app-form-page',
   templateUrl: './form-page.component.html',
   styleUrls: ['./form-page.component.scss']
 })
-export class FormPageComponent {
+export class FormPageComponent implements OnDestroy {
 
   public readonly documentNameInputIdentifier = '*-document-name';
+
+  public readonly step$ = new ReplaySubject<Step>(1);
+  public readonly markdown$ = new ReplaySubject<string>(1);
+
+  private readonly markdownIt = new MarkdownIt();
+
+  public readonly html$ = this.markdown$.pipe(
+    map(markdown => this.markdownIt.render(markdown)),
+    map(html => this.sanitizer.bypassSecurityTrustHtml(html))
+  );
 
   public readonly template$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get('templateIdentifier') || ''),
@@ -42,8 +55,15 @@ export class FormPageComponent {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly templateService: TemplateService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly sanitizer: DomSanitizer
   ) {
+    this.step$.next('form');
+  }
+
+  public ngOnDestroy(): void {
+    this.step$.complete();
+    this.markdown$.complete();
   }
 
   private buildControl(configuration: { [key: string]: FormControl }, placeholder: Placeholder): { [key: string]: FormControl } {
@@ -53,7 +73,7 @@ export class FormPageComponent {
     return configuration;
   }
 
-  public createDocument(templateText: string, formGroup: FormGroup): void {
+  public hydrateTemplate(templateText: string, formGroup: FormGroup): void {
     const replacements = Object.keys(formGroup.controls)
       .reduce((result: { [key: string]: string }, key) => {
         if (!key.startsWith('*-')) {
@@ -61,7 +81,8 @@ export class FormPageComponent {
         }
         return result;
       }, {});
-    const _document = this.templateService.createDocument(templateText, replacements);
+    this.markdown$.next(this.templateService.hydrateTemplate(templateText, replacements));
+    this.step$.next('review');
   }
 
 }

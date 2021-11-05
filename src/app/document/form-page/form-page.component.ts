@@ -1,10 +1,11 @@
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable, ReplaySubject } from 'rxjs';
 import { Placeholder, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 
+export type Step = 'form' | 'review' | 'save';
 @Component({
   selector: 'app-form-page',
   templateUrl: './form-page.component.html',
@@ -13,6 +14,8 @@ import { Observable } from 'rxjs';
 export class FormPageComponent {
 
   public readonly documentNameInputIdentifier = '*-document-name';
+
+  public readonly step$ = new ReplaySubject<Step>(1);
 
   public readonly template$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get('templateIdentifier') || ''),
@@ -44,6 +47,7 @@ export class FormPageComponent {
     private readonly templateService: TemplateService,
     private readonly formBuilder: FormBuilder
   ) {
+    this.step$.next('form');
   }
 
   private buildControl(configuration: { [key: string]: FormControl }, placeholder: Placeholder): { [key: string]: FormControl } {

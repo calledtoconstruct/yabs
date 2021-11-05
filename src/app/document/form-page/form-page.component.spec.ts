@@ -1,12 +1,12 @@
 import { AbstractControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormPageComponent, Step } from './form-page.component';
 import { Observable, of, Subscription } from 'rxjs';
 import { Placeholder, Template, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
-import { FormPageComponent } from './form-page.component';
 
 const howToFindPageHeader = (element: DebugElement): boolean =>
   element.name === 'header'
@@ -233,6 +233,25 @@ describe('Document -> Form Page', () => {
 
     it('should contain text', () => {
       expect(footer.nativeElement.innerText).toBeTruthy();
+    });
+
+  });
+
+  describe('step', () => {
+    
+    let step: Step;
+    let subscription: Subscription;
+
+    beforeEach(() => {
+      subscription = component.step$.subscribe(data => step = data);
+    });
+
+    afterEach(() => {
+      subscription.unsubscribe();
+    });
+
+    it('should default to form', () => {
+      expect(step).toBe('form');
     });
 
   });

@@ -13,36 +13,40 @@ describe('TemplateService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('extract placeholders for', () => {
+  describe('kitchen sink template', () => {
 
-    describe('when given a valid template', () => {
+    const validPlaceholders = Array<string>(
+      '${name}',
+      '${placeholders: string}',
+      '${this-one: number, optional}',
+      '${valida-tion}',
+      '${valida_tion}',
+      '${Validation}',
+      '${validation}',
+      '${validation: string}',
+      '${validation: number}',
+      '${validation: phone-number}',
+      '${validation: currency}',
+      '${validation: date}',
+      '${validation: time}',
+      '${validation: date-time}',
+      '${pattern-to-match, break}',
+      '${pattern-to-match, keep}',
+      '${pattern-to-match, table[abc,asf]}',
+      '${pattern-to-match:string, break}',
+      '${pattern-to-match: string, keep}',
+      '${pattern-to-match: string, table[abc,asf]}',
+      '${pattern-to-match: string, break, table[asdf]}',
+      '${pattern-to-match: string, keep, table[abc,asf]}.',
+      '${pattern-to-match: string,  break,\tkeep}',
+      '${pattern-to-match: string, break, keep, table[asdf]}',
+      '${placeholder-name: select[Yes|No|Maybe]}'
+    );
 
-      const template = `
-      This is some text for the test template named \${name}.  It is expected to have a number of
-      \${placeholders: string}.  Some of which may be optional, as in \${this-one: number, optional}.
-      \${valida-tion}
-      \${valida_tion}
-      \${Validation}
-      \${validation}
-      \${validation: string}
-      \${validation: number}
-      \${validation: phone-number}
-      \${validation: currency}
-      \${validation: date}
-      \${validation: time}
-      \${validation: date-time}
-      \${pattern-to-match, break}
-      \${pattern-to-match, keep}
-      \${pattern-to-match, table[abc,asf]}
-      \${pattern-to-match:string, break}
-      \${pattern-to-match: string, keep}
-      \${pattern-to-match: string, table[abc,asf]}
-      \${pattern-to-match: string, break, table[asdf]}
-      \${pattern-to-match: string, keep, table[abc,asf]}.
-      \${pattern-to-match: string,  break,\tkeep}
-      \${pattern-to-match: string, break, keep, table[asdf]}
-      \${placeholder-name: select[Yes|No|Maybe]}
-      `;
+    const template = validPlaceholders.join(' asdfadf ');
+
+    describe('extract placeholders for', () => {
+
       let placeholders: Array<Placeholder>;
 
       beforeEach(() => {
@@ -103,7 +107,11 @@ describe('TemplateService', () => {
     it('should produce a document', () => {
       expect(document).toBeTruthy();
     });
-    
+
+    it('should produce correct output', () => {
+      expect(document).toBe('Some text here and some more text over here.');
+    });
+
   });
 
 });

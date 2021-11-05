@@ -84,8 +84,36 @@ export class TemplateService {
     return placeholders;
   }
 
-  public createDocument(_templateText: string, _replacements: { [key: string]: string }): string {
-    return 'auisahbvgusadfhhsdagasjdfghasdfjaskdjf';
+  public createDocument(templateText: string, replacements: { [key: string]: string }): string {
+    const regex = RegExp(extractPlaceholderDefinitionExpression, 'mg');
+
+    const segments = new Array<string>();
+
+    let fromPosition = 0;
+    let result: RegExpExecArray | null;
+
+    while ((result = regex.exec(templateText))) {
+      
+      const startPosition = result.index;
+      const match = result[0];
+      const endPosition = startPosition + match.length;
+
+      const name = result[1];
+
+      if (startPosition > fromPosition) {
+        segments.push(templateText.substr(fromPosition, startPosition - fromPosition));
+      }
+
+      segments.push(replacements[name]);
+
+      fromPosition = endPosition;
+    }
+
+    if (templateText.length > fromPosition) {
+      segments.push(templateText.substr(fromPosition, templateText.length - fromPosition));
+    }
+
+    return segments.join('');
   }
 
 }

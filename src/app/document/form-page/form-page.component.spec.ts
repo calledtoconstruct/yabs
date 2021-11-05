@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
+import { SafeHtml } from '@angular/platform-browser';
 
 const howToFindPageHeader = (element: DebugElement): boolean =>
   element.name === 'header'
@@ -81,6 +82,10 @@ const howToFindActionSection = (element: DebugElement): boolean =>
 const howToFindHydrateButton = (element: DebugElement): boolean =>
   element.name === 'button'
   && !!element.classes['hydrate'];
+
+const howToFindReviewArticle = (element: DebugElement): boolean =>
+  element.name === 'article'
+  && !!element.classes['review'];
 
 const whenLabelIsClicked = (getFields: () => [DebugElement, DebugElement]) => {
 
@@ -242,7 +247,7 @@ describe('Document -> Form Page', () => {
   });
 
   describe('step', () => {
-    
+
     let step: Step;
     let subscription: Subscription;
 
@@ -800,20 +805,48 @@ describe('Document -> Form Page', () => {
 
       });
 
-      describe('when step is review', () => {
+      describe('when step is review and markdown is emitted', () => {
+
+        const markdown = '# some document\n## with markdown';
 
         let form: DebugElement;
+        let html: SafeHtml;
+        let htmlSubscription: Subscription;
 
         beforeEach(() => {
+          htmlSubscription = component.html$.subscribe(data => html = data);
           component.step$.next('review');
+          component.markdown$.next(markdown);
           fixture.detectChanges();
           form = fixture.debugElement.query(howToFindForm);
+        });
+
+        afterEach(() => {
+          htmlSubscription.unsubscribe();
         });
 
         it('should not show form', () => {
           expect(form).toBeFalsy();
         });
-        
+
+        it('should produce html', () => {
+          expect(html).toBeTruthy();
+        });
+
+        describe('review article', () => {
+
+          let article: DebugElement;
+
+          beforeEach(() => {
+            article = fixture.debugElement.query(howToFindReviewArticle);
+          });
+
+          it('should exist', () => {
+            expect(article).toBeTruthy();
+          });
+
+        });
+
       });
 
     });

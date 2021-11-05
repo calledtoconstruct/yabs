@@ -1,9 +1,11 @@
+import * as MarkdownIt from 'markdown-it';
 import { Component, OnDestroy } from '@angular/core';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Placeholder, TemplateService } from '../template.service';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 
 export type Step = 'form' | 'review' | 'save';
 @Component({
@@ -16,6 +18,14 @@ export class FormPageComponent implements OnDestroy {
   public readonly documentNameInputIdentifier = '*-document-name';
 
   public readonly step$ = new ReplaySubject<Step>(1);
+  public readonly markdown$ = new ReplaySubject<string>(1);
+
+  private readonly markdownIt = new MarkdownIt();
+
+  public readonly html$ = this.markdown$.pipe(
+    map(markdown => this.markdownIt.render(markdown)),
+    map(html => this.sanitizer.bypassSecurityTrustHtml(html))
+  );
 
   public readonly template$ = this.activatedRoute.paramMap.pipe(
     map(paramMap => paramMap.get('templateIdentifier') || ''),
@@ -45,13 +55,15 @@ export class FormPageComponent implements OnDestroy {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly templateService: TemplateService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly sanitizer: DomSanitizer
   ) {
     this.step$.next('form');
   }
 
   public ngOnDestroy(): void {
     this.step$.complete();
+    this.markdown$.complete();
   }
 
   private buildControl(configuration: { [key: string]: FormControl }, placeholder: Placeholder): { [key: string]: FormControl } {
@@ -69,7 +81,7 @@ export class FormPageComponent implements OnDestroy {
         }
         return result;
       }, {});
-    const _document = this.templateService.hydrateTemplate(templateText, replacements);
+    this.markdown$.next(this.templateService.hydrateTemplate(templateText, replacements));
     this.step$.next('review');
   }
 

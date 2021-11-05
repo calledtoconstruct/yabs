@@ -1,6 +1,6 @@
 <header class='page'>page header</header>
 <ng-container *ngIf='template$ | async as template;'>
-  <ng-container *ngIf='(step$ | async) === "form"'>
+  <ng-container *ngIf='(step$ | async) === "form";'>
     <ng-container *ngIf='formGroup$ | async as formGroup;'>
       <form class='template' [formGroup]='formGroup'>
         <article class='template'>
@@ -62,6 +62,10 @@
         </article>
       </form>
     </ng-container>
+  </ng-container>
+  <ng-container *ngIf='(step$ | async) === "review";'>
+    <article class='review' [innerHtml]='html$ | async'>
+    </article>
   </ng-container>
 </ng-container>
 <footer class='page'>page footer</footer>

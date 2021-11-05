@@ -11,7 +11,7 @@
 
   * rich content using markdown
 
-  * Move articles through a workflow
+  * article workflow
     * save draft
     * request editorial comment
     * request fact check
@@ -20,6 +20,9 @@
   * Publish on-demand
 
   * Publish on a schedule
+
+### 💠 Workflow Diagram
+![workflow](./diagram/write-svg.svg)
 
 ## 🔍 Provide Editorial Comment
   * review articles at the request of the author
@@ -30,3 +33,6 @@
   * review articles unsolicited
 
 ## ⏩ Create Templates
+
+### 💠 Workflow Diagram
+![workflow](./diagram/template-svg.svg)

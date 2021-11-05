@@ -1,4 +1,5 @@
-import { Placeholder, TemplateService } from './template.service';
+import { Placeholder, Template, TemplateService } from './template.service';
+import { Subscription } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 
 describe('TemplateService', () => {
@@ -11,6 +12,28 @@ describe('TemplateService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('template for', () => {
+
+    const templateIdentifier = 'asdkfjasdf';
+
+    let template: Template;
+    let subscription: Subscription;
+
+    beforeEach(() => {
+      const observable = service.templateFor(templateIdentifier);
+      subscription = observable.subscribe(data => template = data);
+    });
+
+    afterEach(() => {
+      subscription.unsubscribe();
+    });
+
+    it('should emit template', () => {
+      expect(template).toBeTruthy();
+    });
+
   });
 
   describe('kitchen sink template', () => {
@@ -93,23 +116,36 @@ describe('TemplateService', () => {
 
   describe('create document', () => {
 
-    const templateText = 'Some text ${and-a-placeholder: string} and some more text ${and-another-placeholder: number}.';
-    const replacements = {
-      'and-a-placeholder': 'here',
-      'and-another-placeholder': 'over here'
-    };
-    let document: string;
+    [{
+      templateText: 'Some text ${and-a-placeholder: string} and some more text ${and-another-placeholder: number}.',
+      replacements: {
+        'and-a-placeholder': 'here',
+        'and-another-placeholder': 'over here'
+      },
+      result: 'Some text here and some more text over here.'
+    }, {
+      templateText: '${and-a-placeholder: string}${and-another-placeholder: number}',
+      replacements: {
+        'and-a-placeholder': 'here',
+        'and-another-placeholder': 'over here'
+      },
+      result: 'hereover here'
+    }].forEach(scenario => {
 
-    beforeEach(() => {
-      document = service.createDocument(templateText, replacements);
-    });
+      let document: string;
 
-    it('should produce a document', () => {
-      expect(document).toBeTruthy();
-    });
+      beforeEach(() => {
+        document = service.createDocument(scenario.templateText, scenario.replacements);
+      });
 
-    it('should produce correct output', () => {
-      expect(document).toBe('Some text here and some more text over here.');
+      it('should produce a document', () => {
+        expect(document).toBeTruthy();
+      });
+
+      it('should produce correct output', () => {
+        expect(document).toBe(scenario.result);
+      });
+
     });
 
   });

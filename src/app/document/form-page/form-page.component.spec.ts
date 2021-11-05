@@ -78,9 +78,9 @@ const howToFindActionSection = (element: DebugElement): boolean =>
   element.name === 'section'
   && !!element.classes['action'];
 
-const howToFindCreateButton = (element: DebugElement): boolean =>
+const howToFindHydrateButton = (element: DebugElement): boolean =>
   element.name === 'button'
-  && !!element.classes['create'];
+  && !!element.classes['hydrate'];
 
 const whenLabelIsClicked = (getFields: () => [DebugElement, DebugElement]) => {
 
@@ -160,7 +160,7 @@ describe('Document -> Form Page', () => {
   let templateService: jasmine.SpyObj<{
     templateFor: (templateIdentifier: string) => Observable<Template>,
     extractPlaceholdersFrom: (text: string) => Observable<Array<Placeholder>>,
-    createDocument: (templateText: string, replacements: { [key: string]: string }) => string
+    hydrateTemplate: (templateText: string, replacements: { [key: string]: string }) => string
   }>;
 
   beforeEach(() => {
@@ -168,7 +168,7 @@ describe('Document -> Form Page', () => {
     templateService = jasmine.createSpyObj('TemplateService', {
       'templateFor': of(template),
       'extractPlaceholdersFrom': expectedPlaceholders,
-      'createDocument': expectedDocument
+      'hydrateTemplate': expectedDocument
     });
   });
 
@@ -673,26 +673,26 @@ describe('Document -> Form Page', () => {
                 expect(actionSection).toBeTruthy();
               });
 
-              describe('create button', () => {
+              describe('hydrate button', () => {
 
-                let createButton: DebugElement;
+                let hydrateButton: DebugElement;
 
                 beforeEach(() => {
-                  createButton = actionSection.query(howToFindCreateButton);
+                  hydrateButton = actionSection.query(howToFindHydrateButton);
                 });
 
                 it('should exist', () => {
-                  expect(createButton).toBeTruthy();
+                  expect(hydrateButton).toBeTruthy();
                 });
 
                 it('should contain a label', () => {
-                  expect(createButton.nativeElement.innerText).toBeTruthy();
+                  expect(hydrateButton.nativeElement.innerText).toBeTruthy();
                 });
 
                 describe('when form is invalid', () => {
 
                   it('should be disabled', () => {
-                    expect(createButton.nativeElement.disabled).toBeTruthy();
+                    expect(hydrateButton.nativeElement.disabled).toBeTruthy();
                   });
 
                 });
@@ -708,20 +708,20 @@ describe('Document -> Form Page', () => {
                   });
 
                   it('should be enabled', () => {
-                    expect(createButton.nativeElement.disabled).toBeFalsy();
+                    expect(hydrateButton.nativeElement.disabled).toBeFalsy();
                   });
 
                   describe('and is clicked', () => {
 
-                    let createDocumentSpy: jasmine.Spy;
+                    let hydrateTemplateSpy: jasmine.Spy;
 
                     beforeEach(() => {
-                      createDocumentSpy = spyOn(component, 'createDocument');
-                      createButton.nativeElement.click();
+                      hydrateTemplateSpy = spyOn(component, 'hydrateTemplate');
+                      hydrateButton.nativeElement.click();
                     });
 
-                    it('should invoke create document method', () => {
-                      expect(createDocumentSpy).toHaveBeenCalled();
+                    it('should invoke hydrate document method', () => {
+                      expect(hydrateTemplateSpy).toHaveBeenCalled();
                     });
 
                   });
@@ -738,7 +738,7 @@ describe('Document -> Form Page', () => {
 
       });
 
-      describe('create document', () => {
+      describe('hydrate document', () => {
 
         let formGroup: FormGroup;
         let subscription: Subscription;
@@ -752,19 +752,19 @@ describe('Document -> Form Page', () => {
             replacements[placeholder.name] = placeholder.validValue;
           });
           formGroup.get('*-document-name')?.setValue(documentName);
-          component.createDocument(template.text, formGroup);
+          component.hydrateTemplate(template.text, formGroup);
         });
 
         afterEach(() => {
           subscription.unsubscribe();
         });
 
-        it('should invoke create document on service', () => {
-          expect(templateService.createDocument).toHaveBeenCalledTimes(1);
+        it('should invoke hydrate template on service', () => {
+          expect(templateService.hydrateTemplate).toHaveBeenCalledTimes(1);
         });
 
-        it('should invoke create document on service with template text and form group', () => {
-          expect(templateService.createDocument).toHaveBeenCalledWith(template.text, replacements);
+        it('should invoke hydrate template on service with template text and form group', () => {
+          expect(templateService.hydrateTemplate).toHaveBeenCalledWith(template.text, replacements);
         });
 
       });

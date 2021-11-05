@@ -84,7 +84,7 @@ export class TemplateService {
     return placeholders;
   }
 
-  public createDocument(templateText: string, replacements: { [key: string]: string }): string {
+  public hydrateTemplate(templateText: string, replacements: { [key: string]: string }): string {
     const regex = RegExp(extractPlaceholderDefinitionExpression, 'mg');
 
     const segments = new Array<string>();

@@ -135,7 +135,7 @@ describe('TemplateService', () => {
       let document: string;
 
       beforeEach(() => {
-        document = service.createDocument(scenario.templateText, scenario.replacements);
+        document = service.hydrateTemplate(scenario.templateText, scenario.replacements);
       });
 
       it('should produce a document', () => {

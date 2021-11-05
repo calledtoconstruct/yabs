@@ -51,10 +51,10 @@
         </section>
         <section class='action'>
           <button
-            class='create'
+            class='hydrate'
             [disabled]='!formGroup.valid'
-            (click)='createDocument(template.text, formGroup)'>
-            Create Document
+            (click)='hydrateTemplate(template.text, formGroup)'>
+            Next: Review
           </button>
         </section>
         <footer class='article'>article footer</footer>

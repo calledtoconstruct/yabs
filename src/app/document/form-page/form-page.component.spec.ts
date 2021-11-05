@@ -800,6 +800,22 @@ describe('Document -> Form Page', () => {
 
       });
 
+      describe('when step is review', () => {
+
+        let form: DebugElement;
+
+        beforeEach(() => {
+          component.step$.next('review');
+          fixture.detectChanges();
+          form = fixture.debugElement.query(howToFindForm);
+        });
+
+        it('should not show form', () => {
+          expect(form).toBeFalsy();
+        });
+        
+      });
+
     });
 
 });

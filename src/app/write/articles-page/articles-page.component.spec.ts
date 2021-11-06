@@ -336,6 +336,20 @@ describe('Write -> Articles Page', () => {
 
                 });
 
+                describe('text label', () => {
+                  
+                  let textLabel: DebugElement;
+                  
+                  beforeEach(() => {
+                    textLabel = editSection.query(howToFindLabelFor(textInput));
+                  });
+
+                  it('should exist', () => {
+                    expect(textLabel).toBeTruthy();
+                  });
+                  
+                });
+                
                 describe('text input', () => {
 
                   thenTextInput(() => textInput);

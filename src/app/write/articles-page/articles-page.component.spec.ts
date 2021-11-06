@@ -311,6 +311,10 @@ describe('Write -> Articles Page', () => {
                     expect(titleLabel).toBeTruthy();
                   });
 
+                  it('should contain text', () => {
+                    expect(titleLabel.nativeElement.innerText).toBeTruthy();
+                  });
+                  
                 });
 
                 describe('title input', () => {
@@ -346,6 +350,10 @@ describe('Write -> Articles Page', () => {
 
                   it('should exist', () => {
                     expect(textLabel).toBeTruthy();
+                  });
+
+                  it('should contain text', () => {
+                    expect(textLabel.nativeElement.innerText).toBeTruthy();
                   });
                   
                 });

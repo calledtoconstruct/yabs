@@ -105,6 +105,12 @@ const howToFindPageFooter = (element: DebugElement): boolean =>
   element.name === 'footer'
   && !!element.classes['page'];
 
+const howToFindLabelFor = (input: DebugElement) =>
+  (element: DebugElement): boolean =>
+    element.name === 'label'
+    && !!element.attributes['for']
+    && element.attributes['for'] === input.attributes['id'];
+
 describe('Write -> Articles Page', () => {
 
   let userService: FakeUserService;
@@ -291,6 +297,20 @@ describe('Write -> Articles Page', () => {
 
                 it('should display text edit field', () => {
                   expect(textInput).toBeTruthy();
+                });
+
+                describe('title label', () => {
+
+                  let titleLabel: DebugElement;
+
+                  beforeEach(() => {
+                    titleLabel = editSection.query(howToFindLabelFor(titleInput));
+                  });
+
+                  it('should exist', () => {
+                    expect(titleLabel).toBeTruthy();
+                  });
+
                 });
 
                 describe('title input', () => {
@@ -687,49 +707,49 @@ describe('Write -> Articles Page', () => {
             .reduce((accumulator, value) => accumulator + value, 0);
           expect(times).toBe(0);
         });
-  
+
         it('should not display title edit field', () => {
           const element = fixture.debugElement;
           const target = element.query(howToFindTitleInput);
           expect(target).toBeFalsy();
         });
-  
+
         it('should not display text edit field', () => {
           const element = fixture.debugElement;
           const target = element.query(howToFindTextInput);
           expect(target).toBeFalsy();
         });
-  
+
         it('should not display save only radio button', () => {
           const element = fixture.debugElement;
           const target = element.query(howToFindSaveOnlyRadio);
           expect(target).toBeFalsy();
         });
-  
+
         it('should not display save only label', () => {
           const element = fixture.debugElement;
           const target = element.query(howToFindSaveOnlyLabel);
           expect(target).toBeFalsy();
         });
-  
+
         it('should not display save and request edit radio button', () => {
           const element = fixture.debugElement;
           const target = element.query(howToFindSaveAndRequestEditRadio);
           expect(target).toBeFalsy();
         });
-  
+
         it('should not display save and request edit radio button', () => {
           const element = fixture.debugElement;
           const target = element.query(howToFindSaveAndRequestEditLabel);
           expect(target).toBeFalsy();
         });
-  
+
         it('should not display save and request check radio button', () => {
           const element = fixture.debugElement;
           const target = element.query(howToFindSaveAndRequestCheckRadio);
           expect(target).toBeFalsy();
         });
-  
+
         it('should not display save and request check radio button', () => {
           const element = fixture.debugElement;
           const target = element.query(howToFindSaveAndRequestCheckLabel);

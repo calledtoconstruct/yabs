@@ -1,9 +1,9 @@
 import { Article, WriteArticleService } from '../write-article.service';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
 import { UserService } from 'src/app/user.service';
 
 const articleIdentifierParameterName = 'articleIdentifier';
@@ -16,8 +16,8 @@ const articleIdentifierParameterName = 'articleIdentifier';
 export class ArticlesPageComponent {
 
   public readonly formGroup = this.formBuilder.group({
-    title: this.formBuilder.control(''),
-    text: this.formBuilder.control(''),
+    title: this.formBuilder.control('', Validators.required),
+    text: this.formBuilder.control('', Validators.required),
     operation: this.formBuilder.control('saveOnly')
   });
 

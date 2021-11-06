@@ -111,6 +111,10 @@ const howToFindLabelFor = (input: DebugElement) =>
     && !!element.attributes['for']
     && element.attributes['for'] === input.attributes['id'];
 
+const howToFindErrorParagraph = (element: DebugElement): boolean =>
+  element.name === 'p'
+  && element.classes['error-message'];
+
 describe('Write -> Articles Page', () => {
 
   let userService: FakeUserService;
@@ -299,6 +303,82 @@ describe('Write -> Articles Page', () => {
                   expect(textInput).toBeTruthy();
                 });
 
+                describe('title validation message', () => {
+
+                  let titleErrorParagraph: DebugElement;
+
+                  describe('when no value is provided', () => {
+
+                    beforeEach(() => {
+                      component.formGroup.get('title')?.setValue('');
+                      fixture.detectChanges();
+                      if (titleInput.parent) {
+                        titleErrorParagraph = titleInput.parent.query(howToFindErrorParagraph);
+                      }
+                    });
+
+                    it('should exist', () => {
+                      expect(titleErrorParagraph).toBeTruthy();
+                    });
+                    
+                  });
+
+                  describe('when a value is provided', () => {
+
+                    beforeEach(() => {
+                      component.formGroup.get('title')?.setValue('fjdsk;la');
+                      fixture.detectChanges();
+                      if (titleInput.parent) {
+                        titleErrorParagraph = titleInput.parent.query(howToFindErrorParagraph);
+                      }
+                    });
+
+                    it('should not display validation message', () => {
+                      expect(titleErrorParagraph).toBeFalsy();
+                    });
+
+                  });
+
+                });
+
+                describe('text validation message', () => {
+
+                  let textErrorParagraph: DebugElement;
+
+                  describe('when no value is provided', () => {
+
+                    beforeEach(() => {
+                      component.formGroup.get('text')?.setValue('');
+                      fixture.detectChanges();
+                      if (textInput.parent) {
+                        textErrorParagraph = textInput.parent.query(howToFindErrorParagraph);
+                      }
+                    });
+
+                    it('should exist', () => {
+                      expect(textErrorParagraph).toBeTruthy();
+                    });
+
+                  });
+
+                  describe('when a value is provided', () => {
+
+                    beforeEach(() => {
+                      component.formGroup.get('text')?.setValue('fjdsk;la');
+                      fixture.detectChanges();
+                      if (textInput.parent) {
+                        textErrorParagraph = textInput.parent.query(howToFindErrorParagraph);
+                      }
+                    });
+
+                    it('should not display validation message', () => {
+                      expect(textErrorParagraph).toBeFalsy();
+                    });
+
+                  });
+
+                });
+
                 describe('title label', () => {
 
                   let titleLabel: DebugElement;
@@ -314,7 +394,7 @@ describe('Write -> Articles Page', () => {
                   it('should contain text', () => {
                     expect(titleLabel.nativeElement.innerText).toBeTruthy();
                   });
-                  
+
                 });
 
                 describe('title input', () => {
@@ -341,9 +421,9 @@ describe('Write -> Articles Page', () => {
                 });
 
                 describe('text label', () => {
-                  
+
                   let textLabel: DebugElement;
-                  
+
                   beforeEach(() => {
                     textLabel = editSection.query(howToFindLabelFor(textInput));
                   });
@@ -355,9 +435,9 @@ describe('Write -> Articles Page', () => {
                   it('should contain text', () => {
                     expect(textLabel.nativeElement.innerText).toBeTruthy();
                   });
-                  
+
                 });
-                
+
                 describe('text input', () => {
 
                   thenTextInput(() => textInput);

@@ -7,7 +7,7 @@ export class WriteArticleService implements OnDestroy {
   private readonly articlesSubject = new ReplaySubject<Array<Article>>(1);
   private readonly articleSubject = new ReplaySubject<Article>(1);
 
-  public collection(_state: string): Observable<Array<Article>> {
+  public articlesFor(_state: string): Observable<Array<Article>> {
     setTimeout(() => this.articlesSubject.next(new Array<Article>(<Article>{
       title: 'sakldfjasdf',
       text: 'ghqauwnviuw'
@@ -15,7 +15,7 @@ export class WriteArticleService implements OnDestroy {
     return this.articlesSubject.asObservable();
   }
 
-  public article(_articleIdentifier: number): Observable<Article> {
+  public articleFor(_articleIdentifier: string | null): Observable<Article> {
     setTimeout(() => this.articleSubject.next(<Article>{
       title: 'vweydshyf',
       text: 'qvpwuvhvd'

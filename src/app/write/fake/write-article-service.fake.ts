@@ -16,9 +16,9 @@ export class FakeWriteArticleService {
   };
 
   public readonly articleCalledFor: CountContainer = {
-    100: 0,
-    200: 0,
-    300: 0
+    '100': 0,
+    '200': 0,
+    '300': 0
   };
 
   public saveArticleCalled = 0;
@@ -29,21 +29,21 @@ export class FakeWriteArticleService {
     this.articleToSave = article;
   }
 
-  public collection(name: string): Observable<Array<Article>> {
-    this.collectionCalledFor[name]++;
+  public articlesFor(category: string): Observable<Array<Article>> {
+    this.collectionCalledFor[category]++;
     return this.articlesSubject.asObservable();
   }
 
-  public article(articleIdentifier: number): Observable<Article> {
-    this.articleCalledFor[articleIdentifier]++;
+  public articleFor(articleIdentifier: string | null): Observable<Article> {
+    this.articleCalledFor[articleIdentifier || 'invalid']++;
     return this.articleSubject.asObservable();
   }
 
-  public nextCollection(articles: Array<Article>): void {
+  public nextArticlesFor(articles: Array<Article>): void {
     this.articlesSubject.next(articles);
   }
 
-  public nextArticle(article: Article): void {
+  public nextArticleFor(article: Article): void {
     this.articleSubject.next(article);
   }
 

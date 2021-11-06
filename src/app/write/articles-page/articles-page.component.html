@@ -2,17 +2,28 @@
 </ng-container>
 
 <ng-template #loggedIn>
-    <form [formGroup]='formGroup'>
-        <input name='title' formControlName='title' />
-        <textarea name='text' formControlName='text'></textarea>
-        <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />
-        <label for='saveOnlyOperation'>Save Article and Return to List</label>
-        <input type='radio' name='operation' formControlName='operation' value='saveAndRequestEdit' id='saveAndRequestEditOperation' />
-        <label for='saveAndRequestEditOperation'>Save Article and Request an Editorial Review</label>
-        <input type='radio' name='operation' formControlName='operation' value='saveAndRequestCheck' id='saveAndRequestCheckOperation' />
-        <label for='saveAndRequestCheckOperation'>Save Article and Request a Fact Check</label>
-        <button (click)='done()'>Done</button>
+    <header class='page'>page header</header>
+    <form class='article' [formGroup]='formGroup'>
+        <article class='article'>
+            <header class='article'>article header</header>
+            <section class='edit'>
+                <label for="title"></label>
+                <input name='title' id='title' formControlName='title' />
+                <textarea name='text' formControlName='text'></textarea>
+            </section>
+            <section class='action'>
+                <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />
+                <label for='saveOnlyOperation'>Save Article and Return to List</label>
+                <input type='radio' name='operation' formControlName='operation' value='saveAndRequestEdit' id='saveAndRequestEditOperation' />
+                <label for='saveAndRequestEditOperation'>Save Article and Request an Editorial Review</label>
+                <input type='radio' name='operation' formControlName='operation' value='saveAndRequestCheck' id='saveAndRequestCheckOperation' />
+                <label for='saveAndRequestCheckOperation'>Save Article and Request a Fact Check</label>
+                <button (click)='done()'>Done</button>
+            </section>
+            <footer class='article'>article footer</footer>
+        </article>
     </form>
+    <footer class='page'>page footer</footer>
 </ng-template>
 
 <ng-template #notLoggedIn>

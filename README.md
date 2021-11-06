@@ -6,6 +6,8 @@
 
 A self-hosted blogging site utilizing Firebase authentication, firestore storage, and Angular client code.
 
+[Feature List](features.md)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.10.  It is tested on NodeJS version 14.  The instructions
 below assume that the Angular CLI is not installed globally.
 

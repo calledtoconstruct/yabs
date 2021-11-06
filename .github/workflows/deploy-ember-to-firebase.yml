@@ -1,4 +1,4 @@
-name: Deploy to yet-another-blog-site.web.app
+name: Deploy to ember-yabs.web.app
 
 on:
   push:

@@ -320,6 +320,10 @@ describe('Write -> Articles Page', () => {
                     it('should exist', () => {
                       expect(titleErrorParagraph).toBeTruthy();
                     });
+
+                    it('should contain text', () => {
+                      expect(titleErrorParagraph.nativeElement.innerText).toBeTruthy();
+                    });
                     
                   });
 
@@ -357,6 +361,10 @@ describe('Write -> Articles Page', () => {
 
                     it('should exist', () => {
                       expect(textErrorParagraph).toBeTruthy();
+                    });
+
+                    it('should contain text', () => {
+                      expect(textErrorParagraph.nativeElement.innerText).toBeTruthy();
                     });
 
                   });

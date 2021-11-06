@@ -7,9 +7,16 @@
         <article class='article'>
             <header class='article'>article header</header>
             <section class='edit'>
-                <label for="title"></label>
-                <input name='title' id='title' formControlName='title' />
-                <textarea name='text' formControlName='text'></textarea>
+                <div>
+                    <label for='title'>Title</label>
+                    <input name='title' id='title' formControlName='title'/>
+                    <p class='error-message' *ngIf='formGroup.get("title")?.errors?.required'>Please provide a title.</p>
+                </div>
+                <div>
+                    <label for='text'>Text</label>
+                    <textarea name='text' id='text' formControlName='text'></textarea>
+                    <p class='error-message' *ngIf='formGroup.get("text")?.errors?.required'>Please provide some content.</p>
+                </div>
             </section>
             <section class='action'>
                 <input type='radio' name='operation' formControlName='operation' value='saveOnly' id='saveOnlyOperation' />

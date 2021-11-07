@@ -1,5 +1,6 @@
 import { AbstractControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { findElement, findOneOf } from 'src/app/find-elements-helper';
 import { FormPageComponent, Step } from './form-page.component';
 import { Observable, of, Subscription } from 'rxjs';
 import { Placeholder, Template, TemplateService } from '../template.service';
@@ -9,83 +10,82 @@ import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { SafeHtml } from '@angular/platform-browser';
 
-const howToFindPageHeader = (element: DebugElement): boolean =>
-  element.name === 'header'
-  && !!element.classes['page'];
+const howToFindPageHeader = findElement('header')
+  .withClass('page')
+  .please();
 
-const howToFindPageFooter = (element: DebugElement): boolean =>
-  element.name === 'footer'
-  && !!element.classes['page'];
+const howToFindPageFooter = findElement('footer')
+  .withClass('page')
+  .please();
 
-const howToFindForm = (element: DebugElement): boolean =>
-  element.name === 'form'
-  && !!element.classes['template'];
+const howToFindForm = findElement('form')
+  .withClass('template')
+  .please();
 
-const howToFindArticle = (element: DebugElement): boolean =>
-  element.name === 'article'
-  && !!element.classes['template'];
+const howToFindArticle = findElement('article')
+  .withClass('template')
+  .please();
 
-const howToFindArticleHeader = (element: DebugElement): boolean =>
-  element.name === 'header'
-  && !!element.classes['article'];
+const howToFindArticleHeader = findElement('header')
+  .withClass('article')
+  .please();
 
-const howToFindArticleFooter = (element: DebugElement): boolean =>
-  element.name === 'footer'
-  && !!element.classes['article'];
+const howToFindArticleFooter = findElement('footer')
+  .withClass('article')
+  .please();
 
-const howToFindEditSection = (element: DebugElement): boolean =>
-  element.name === 'section'
-  && !!element.classes['edit'];
+const howToFindEditSection = findElement('section')
+  .withClass('edit')
+  .please();
 
-const howToFindDocumentFieldset = (element: DebugElement): boolean =>
-  element.name === 'fieldset'
-  && !!element.classes['document'];
+const howToFindDocumentFieldset = findElement('fieldset')
+  .withClass('document')
+  .please();
 
 const documentNameInputIdentifier = '*-document-name';
 
-const howToFindDocumentNameInput = (element: DebugElement): boolean =>
-  element.name === 'input'
-  && !!element.attributes['id']
-  && element.attributes['id'] === documentNameInputIdentifier
-  && !!element.attributes['name']
-  && element.attributes['name'] === documentNameInputIdentifier;
+const howToFindDocumentNameInput = findElement('input')
+  .withAttributeValue('id', documentNameInputIdentifier)
+  .withAttributeValue('name', documentNameInputIdentifier)
+  .please();
 
-const howToFindPlaceholderFieldset = (element: DebugElement): boolean =>
-  element.name === 'fieldset'
-  && !!element.classes['placeholders'];
+const howToFindPlaceholderFieldset = findElement('fieldset')
+  .withClass('placeholders')
+  .please();
 
-const howToFindAllInput = (element: DebugElement): boolean =>
-  (element.name === 'input' || element.name === 'select' || element.name === 'textarea');
+const howToFindAllInput = findElement('input')
+  .or('select')
+  .or('textarea')
+  .please();
 
-const howToFindInputFor = (placeholder: Placeholder) =>
-  (element: DebugElement): boolean =>
-    (element.name === 'input' || element.name === 'select' || element.name === 'textarea')
-    && !!element.attributes['id']
-    && element.attributes['id'] === placeholder.name
-    && !!element.attributes['name']
-    && element.attributes['name'] === placeholder.name;
+const howToFindInputFor = (placeholder: Placeholder) => findOneOf(
+  element => element
+    .withAttributeValue('id', placeholder.name)
+    .withAttributeValue('name', placeholder.name),
+  'input',
+  'select',
+  'textarea')
+  .please();
 
-const howToFindLabelFor = (input: DebugElement) =>
-  (element: DebugElement): boolean =>
-    element.name === 'label'
-    && !!element.attributes['for']
-    && element.attributes['for'] === input.attributes['id'];
+const howToFindLabelFor = (input: DebugElement) => findElement('label')
+  .withAttributeValue('for', input.attributes['id'] || 'input is missing id attribute')
+  .please();
 
-const howToFindErrorParagraph = (element: DebugElement): boolean =>
-  element.name === 'p'
-  && !!element.classes['error-message'];
+const howToFindErrorParagraph = findElement('p')
+  .withClass('error-message')
+  .please();
 
-const howToFindActionSection = (element: DebugElement): boolean =>
-  element.name === 'section'
-  && !!element.classes['action'];
+const howToFindActionSection = findElement('section')
+  .withClass('action')
+  .please();
 
-const howToFindHydrateButton = (element: DebugElement): boolean =>
-  element.name === 'button'
-  && !!element.classes['hydrate'];
+const howToFindHydrateButton = findElement('button')
+  .withClass('hydrate')
+  .please();
 
-const howToFindReviewArticle = (element: DebugElement): boolean =>
-  element.name === 'article'
-  && !!element.classes['review'];
+const howToFindReviewArticle = findElement('article')
+  .withClass('review')
+  .please();
 
 const whenLabelIsClicked = (getFields: () => [DebugElement, DebugElement]) => {
 

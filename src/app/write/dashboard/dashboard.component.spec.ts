@@ -9,6 +9,7 @@ import { FakeActivatedRoute } from '../../fake/activated-route.fake';
 import { FakeRouter } from '../../fake/router.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { FakeWriteArticleService } from '../fake/write-article-service.fake';
+import { findElement } from 'src/app/find-elements-helper';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,94 +17,72 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { User } from '@angular/fire/auth';
 import { UserService } from '../../user.service';
 
-const howToFindPageHeader = (element: DebugElement): boolean =>
-  element.name === 'header'
-  && !!element.classes['page'];
+const howToFindPageHeader = findElement('header')
+  .withClass('page')
+  .please();
 
-const howToFindNavigation = (element: DebugElement): boolean =>
-  element.name === 'nav'
-  && !!element.classes['page'];
+const howToFindPageNavigation = findElement('nav')
+  .withClass('page')
+  .please();
 
-const howToFindTabHeader = (element: DebugElement): boolean =>
-  element.name === 'header'
-  && !!element.classes['tab'];
+const howToFindTabHeader = findElement('header')
+  .withClass('tab')
+  .please();
 
-const howToFindTabFooter = (element: DebugElement): boolean =>
-  element.name === 'footer'
-  && element.classes['tab'];
+const howToFindTabFooter = findElement('footer')
+  .withClass('tab')
+  .please();
 
-const howToFindTable = (element: DebugElement): boolean =>
-  element.name === 'table'
-  && Object.keys(element.attributes).includes('cdk-table')
-  && Object.keys(element.attributes).includes('ng-reflect-data-source')
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'table';
+const howToFindTable = findElement('table')
+  .withAttribute('cdk-table')
+  .withAttribute('ng-reflect-data-source')
+  .withAttributeValue('role', 'table')
+  .please();
 
-const howToFindTableHeader = (element: DebugElement): boolean =>
-  element.name === 'tr'
-  && Object.keys(element.attributes).includes('cdk-header-row')
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'row';
+const howToFindTableHeader = findElement('tr')
+  .withAttribute('cdk-header-row')
+  .withAttributeValue('role', 'row')
+  .please();
 
-const howToFindTableBody = (element: DebugElement): boolean =>
-  element.name === 'tr'
-  && Object.keys(element.attributes).includes('cdk-row')
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'row';
+const howToFindTableBody = findElement('tr')
+  .withAttribute('cdk-row')
+  .withAttributeValue('role', 'row')
+  .please();
 
-const howToFindTableFooter = (element: DebugElement): boolean =>
-  element.name === 'tr'
-  && Object.keys(element.attributes).includes('cdk-footer-row')
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'row';
+const howToFindTableFooter = findElement('tr')
+  .withAttribute('cdk-footer-row')
+  .withAttributeValue('role', 'row')
+  .please();
 
-const howToFindDraftTab = (element: DebugElement): boolean =>
-  element.name === 'div'
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'tab'
-  && element.children.length === 1
-  && !!element.children[0].nativeElement.innerText
-  && element.children[0].nativeElement.innerText === 'Draft';
+const howToFindDraftTab = findElement('div')
+  .withAttributeValue('role', 'tab')
+  .withOneChild(child => child.withInnerText('Draft'))
+  .please();
 
-const howToFindRequestPendingTab = (element: DebugElement): boolean =>
-  element.name === 'div'
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'tab'
-  && element.children.length === 1
-  && !!element.children[0].nativeElement.innerText
-  && element.children[0].nativeElement.innerText === 'Request Pending';
+const howToFindRequestPendingTab = findElement('div')
+  .withAttributeValue('role', 'tab')
+  .withOneChild(child => child.withInnerText('Request Pending'))
+  .please();
 
-const howToFindOutForEditTab = (element: DebugElement): boolean =>
-  element.name === 'div'
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'tab'
-  && element.children.length === 1
-  && !!element.children[0].nativeElement.innerText
-  && element.children[0].nativeElement.innerText === 'Out For Edit';
+const howToFindOutForEditTab = findElement('div')
+  .withAttributeValue('role', 'tab')
+  .withOneChild(child => child.withInnerText('Out For Edit'))
+  .please();
 
-const howToFindOutForCheckTab = (element: DebugElement): boolean =>
-  element.name === 'div'
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'tab'
-  && element.children.length === 1
-  && !!element.children[0].nativeElement.innerText
-  && element.children[0].nativeElement.innerText === 'Out For Check';
+const howToFindOutForCheckTab = findElement('div')
+  .withAttributeValue('role', 'tab')
+  .withOneChild(child => child.withInnerText('Out For Check'))
+  .please();
 
-const howToFindReadyTab = (element: DebugElement): boolean =>
-  element.name === 'div'
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'tab'
-  && element.children.length === 1
-  && !!element.children[0].nativeElement.innerText
-  && element.children[0].nativeElement.innerText === 'Ready';
+const howToFindReadyTab = findElement('div')
+  .withAttributeValue('role', 'tab')
+  .withOneChild(child => child.withInnerText('Ready'))
+  .please();
 
-const howToFindPublishedTab = (element: DebugElement): boolean =>
-  element.name === 'div'
-  && !!element.attributes['role']
-  && element.attributes['role'] === 'tab'
-  && element.children.length === 1
-  && !!element.children[0].nativeElement.innerText
-  && element.children[0].nativeElement.innerText === 'Published';
+const howToFindPublishedTab = findElement('div')
+  .withAttributeValue('role', 'tab')
+  .withOneChild(child => child.withInnerText('Published'))
+  .please();
 
 type TabDefinition = { name: string, howToFind: (element: DebugElement) => boolean, label: string, index: number };
 
@@ -201,7 +180,7 @@ describe('Write -> Dashboard', () => {
           let navigation: DebugElement;
 
           beforeEach(() => {
-            navigation = fixture.debugElement.query(howToFindNavigation);
+            navigation = fixture.debugElement.query(howToFindPageNavigation);
           });
 
           it('should exist', () => {

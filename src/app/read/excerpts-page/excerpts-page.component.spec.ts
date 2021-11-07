@@ -8,35 +8,34 @@ import { FakeImageDirective } from 'src/app/fake/image.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeRouterLinkDirective } from 'src/app/fake/router-link.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
+import { findElement } from 'src/app/find-elements-helper';
 import { RouterTestingModule } from '@angular/router/testing';
 import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
 
-const howToFindAnchor = (articleIdentifier: string): (element: DebugElement) => boolean =>
-  (element: DebugElement) =>
-    element.name === 'a'
-    && !!element.attributes['href']
-    && element.attributes['href'] === `/read/articles/${articleIdentifier}`;
+const howToFindAnchor = (articleIdentifier: string) => findElement('a')
+  .withAttributeValue('href', `/read/articles/${articleIdentifier}`)
+  .please();
 
-const howToFindTitleInAnchor = (element: DebugElement) =>
-  element.name === 'span'
-  && !!element.classes['title'];
+const howToFindTitleInAnchor = findElement('span')
+  .withClass('title')
+  .please();
 
-const howToFindTextInAnchor = (element: DebugElement) =>
-  element.name === 'span'
-  && !!element.classes['text'];
+const howToFindTextInAnchor = findElement('span')
+  .withClass('text')
+  .please();
 
-const howToFindEditorsInAnchor = (element: DebugElement) =>
-  element.name === 'span'
-  && !!element.classes['editors'];
+const howToFindEditorsInAnchor = findElement('span')
+  .withClass('editors')
+  .please();
 
-const howToFindBrandInAnchor = (element: DebugElement) =>
-  element.name === 'span'
-  && !!element.classes['brand'];
+const howToFindBrandInAnchor = findElement('span')
+  .withClass('brand')
+  .please();
 
-const howToFindBrandPhotoInAnchor = (element: DebugElement) =>
-  element.name === 'img'
-  && !!element.classes['brand-photo'];
+const howToFindBrandPhotoInAnchor = findElement('img')
+  .withClass('brand-photo')
+  .please();
 
 describe('Read -> Excerpts Page', () => {
 

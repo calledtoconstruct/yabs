@@ -7,113 +7,94 @@ import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from '../../fake/activated-route.fake';
 import { FakeUserService } from '../../fake/user-service.fake';
 import { FakeWriteArticleService } from '../fake/write-article-service.fake';
+import { findElement } from 'src/app/find-elements-helper';
 import { User } from '@angular/fire/auth';
 import { UserService } from '../../user.service';
 
-const howToFindTitleInput = (element: DebugElement) =>
-  element.name === 'input'
-  && !!element.attributes['name']
-  && element.attributes['name'] === 'title';
+const howToFindTitleInput = findElement('input')
+  .withAttributeValue('name', 'title')
+  .please();
 
-const howToFindTextInput = (element: DebugElement) =>
-  element.name === 'textarea'
-  && !!element.attributes['name']
-  && element.attributes['name'] === 'text';
+const howToFindTextInput = findElement('textarea')
+  .withAttributeValue('name', 'text')
+  .please();
 
-const howToFindSaveOnlyRadio = (element: DebugElement) =>
-  element.name === 'input'
-  && !!element.attributes['type']
-  && element.attributes['type'] === 'radio'
-  && !!element.attributes['name']
-  && element.attributes['name'] === 'operation'
-  && !!element.attributes['value']
-  && element.attributes['value'] === 'saveOnly'
-  && !!element.attributes['id']
-  && element.attributes['id'] === 'saveOnlyOperation';
+const howToFindSaveOnlyRadio = findElement('input')
+  .withAttributeValue('type', 'radio')
+  .withAttributeValue('name', 'operation')
+  .withAttributeValue('value', 'saveOnly')
+  .withAttributeValue('id', 'saveOnlyOperation')
+  .please();
 
-const howToFindSaveOnlyLabel = (element: DebugElement) =>
-  element.name === 'label'
-  && !!element.attributes['for']
-  && element.attributes['for'] === 'saveOnlyOperation';
+const howToFindSaveOnlyLabel = findElement('label')
+  .withAttributeValue('for', 'saveOnlyOperation')
+  .please();
 
-const howToFindSaveAndRequestEditRadio = (element: DebugElement) =>
-  element.name === 'input'
-  && !!element.attributes['type']
-  && element.attributes['type'] === 'radio'
-  && !!element.attributes['name']
-  && element.attributes['name'] === 'operation'
-  && !!element.attributes['value']
-  && element.attributes['value'] === 'saveAndRequestEdit'
-  && !!element.attributes['id']
-  && element.attributes['id'] === 'saveAndRequestEditOperation';
+const howToFindSaveAndRequestEditRadio = findElement('input')
+  .withAttributeValue('type', 'radio')
+  .withAttributeValue('name', 'operation')
+  .withAttributeValue('value', 'saveAndRequestEdit')
+  .withAttributeValue('id', 'saveAndRequestEditOperation')
+  .please();
 
-const howToFindSaveAndRequestEditLabel = (element: DebugElement) =>
-  element.name === 'label'
-  && !!element.attributes['for']
-  && element.attributes['for'] === 'saveAndRequestEditOperation';
+const howToFindSaveAndRequestEditLabel = findElement('label')
+  .withAttributeValue('for', 'saveAndRequestEditOperation')
+  .please();
 
-const howToFindSaveAndRequestCheckRadio = (element: DebugElement) =>
-  element.name === 'input'
-  && !!element.attributes['type']
-  && element.attributes['type'] === 'radio'
-  && !!element.attributes['name']
-  && element.attributes['name'] === 'operation'
-  && !!element.attributes['value']
-  && element.attributes['value'] === 'saveAndRequestCheck'
-  && !!element.attributes['id']
-  && element.attributes['id'] === 'saveAndRequestCheckOperation';
+const howToFindSaveAndRequestCheckRadio = findElement('input')
+  .withAttributeValue('type', 'radio')
+  .withAttributeValue('name', 'operation')
+  .withAttributeValue('value', 'saveAndRequestCheck')
+  .withAttributeValue('id', 'saveAndRequestCheckOperation')
+  .please();
 
-const howToFindSaveAndRequestCheckLabel = (element: DebugElement) =>
-  element.name === 'label'
-  && !!element.attributes['for']
-  && element.attributes['for'] === 'saveAndRequestEditOperation';
+const howToFindSaveAndRequestCheckLabel = findElement('label')
+  .withAttributeValue('for', 'saveAndRequestEditOperation')
+  .please();
 
-const howToFindDoneButton = (element: DebugElement): boolean =>
-  element.name === 'button'
-  && !!element.nativeElement.innerText
-  && element.nativeElement.innerText === 'Done';
+const howToFindDoneButton = findElement('button')
+  .withInnerText('Done')
+  .please();
 
-const howToFindPageHeader = (element: DebugElement): boolean =>
-  element.name === 'header'
-  && !!element.classes['page'];
+const howToFindPageHeader = findElement('header')
+  .withClass('page')
+  .please();
 
-const howToFindArticleForm = (element: DebugElement): boolean =>
-  element.name === 'form'
-  && !!element.classes['article'];
+const howToFindArticleForm = findElement('form')
+  .withClass('article')
+  .please();
 
-const howToFindArticle = (element: DebugElement): boolean =>
-  element.name === 'article'
-  && !!element.classes['article'];
+const howToFindArticle = findElement('article')
+  .withClass('article')
+  .please();
 
-const howToFindArticleHeader = (element: DebugElement): boolean =>
-  element.name === 'header'
-  && !!element.classes['article'];
+const howToFindArticleHeader = findElement('header')
+  .withClass('article')
+  .please();
 
-const howToFindEditSection = (element: DebugElement): boolean =>
-  element.name === 'section'
-  && !!element.classes['edit'];
+const howToFindEditSection = findElement('section')
+  .withClass('edit')
+  .please();
 
-const howToFindActionSection = (element: DebugElement): boolean =>
-  element.name === 'section'
-  && !!element.classes['action'];
+const howToFindActionSection = findElement('section')
+  .withClass('action')
+  .please();
 
-const howToFindArticleFooter = (element: DebugElement): boolean =>
-  element.name === 'footer'
-  && !!element.classes['article'];
+const howToFindArticleFooter = findElement('footer')
+  .withClass('article')
+  .please();
 
-const howToFindPageFooter = (element: DebugElement): boolean =>
-  element.name === 'footer'
-  && !!element.classes['page'];
+const howToFindPageFooter = findElement('footer')
+  .withClass('page')
+  .please();
 
-const howToFindLabelFor = (input: DebugElement) =>
-  (element: DebugElement): boolean =>
-    element.name === 'label'
-    && !!element.attributes['for']
-    && element.attributes['for'] === input.attributes['id'];
+const howToFindLabelFor = (input: DebugElement) => findElement('label')
+  .withAttributeValue('for', input.attributes['id'] || 'input is missing id attribute')
+  .please();
 
-const howToFindErrorParagraph = (element: DebugElement): boolean =>
-  element.name === 'p'
-  && element.classes['error-message'];
+const howToFindErrorParagraph = findElement('p')
+  .withClass('error-message')
+  .please();
 
 describe('Write -> Articles Page', () => {
 

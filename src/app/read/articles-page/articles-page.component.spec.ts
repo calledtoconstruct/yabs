@@ -6,43 +6,41 @@ import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
+import { findElement } from 'src/app/find-elements-helper';
 import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
 
-const howToFindArticleElement = (element: DebugElement) =>
-  element.name === 'article';
+const howToFindArticleElement = findElement('article')
+  .please();
 
-const howToFindTitleElement = (element: DebugElement) =>
-  element.name === 'span'
-  && !!element.classes['title'];
+const howToFindTitleElement = findElement('span')
+  .withClass('title')
+  .please();
 
-const howToFindTextElement = (element: DebugElement) =>
-  element.name === 'span'
-  && !!element.classes['text'];
+const howToFindTextElement = findElement('span')
+  .withClass('text')
+  .please();
 
-const howToFindBrandElement = (element: DebugElement) =>
-  element.name === 'span'
-  && !!element.classes['brand'];
+const howToFindBrandElement = findElement('span')
+  .withClass('brand')
+  .please();
 
-const howToFindCommentSectionElement = (element: DebugElement) =>
-  element.name === 'section'
-  && !!element.classes['comment-section'];
+const howToFindCommentSectionElement = findElement('section')
+  .withClass('comment-section')
+  .please();
 
-const howToFindLogInReminderElement = (element: DebugElement) =>
-  element.name === 'span'
-  && !!element.classes['log-in-reminder'];
+const howToFindLogInReminderElement = findElement('span')
+  .withClass('log-in-reminder')
+  .please();
 
-const howToFindCommentInputElement = (element: DebugElement) =>
-  element.name === 'textarea'
-  && !!element.attributes['name']
-  && element.attributes['name'] === 'comment'
-  && !!element.attributes['id']
-  && element.attributes['id'] === 'comment';
+const howToFindCommentInputElement = findElement('textarea')
+  .withAttributeValue('name', 'comment')
+  .withAttributeValue('id', 'comment')
+  .please();
 
-const howToFindCommentInputLabelElement = (element: DebugElement) =>
-  element.name === 'label'
-  && !!element.attributes['for']
-  && element.attributes['for'] === 'comment';
+const howToFindCommentInputLabelElement = findElement('label')
+  .withAttributeValue('for', 'comment')
+  .please();
 
 describe('Read -> Articles Page', () => {
 

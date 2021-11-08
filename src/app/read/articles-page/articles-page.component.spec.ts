@@ -13,6 +13,10 @@ import { UserService } from 'src/app/user.service';
 const howToFindArticleElement = findElement('article')
   .please();
 
+const howToFindArticleHeader = findElement('header')
+  .withClass('article')
+  .please();
+
 const howToFindTitleElement = findElement('span')
   .withClass('title')
   .please();
@@ -124,24 +128,32 @@ describe('Read -> Articles Page', () => {
             fixture.detectChanges();
           });
 
-          describe('user interface', () => {
-
-            let mainElement: DebugElement;
-
-            beforeEach(() => {
-              mainElement = fixture.debugElement;
-            });
+          const regardlessOfWhetherUserIsLoggedIn = () => {
 
             describe('article', () => {
 
               let articleElement: DebugElement;
 
               beforeEach(() => {
-                articleElement = mainElement.query(howToFindArticleElement);
+                articleElement = fixture.debugElement.query(howToFindArticleElement);
               });
 
               it('should exist', () => {
                 expect(articleElement).toBeTruthy();
+              });
+
+              describe('header', () => {
+
+                let header: DebugElement;
+
+                beforeEach(() => {
+                  header = articleElement.query(howToFindArticleHeader);
+                });
+
+                it('should exist', () => {
+                  expect(header).toBeTruthy();
+                });
+
               });
 
               describe('title', () => {
@@ -200,74 +212,78 @@ describe('Read -> Articles Page', () => {
 
             });
 
-            const inCommentSection = (then: () => void): () => DebugElement => {
+          };
 
-              let commentSectionElement: DebugElement;
+          const inCommentSection = (then: () => void): () => DebugElement => {
 
-              describe('comment section', () => {
+            let commentSectionElement: DebugElement;
+
+            describe('comment section', () => {
+
+              beforeEach(() => {
+                commentSectionElement = fixture.debugElement.query(howToFindCommentSectionElement);
+              });
+
+              it('should exist', () => {
+                expect(commentSectionElement).toBeTruthy();
+              });
+
+              then();
+
+            });
+
+            return () => commentSectionElement;
+
+          };
+
+          FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
+
+            regardlessOfWhetherUserIsLoggedIn();
+
+            const getCommentSectionElement = inCommentSection(() => {
+
+              describe('comment input', () => {
+
+                let commentInputElement: DebugElement;
+                let commentInputLabelElement: DebugElement;
 
                 beforeEach(() => {
-                  commentSectionElement = mainElement.query(howToFindCommentSectionElement);
+                  const commentSectionElement = getCommentSectionElement();
+                  commentInputElement = commentSectionElement.query(howToFindCommentInputElement);
+                  commentInputLabelElement = commentSectionElement.query(howToFindCommentInputLabelElement);
                 });
 
                 it('should exist', () => {
-                  expect(commentSectionElement).toBeTruthy();
+                  expect(commentInputElement).toBeTruthy();
                 });
 
-                then();
-
-              });
-
-              return () => commentSectionElement;
-
-            };
-
-            FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
-
-              const getCommentSectionElement = inCommentSection(() => {
-
-                describe('comment input', () => {
-
-                  let commentInputElement: DebugElement;
-                  let commentInputLabelElement: DebugElement;
-
-                  beforeEach(() => {
-                    const commentSectionElement = getCommentSectionElement();
-                    commentInputElement = commentSectionElement.query(howToFindCommentInputElement);
-                    commentInputLabelElement = commentSectionElement.query(howToFindCommentInputLabelElement);
-                  });
-
-                  it('should exist', () => {
-                    expect(commentInputElement).toBeTruthy();
-                  });
-
-                  it('should have label', () => {
-                    expect(commentInputLabelElement).toBeTruthy();
-                  });
-
+                it('should have label', () => {
+                  expect(commentInputLabelElement).toBeTruthy();
                 });
 
               });
 
             });
 
-            FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
+          });
 
-              const getCommentSectionElement = inCommentSection(() => {
+          FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
 
-                describe('login reminder', () => {
+            regardlessOfWhetherUserIsLoggedIn();
 
-                  let logInReminderElement: DebugElement;
+            const getCommentSectionElement = inCommentSection(() => {
 
-                  beforeEach(() => {
-                    const commentSectionElement = getCommentSectionElement();
-                    logInReminderElement = commentSectionElement.query(howToFindLogInReminderElement);
-                  });
+              describe('login reminder', () => {
 
-                  it('should exist', () => {
-                    expect(logInReminderElement).toBeTruthy();
-                  });
+                let logInReminderElement: DebugElement;
 
+                beforeEach(() => {
+                  const commentSectionElement = getCommentSectionElement();
+                  logInReminderElement = commentSectionElement.query(howToFindLogInReminderElement);
+                });
+
+                it('should exist', () => {
+                  expect(logInReminderElement).toBeTruthy();
                 });
 
               });

@@ -4,6 +4,7 @@
 <ng-template #loggedIn>
     <ng-template [ngIf]='article$ | async' let-item>
         <article>
+            <header class='article'>article header</header>
             <span class='title'>{{ item.title }}</span>
             <span class='text'>{{ item.text }}</span>
             <span class='brand'>{{ item.brand }}</span>
@@ -18,6 +19,7 @@
 <ng-template #notLoggedIn>
     <ng-template [ngIf]='article$ | async' let-item>
         <article>
+            <header class='article'>article header</header>
             <span class='title'>{{ item.title }}</span>
             <span class='text'>{{ item.text }}</span>
             <span class='brand'>{{ item.brand }}</span>

@@ -36,8 +36,8 @@ export class ReadArticleService implements OnDestroy {
   };
   private readonly secondComment = <ArticleComment>{
     brandPhoto: '/fake/image/f28huhedg',
-    brand: 'hfaua',
-    text: 'vauu hauhsas dufh asudfbu asidf',
+    brand: 'bhujsaa',
+    text: 'jkhas hf asjdkh asd fhasg a',
     when: new Date()
   };
   private readonly articles = new Array<Article>(<Article>{

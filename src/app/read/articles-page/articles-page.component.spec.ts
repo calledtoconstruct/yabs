@@ -56,6 +56,7 @@ const howToFindCommentSectionHeader = findElement('header')
   .please();
 
 const howToFindComment = findElement('app-comment')
+  .withAttribute('ng-reflect-comment')
   .please();
 
 const howToFindCommentSectionFooter = findElement('footer')

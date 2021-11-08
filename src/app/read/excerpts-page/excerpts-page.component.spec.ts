@@ -154,6 +154,7 @@ describe('Read -> Excerpts Page', () => {
                   let editorsElement: DebugElement;
                   let brandElement: DebugElement;
                   let brandPhotoElement: DebugElement;
+                  let fakeImageDirective: FakeImageDirective;
   
                   beforeEach(() => {
                     anchor = fixture.debugElement.query(howToFindAnchor(excerpt.articleIdentifier));
@@ -162,6 +163,7 @@ describe('Read -> Excerpts Page', () => {
                     editorsElement = anchor.query(howToFindEditorsInAnchor);
                     brandElement = anchor.query(howToFindBrandInAnchor);
                     brandPhotoElement = anchor.query(howToFindBrandPhotoInAnchor);
+                    fakeImageDirective = brandPhotoElement.injector.get(FakeImageDirective) as FakeImageDirective;
                   });
   
                   it('should exist', () => {
@@ -223,7 +225,6 @@ describe('Read -> Excerpts Page', () => {
                     });
   
                     it(`should use ${firstExcerpt.brandPhoto} as brand photo source url`, () => {
-                      const fakeImageDirective = brandPhotoElement.injector.get(FakeImageDirective);
                       expect(fakeImageDirective.src).toBe(firstExcerpt.brandPhoto);
                     });
   

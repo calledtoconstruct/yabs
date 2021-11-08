@@ -1,9 +1,10 @@
-import { Article, ReadArticleService } from '../read-article.service';
+import { Article, ArticleComment, ReadArticleService } from '../read-article.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesPageComponent } from './articles-page.component';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
+import { FakeImageDirective } from 'src/app/fake/image.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
 import { findElement } from 'src/app/find-elements-helper';
@@ -21,16 +22,20 @@ const howToFindArticleHeader = findElement('header')
   .withClass('article')
   .please();
 
-const howToFindTitleElement = findElement('span')
+const howToFindTitleElement = findElement('p')
   .withClass('title')
   .please();
 
-const howToFindTextElement = findElement('span')
+const howToFindTextElement = findElement('p')
   .withClass('text')
   .please();
 
-const howToFindBrandElement = findElement('span')
+const howToFindBrandElement = findElement('p')
   .withClass('brand')
+  .please();
+
+const howToFindBrandPhoto = findElement('img')
+  .withClass('brand-photo')
   .please();
 
 const howToFindArticleFooter = findElement('footer')
@@ -45,7 +50,11 @@ const howToFindCommentSectionElement = findElement('section')
   .withClass('comment-section')
   .please();
 
-const howToFindLogInReminderElement = findElement('span')
+const howToFindCommentSectionHeader = findElement('header')
+  .withClass('comment-section')
+  .please();
+
+const howToFindLogInReminderElement = findElement('p')
   .withClass('log-in-reminder')
   .please();
 
@@ -85,7 +94,7 @@ describe('Read -> Articles Page', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ArticlesPageComponent],
+      declarations: [ArticlesPageComponent, FakeImageDirective],
       providers: [
         { provide: UserService, useValue: userService },
         { provide: ActivatedRoute, useValue: activatedRoute },
@@ -128,11 +137,30 @@ describe('Read -> Articles Page', () => {
 
         describe('when an article is loaded', () => {
 
+          const firstComment = <ArticleComment>{
+            brandPhoto: '/fake/image/f28huhedg',
+            brand: 'hfaua',
+            text: 'vauu hauhsas dufh asudfbu asidf',
+            when: new Date()
+          };
+
+          const secondComment = <ArticleComment>{
+            brandPhoto: '/fake/image/f28huhedg',
+            brand: 'hfaua',
+            text: 'vauu hauhsas dufh asudfbu asidf',
+            when: new Date()
+          };
+
           const article = <Article>{
             articleIdentifier: scenario.route.articleIdentifier,
             title: 'uaiwogiewn',
             text: 'qpinvoia',
-            brand: 'fjdksla'
+            brand: 'fjdksla',
+            brandPhoto: '/fake/image/bbuiaurasdf',
+            comments: new Array<ArticleComment>(
+              firstComment,
+              secondComment
+            )
           };
 
           beforeEach(() => {
@@ -143,7 +171,7 @@ describe('Read -> Articles Page', () => {
           const regardlessOfWhetherUserIsLoggedIn = () => {
 
             describe('page header', () => {
-              
+
               let header: DebugElement;
 
               beforeEach(() => {
@@ -190,6 +218,44 @@ describe('Read -> Articles Page', () => {
 
               });
 
+              describe('brand photo', () => {
+                
+                let brandPhoto: DebugElement;
+                let fakeImageDirective: FakeImageDirective;
+
+                beforeEach(() => {
+                  brandPhoto = articleElement.query(howToFindBrandPhoto);
+                  fakeImageDirective = brandPhoto.injector.get(FakeImageDirective) as FakeImageDirective;
+                });
+
+                it('should exist', () => {
+                  expect(brandPhoto).toBeTruthy();
+                });
+
+                it(`reference url${article.brandPhoto}`, () => {
+                  expect(fakeImageDirective.src).toBe(article.brandPhoto);
+                });
+
+              });
+
+              describe('brand', () => {
+
+                let brandElement: DebugElement;
+
+                beforeEach(() => {
+                  brandElement = articleElement.query(howToFindBrandElement);
+                });
+
+                it('should exist', () => {
+                  expect(brandElement).toBeTruthy();
+                });
+
+                it(`should contain ${article.brand}`, () => {
+                  expect(brandElement.nativeElement.innerText).toBe(article.brand);
+                });
+
+              });
+
               describe('title', () => {
 
                 let titleElement: DebugElement;
@@ -226,24 +292,6 @@ describe('Read -> Articles Page', () => {
 
               });
 
-              describe('brand', () => {
-
-                let brandElement: DebugElement;
-
-                beforeEach(() => {
-                  brandElement = articleElement.query(howToFindBrandElement);
-                });
-
-                it('should exist', () => {
-                  expect(brandElement).toBeTruthy();
-                });
-
-                it(`should contain ${article.brand}`, () => {
-                  expect(brandElement.nativeElement.innerText).toBe(article.brand);
-                });
-
-              });
-
               describe('footer', () => {
 
                 let footer: DebugElement;
@@ -259,13 +307,13 @@ describe('Read -> Articles Page', () => {
                 it('should contain text', () => {
                   expect(footer.nativeElement.innerText).toBeTruthy();
                 });
-                
+
               });
 
             });
 
             describe('page footer', () => {
-              
+
               let footer: DebugElement;
 
               beforeEach(() => {
@@ -296,6 +344,24 @@ describe('Read -> Articles Page', () => {
 
               it('should exist', () => {
                 expect(commentSectionElement).toBeTruthy();
+              });
+
+              describe('header', () => {
+                
+                let header: DebugElement;
+
+                beforeEach(() => {
+                  header = commentSectionElement.query(howToFindCommentSectionHeader);
+                });
+
+                it('should exist', () => {
+                  expect(header).toBeTruthy();
+                });
+
+                it('should contain text', () => {
+                  expect(header.nativeElement.innerText).toBeTruthy();
+                });
+
               });
 
               then();

@@ -1,6 +1,7 @@
 <header class='page'>page header</header>
 <ng-container *ngIf='userService.loggedIn$ | async; then loggedIn; else notLoggedIn;'>
 </ng-container>
+<footer class='page'>page footer</footer>
 
 <ng-template #loggedIn>
     <ng-template [ngIf]='article$ | async' let-item>

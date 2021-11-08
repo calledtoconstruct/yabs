@@ -37,6 +37,10 @@ const howToFindArticleFooter = findElement('footer')
   .withClass('article')
   .please();
 
+const howToFindPageFooter = findElement('footer')
+  .withClass('page')
+  .please();
+
 const howToFindCommentSectionElement = findElement('section')
   .withClass('comment-section')
   .please();
@@ -256,6 +260,24 @@ describe('Read -> Articles Page', () => {
                   expect(footer.nativeElement.innerText).toBeTruthy();
                 });
                 
+              });
+
+            });
+
+            describe('page footer', () => {
+              
+              let footer: DebugElement;
+
+              beforeEach(() => {
+                footer = fixture.debugElement.query(howToFindPageFooter);
+              });
+
+              it('should exist', () => {
+                expect(footer).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(footer.nativeElement.innerText).toBeTruthy();
               });
 
             });

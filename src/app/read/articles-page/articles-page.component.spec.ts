@@ -54,6 +54,10 @@ const howToFindCommentSectionHeader = findElement('header')
   .withClass('comment-section')
   .please();
 
+const howToFindCommentSectionFooter = findElement('footer')
+  .withClass('comment-section')
+  .please();
+
 const howToFindLogInReminderElement = findElement('p')
   .withClass('log-in-reminder')
   .please();
@@ -219,7 +223,7 @@ describe('Read -> Articles Page', () => {
               });
 
               describe('brand photo', () => {
-                
+
                 let brandPhoto: DebugElement;
                 let fakeImageDirective: FakeImageDirective;
 
@@ -347,7 +351,7 @@ describe('Read -> Articles Page', () => {
               });
 
               describe('header', () => {
-                
+
                 let header: DebugElement;
 
                 beforeEach(() => {
@@ -360,6 +364,24 @@ describe('Read -> Articles Page', () => {
 
                 it('should contain text', () => {
                   expect(header.nativeElement.innerText).toBeTruthy();
+                });
+
+              });
+
+              describe('footer', () => {
+
+                let footer: DebugElement;
+
+                beforeEach(() => {
+                  footer = commentSectionElement.query(howToFindCommentSectionFooter);
+                });
+
+                it('should exist', () => {
+                  expect(footer).toBeTruthy();
+                });
+
+                it('should contain text', () => {
+                  expect(footer.nativeElement.innerText).toBeTruthy();
                 });
 
               });

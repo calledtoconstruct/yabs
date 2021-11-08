@@ -12,6 +12,7 @@
         <header class='comment-section'>comment section header</header>
         <ng-container *ngTemplateOutlet='(userService.loggedIn$ | async) ? loggedIn : notLoggedIn; context: { article: item };'>
         </ng-container>
+        <footer class='comment-section'>comment section footer</footer>
     </section>
 </ng-template>
 <footer class='page'>page footer</footer>

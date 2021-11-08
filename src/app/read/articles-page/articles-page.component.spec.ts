@@ -2,6 +2,7 @@ import { Article, ArticleComment, ReadArticleService } from '../read-article.ser
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesPageComponent } from './articles-page.component';
+import { CommentComponent } from '../comment/comment.component';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeImageDirective } from 'src/app/fake/image.fake';
@@ -54,6 +55,9 @@ const howToFindCommentSectionHeader = findElement('header')
   .withClass('comment-section')
   .please();
 
+const howToFindComment = findElement('app-comment')
+  .please();
+
 const howToFindCommentSectionFooter = findElement('footer')
   .withClass('comment-section')
   .please();
@@ -98,7 +102,7 @@ describe('Read -> Articles Page', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ArticlesPageComponent, FakeImageDirective],
+      declarations: [ArticlesPageComponent, FakeImageDirective, CommentComponent],
       providers: [
         { provide: UserService, useValue: userService },
         { provide: ActivatedRoute, useValue: activatedRoute },
@@ -364,6 +368,20 @@ describe('Read -> Articles Page', () => {
 
                 it('should contain text', () => {
                   expect(header.nativeElement.innerText).toBeTruthy();
+                });
+
+              });
+
+              describe('comments', () => {
+                
+                let comments: Array<DebugElement>;
+
+                beforeEach(() => {
+                  comments = commentSectionElement.queryAll(howToFindComment);
+                });
+
+                it(`should exist ${article.comments.length} times`, () => {
+                  expect(comments.length).toBe(article.comments.length);
                 });
 
               });

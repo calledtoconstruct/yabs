@@ -10,6 +10,7 @@
     </article>
     <section class='comment-section'>
         <header class='comment-section'>comment section header</header>
+        <app-comment *ngFor='let comment of item.comments'></app-comment>
         <ng-container *ngTemplateOutlet='(userService.loggedIn$ | async) ? loggedIn : notLoggedIn; context: { article: item };'>
         </ng-container>
         <footer class='comment-section'>comment section footer</footer>

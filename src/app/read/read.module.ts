@@ -1,5 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { ArticlesPageComponent } from './articles-page/articles-page.component';
+import { CommentComponent } from './comment/comment.component';
 import { CommonModule } from '@angular/common';
 import { ExcerptsPageComponent } from './excerpts-page/excerpts-page.component';
 import { NgModule } from '@angular/core';
@@ -14,6 +15,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ArticlesPageComponent,
+    CommentComponent,
     ExcerptsPageComponent
   ],
   imports: [

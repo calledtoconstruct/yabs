@@ -1,29 +1,28 @@
-<ng-container *ngIf='userService.loggedIn$ | async; then loggedIn; else notLoggedIn;'>
-</ng-container>
+<header class='page'>page header</header>
+<ng-template [ngIf]='article$ | async' let-item>
+    <article>
+        <header class='article'>article header</header>
+        <img [src]='item.brandPhoto' class='brand-photo' />
+        <p class='brand'>{{ item.brand }}</p>
+        <p class='title'>{{ item.title }}</p>
+        <p class='text'>{{ item.text }}</p>
+        <footer class='article'>article footer</footer>
+    </article>
+    <section class='comment-section'>
+        <header class='comment-section'>comment section header</header>
+        <app-comment *ngFor='let comment of item.comments' [comment]='comment'></app-comment>
+        <ng-container *ngTemplateOutlet='(userService.loggedIn$ | async) ? loggedIn : notLoggedIn; context: { article: item };'>
+        </ng-container>
+        <footer class='comment-section'>comment section footer</footer>
+    </section>
+</ng-template>
+<footer class='page'>page footer</footer>
 
-<ng-template #loggedIn>
-    <ng-template [ngIf]='article$ | async' let-item>
-        <article>
-            <span class='title'>{{ item.title }}</span>
-            <span class='text'>{{ item.text }}</span>
-            <span class='brand'>{{ item.brand }}</span>
-        </article>
-        <section class='comment-section'>
-            <label for='comment'>Comment: </label>
-            <textarea class='comment' name='comment' id='comment'></textarea>
-        </section>
-    </ng-template>
+<ng-template #loggedIn let-item='article'>
+    <label for='comment'>Comment: </label>
+    <textarea class='comment' name='comment' id='comment'></textarea>
 </ng-template>
 
 <ng-template #notLoggedIn>
-    <ng-template [ngIf]='article$ | async' let-item>
-        <article>
-            <span class='title'>{{ item.title }}</span>
-            <span class='text'>{{ item.text }}</span>
-            <span class='brand'>{{ item.brand }}</span>
-        </article>
-        <section class='comment-section'>
-            <span class='log-in-reminder'></span>
-        </section>
-    </ng-template>
+    <p class='log-in-reminder'></p>
 </ng-template>

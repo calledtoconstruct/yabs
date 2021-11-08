@@ -1,35 +1,69 @@
-import { Article, ReadArticleService } from '../read-article.service';
+import { Article, ArticleComment, ReadArticleService } from '../read-article.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesPageComponent } from './articles-page.component';
+import { CommentComponent } from '../comment/comment.component';
 import { DebugElement } from '@angular/core';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
+import { FakeImageDirective } from 'src/app/fake/image.fake';
 import { FakeReadArticleService } from '../fake/read-article-service.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
 import { findElement } from 'src/app/find-elements-helper';
 import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
 
+const howToFindPageHeader = findElement('header')
+  .withClass('page')
+  .please();
+
 const howToFindArticleElement = findElement('article')
   .please();
 
-const howToFindTitleElement = findElement('span')
+const howToFindArticleHeader = findElement('header')
+  .withClass('article')
+  .please();
+
+const howToFindTitleElement = findElement('p')
   .withClass('title')
   .please();
 
-const howToFindTextElement = findElement('span')
+const howToFindTextElement = findElement('p')
   .withClass('text')
   .please();
 
-const howToFindBrandElement = findElement('span')
+const howToFindBrandElement = findElement('p')
   .withClass('brand')
+  .please();
+
+const howToFindBrandPhoto = findElement('img')
+  .withClass('brand-photo')
+  .please();
+
+const howToFindArticleFooter = findElement('footer')
+  .withClass('article')
+  .please();
+
+const howToFindPageFooter = findElement('footer')
+  .withClass('page')
   .please();
 
 const howToFindCommentSectionElement = findElement('section')
   .withClass('comment-section')
   .please();
 
-const howToFindLogInReminderElement = findElement('span')
+const howToFindCommentSectionHeader = findElement('header')
+  .withClass('comment-section')
+  .please();
+
+const howToFindComment = findElement('app-comment')
+  .withAttribute('ng-reflect-comment')
+  .please();
+
+const howToFindCommentSectionFooter = findElement('footer')
+  .withClass('comment-section')
+  .please();
+
+const howToFindLogInReminderElement = findElement('p')
   .withClass('log-in-reminder')
   .please();
 
@@ -69,7 +103,7 @@ describe('Read -> Articles Page', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ArticlesPageComponent],
+      declarations: [ArticlesPageComponent, FakeImageDirective, CommentComponent],
       providers: [
         { provide: UserService, useValue: userService },
         { provide: ActivatedRoute, useValue: activatedRoute },
@@ -112,11 +146,30 @@ describe('Read -> Articles Page', () => {
 
         describe('when an article is loaded', () => {
 
+          const firstComment = <ArticleComment>{
+            brandPhoto: '/fake/image/f28huhedg',
+            brand: 'hfaua',
+            text: 'vauu hauhsas dufh asudfbu asidf',
+            when: new Date()
+          };
+
+          const secondComment = <ArticleComment>{
+            brandPhoto: '/fake/image/f28huhedg',
+            brand: 'hfaua',
+            text: 'vauu hauhsas dufh asudfbu asidf',
+            when: new Date()
+          };
+
           const article = <Article>{
             articleIdentifier: scenario.route.articleIdentifier,
             title: 'uaiwogiewn',
             text: 'qpinvoia',
-            brand: 'fjdksla'
+            brand: 'fjdksla',
+            brandPhoto: '/fake/image/bbuiaurasdf',
+            comments: new Array<ArticleComment>(
+              firstComment,
+              secondComment
+            )
           };
 
           beforeEach(() => {
@@ -124,12 +177,24 @@ describe('Read -> Articles Page', () => {
             fixture.detectChanges();
           });
 
-          describe('user interface', () => {
+          const regardlessOfWhetherUserIsLoggedIn = () => {
 
-            let mainElement: DebugElement;
+            describe('page header', () => {
 
-            beforeEach(() => {
-              mainElement = fixture.debugElement;
+              let header: DebugElement;
+
+              beforeEach(() => {
+                header = fixture.debugElement.query(howToFindPageHeader);
+              });
+
+              it('should exist', () => {
+                expect(header).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(header.nativeElement.innerText).toBeTruthy();
+              });
+
             });
 
             describe('article', () => {
@@ -137,11 +202,67 @@ describe('Read -> Articles Page', () => {
               let articleElement: DebugElement;
 
               beforeEach(() => {
-                articleElement = mainElement.query(howToFindArticleElement);
+                articleElement = fixture.debugElement.query(howToFindArticleElement);
               });
 
               it('should exist', () => {
                 expect(articleElement).toBeTruthy();
+              });
+
+              describe('header', () => {
+
+                let header: DebugElement;
+
+                beforeEach(() => {
+                  header = articleElement.query(howToFindArticleHeader);
+                });
+
+                it('should exist', () => {
+                  expect(header).toBeTruthy();
+                });
+
+                it('should contain text', () => {
+                  expect(header.nativeElement.innerText).toBeTruthy();
+                });
+
+              });
+
+              describe('brand photo', () => {
+
+                let brandPhoto: DebugElement;
+                let fakeImageDirective: FakeImageDirective;
+
+                beforeEach(() => {
+                  brandPhoto = articleElement.query(howToFindBrandPhoto);
+                  fakeImageDirective = brandPhoto.injector.get(FakeImageDirective) as FakeImageDirective;
+                });
+
+                it('should exist', () => {
+                  expect(brandPhoto).toBeTruthy();
+                });
+
+                it(`reference url${article.brandPhoto}`, () => {
+                  expect(fakeImageDirective.src).toBe(article.brandPhoto);
+                });
+
+              });
+
+              describe('brand', () => {
+
+                let brandElement: DebugElement;
+
+                beforeEach(() => {
+                  brandElement = articleElement.query(howToFindBrandElement);
+                });
+
+                it('should exist', () => {
+                  expect(brandElement).toBeTruthy();
+                });
+
+                it(`should contain ${article.brand}`, () => {
+                  expect(brandElement.nativeElement.innerText).toBe(article.brand);
+                });
+
               });
 
               describe('title', () => {
@@ -180,94 +301,166 @@ describe('Read -> Articles Page', () => {
 
               });
 
-              describe('brand', () => {
+              describe('footer', () => {
 
-                let brandElement: DebugElement;
+                let footer: DebugElement;
 
                 beforeEach(() => {
-                  brandElement = articleElement.query(howToFindBrandElement);
+                  footer = articleElement.query(howToFindArticleFooter);
                 });
 
                 it('should exist', () => {
-                  expect(brandElement).toBeTruthy();
+                  expect(footer).toBeTruthy();
                 });
 
-                it(`should contain ${article.brand}`, () => {
-                  expect(brandElement.nativeElement.innerText).toBe(article.brand);
+                it('should contain text', () => {
+                  expect(footer.nativeElement.innerText).toBeTruthy();
                 });
 
               });
 
             });
 
-            const inCommentSection = (then: () => void): () => DebugElement => {
+            describe('page footer', () => {
 
-              let commentSectionElement: DebugElement;
+              let footer: DebugElement;
 
-              describe('comment section', () => {
+              beforeEach(() => {
+                footer = fixture.debugElement.query(howToFindPageFooter);
+              });
+
+              it('should exist', () => {
+                expect(footer).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(footer.nativeElement.innerText).toBeTruthy();
+              });
+
+            });
+
+          };
+
+          const inCommentSection = (then: () => void): () => DebugElement => {
+
+            let commentSectionElement: DebugElement;
+
+            describe('comment section', () => {
+
+              beforeEach(() => {
+                commentSectionElement = fixture.debugElement.query(howToFindCommentSectionElement);
+              });
+
+              it('should exist', () => {
+                expect(commentSectionElement).toBeTruthy();
+              });
+
+              describe('header', () => {
+
+                let header: DebugElement;
 
                 beforeEach(() => {
-                  commentSectionElement = mainElement.query(howToFindCommentSectionElement);
+                  header = commentSectionElement.query(howToFindCommentSectionHeader);
                 });
 
                 it('should exist', () => {
-                  expect(commentSectionElement).toBeTruthy();
+                  expect(header).toBeTruthy();
                 });
 
-                then();
+                it('should contain text', () => {
+                  expect(header.nativeElement.innerText).toBeTruthy();
+                });
 
               });
 
-              return () => commentSectionElement;
+              describe('comments', () => {
+                
+                let comments: Array<DebugElement>;
 
-            };
+                beforeEach(() => {
+                  comments = commentSectionElement.queryAll(howToFindComment);
+                });
 
-            FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
+                it(`should exist ${article.comments.length} times`, () => {
+                  expect(comments.length).toBe(article.comments.length);
+                });
 
-              const getCommentSectionElement = inCommentSection(() => {
+              });
 
-                describe('comment input', () => {
+              describe('footer', () => {
 
-                  let commentInputElement: DebugElement;
-                  let commentInputLabelElement: DebugElement;
+                let footer: DebugElement;
 
-                  beforeEach(() => {
-                    const commentSectionElement = getCommentSectionElement();
-                    commentInputElement = commentSectionElement.query(howToFindCommentInputElement);
-                    commentInputLabelElement = commentSectionElement.query(howToFindCommentInputLabelElement);
-                  });
+                beforeEach(() => {
+                  footer = commentSectionElement.query(howToFindCommentSectionFooter);
+                });
 
-                  it('should exist', () => {
-                    expect(commentInputElement).toBeTruthy();
-                  });
+                it('should exist', () => {
+                  expect(footer).toBeTruthy();
+                });
 
-                  it('should have label', () => {
-                    expect(commentInputLabelElement).toBeTruthy();
-                  });
+                it('should contain text', () => {
+                  expect(footer.nativeElement.innerText).toBeTruthy();
+                });
 
+              });
+
+              then();
+
+            });
+
+            return () => commentSectionElement;
+
+          };
+
+          FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
+
+            regardlessOfWhetherUserIsLoggedIn();
+
+            const getCommentSectionElement = inCommentSection(() => {
+
+              describe('comment input', () => {
+
+                let commentInputElement: DebugElement;
+                let commentInputLabelElement: DebugElement;
+
+                beforeEach(() => {
+                  const commentSectionElement = getCommentSectionElement();
+                  commentInputElement = commentSectionElement.query(howToFindCommentInputElement);
+                  commentInputLabelElement = commentSectionElement.query(howToFindCommentInputLabelElement);
+                });
+
+                it('should exist', () => {
+                  expect(commentInputElement).toBeTruthy();
+                });
+
+                it('should have label', () => {
+                  expect(commentInputLabelElement).toBeTruthy();
                 });
 
               });
 
             });
 
-            FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
+          });
 
-              const getCommentSectionElement = inCommentSection(() => {
+          FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
 
-                describe('login reminder', () => {
+            regardlessOfWhetherUserIsLoggedIn();
 
-                  let logInReminderElement: DebugElement;
+            const getCommentSectionElement = inCommentSection(() => {
 
-                  beforeEach(() => {
-                    const commentSectionElement = getCommentSectionElement();
-                    logInReminderElement = commentSectionElement.query(howToFindLogInReminderElement);
-                  });
+              describe('login reminder', () => {
 
-                  it('should exist', () => {
-                    expect(logInReminderElement).toBeTruthy();
-                  });
+                let logInReminderElement: DebugElement;
 
+                beforeEach(() => {
+                  const commentSectionElement = getCommentSectionElement();
+                  logInReminderElement = commentSectionElement.query(howToFindLogInReminderElement);
+                });
+
+                it('should exist', () => {
+                  expect(logInReminderElement).toBeTruthy();
                 });
 
               });

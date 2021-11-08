@@ -10,6 +10,10 @@ import { findElement } from 'src/app/find-elements-helper';
 import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
 
+const howToFindPageHeader = findElement('header')
+  .withClass('page')
+  .please();
+
 const howToFindArticleElement = findElement('article')
   .please();
 
@@ -133,6 +137,24 @@ describe('Read -> Articles Page', () => {
           });
 
           const regardlessOfWhetherUserIsLoggedIn = () => {
+
+            describe('page header', () => {
+              
+              let header: DebugElement;
+
+              beforeEach(() => {
+                header = fixture.debugElement.query(howToFindPageHeader);
+              });
+
+              it('should exist', () => {
+                expect(header).toBeTruthy();
+              });
+
+              it('should contain text', () => {
+                expect(header.nativeElement.innerText).toBeTruthy();
+              });
+
+            });
 
             describe('article', () => {
 

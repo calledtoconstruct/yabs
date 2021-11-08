@@ -3,12 +3,8 @@
 
 <ng-template #loggedIn>
     <ng-template [ngIf]='article$ | async' let-item>
-        <article>
-            <header class='article'>article header</header>
-            <span class='title'>{{ item.title }}</span>
-            <span class='text'>{{ item.text }}</span>
-            <span class='brand'>{{ item.brand }}</span>
-        </article>
+        <ng-container *ngTemplateOutlet="article; context: { item: item }">
+        </ng-container>
         <section class='comment-section'>
             <label for='comment'>Comment: </label>
             <textarea class='comment' name='comment' id='comment'></textarea>
@@ -18,14 +14,20 @@
 
 <ng-template #notLoggedIn>
     <ng-template [ngIf]='article$ | async' let-item>
-        <article>
-            <header class='article'>article header</header>
-            <span class='title'>{{ item.title }}</span>
-            <span class='text'>{{ item.text }}</span>
-            <span class='brand'>{{ item.brand }}</span>
-        </article>
+        <ng-container *ngTemplateOutlet="article; context: { item: item }">
+        </ng-container>
         <section class='comment-section'>
             <span class='log-in-reminder'></span>
         </section>
     </ng-template>
+</ng-template>
+
+<ng-template #article let-item='item'>
+    <article>
+        <header class='article'>article header</header>
+        <span class='title'>{{ item.title }}</span>
+        <span class='text'>{{ item.text }}</span>
+        <span class='brand'>{{ item.brand }}</span>
+        <footer class='article'>article footer</footer>
+    </article>
 </ng-template>

@@ -29,6 +29,10 @@ const howToFindBrandElement = findElement('span')
   .withClass('brand')
   .please();
 
+const howToFindArticleFooter = findElement('footer')
+  .withClass('article')
+  .please();
+
 const howToFindCommentSectionElement = findElement('section')
   .withClass('comment-section')
   .please();
@@ -154,6 +158,10 @@ describe('Read -> Articles Page', () => {
                   expect(header).toBeTruthy();
                 });
 
+                it('should contain text', () => {
+                  expect(header.nativeElement.innerText).toBeTruthy();
+                });
+
               });
 
               describe('title', () => {
@@ -208,6 +216,24 @@ describe('Read -> Articles Page', () => {
                   expect(brandElement.nativeElement.innerText).toBe(article.brand);
                 });
 
+              });
+
+              describe('footer', () => {
+
+                let footer: DebugElement;
+
+                beforeEach(() => {
+                  footer = articleElement.query(howToFindArticleFooter);
+                });
+
+                it('should exist', () => {
+                  expect(footer).toBeTruthy();
+                });
+
+                it('should contain text', () => {
+                  expect(footer.nativeElement.innerText).toBeTruthy();
+                });
+                
               });
 
             });

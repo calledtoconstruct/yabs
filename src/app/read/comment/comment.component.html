@@ -1,7 +1,10 @@
-<header class='comment'>
-  comment header
-</header>
-<p *ngIf='comment'>{{ comment.text }}</p>
-<footer class='comment'>
-  comment footer
-</footer>
+<ng-container *ngIf='comment'>
+  <header class='comment'>
+    comment header
+  </header>
+  <img [src]='comment.brandPhoto' class='brand-photo' />
+  <p>{{ comment.text }}</p>
+  <footer class='comment'>
+    comment footer
+  </footer>
+</ng-container>

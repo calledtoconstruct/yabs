@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ArticleComment } from '../read-article.service';
 import { CommentComponent } from './comment.component';
 import { DebugElement } from '@angular/core';
+import { FakeImageDirective } from 'src/app/fake/image.fake';
 import { findElement } from 'src/app/find-elements-helper';
 
 const howToFindHeader = findElement('header')
@@ -11,6 +13,17 @@ const howToFindFooter = findElement('footer')
   .withClass('comment')
   .please();
 
+const howToFindBrandPhoto = findElement('img')
+  .withClass('brand-photo')
+  .please();
+
+const comment = <ArticleComment>{
+  brandPhoto: '/fake/img/url.png',
+  brand: 'oiweionvladsif',
+  text: 'uvuewnsnbuad',
+  when: new Date()
+};
+
 describe('CommentComponent', () => {
 
   let component: CommentComponent;
@@ -18,7 +31,7 @@ describe('CommentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CommentComponent]
+      declarations: [CommentComponent, FakeImageDirective]
     })
       .compileComponents();
   });
@@ -26,6 +39,7 @@ describe('CommentComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CommentComponent);
     component = fixture.componentInstance;
+    component.comment = comment;
     fixture.detectChanges();
   });
 
@@ -43,6 +57,26 @@ describe('CommentComponent', () => {
 
     it('should exist', () => {
       expect(header).toBeTruthy();
+    });
+
+  });
+
+  describe('brand photo', () => {
+    
+    let brandPhoto: DebugElement;
+    let fakeImageDirective: FakeImageDirective;
+
+    beforeEach(() => {
+      brandPhoto = fixture.debugElement.query(howToFindBrandPhoto);
+      fakeImageDirective = brandPhoto.injector.get(FakeImageDirective);
+    });
+
+    it('should exist', () => {
+      expect(brandPhoto).toBeTruthy();
+    });
+
+    it('should reference the correct url', () => {
+      expect(fakeImageDirective.src).toBe(comment.brandPhoto);
     });
 
   });

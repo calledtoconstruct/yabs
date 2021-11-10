@@ -7,6 +7,10 @@ const howToFindHeader = findElement('header')
   .withClass('comment')
   .please();
 
+const howToFindFooter = findElement('footer')
+  .withClass('comment')
+  .please();
+
 describe('CommentComponent', () => {
 
   let component: CommentComponent;
@@ -39,6 +43,20 @@ describe('CommentComponent', () => {
 
     it('should exist', () => {
       expect(header).toBeTruthy();
+    });
+
+  });
+
+  describe('footer', () => {
+
+    let footer: DebugElement;
+
+    beforeEach(() => {
+      footer = fixture.debugElement.query(howToFindFooter);
+    });
+
+    it('should exist', () => {
+      expect(footer).toBeTruthy();
     });
 
   });

@@ -25,6 +25,10 @@ const howToFindText = findElement('p')
   .withClass('text')
   .please();
 
+const howToFindWhen = findElement('p')
+  .withClass('when')
+  .please();
+
 const comment = <ArticleComment>{
   brandPhoto: '/fake/img/url.png',
   brand: 'oiweionvladsif',
@@ -70,7 +74,7 @@ describe('CommentComponent', () => {
   });
 
   describe('brand photo', () => {
-    
+
     let brandPhoto: DebugElement;
     let fakeImageDirective: FakeImageDirective;
 
@@ -90,7 +94,7 @@ describe('CommentComponent', () => {
   });
 
   describe('brand', () => {
-    
+
     let brand: DebugElement;
 
     beforeEach(() => {
@@ -122,7 +126,21 @@ describe('CommentComponent', () => {
     it('should contain the correct text', () => {
       expect(text.nativeElement.innerText).toBe(comment.text);
     });
-    
+
+  });
+
+  describe('when', () => {
+
+    let when: DebugElement;
+
+    beforeEach(() => {
+      when = fixture.debugElement.query(howToFindWhen);
+    });
+
+    it('should exist', () => {
+      expect(when).toBeTruthy();
+    });
+
   });
 
   describe('footer', () => {

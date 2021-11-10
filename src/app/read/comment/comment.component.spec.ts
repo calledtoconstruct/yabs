@@ -17,6 +17,10 @@ const howToFindBrandPhoto = findElement('img')
   .withClass('brand-photo')
   .please();
 
+const howToFindBrand = findElement('p')
+  .withClass('brand')
+  .please();
+
 const comment = <ArticleComment>{
   brandPhoto: '/fake/img/url.png',
   brand: 'oiweionvladsif',
@@ -77,6 +81,20 @@ describe('CommentComponent', () => {
 
     it('should reference the correct url', () => {
       expect(fakeImageDirective.src).toBe(comment.brandPhoto);
+    });
+
+  });
+
+  describe('brand', () => {
+    
+    let brand: DebugElement;
+
+    beforeEach(() => {
+      brand = fixture.debugElement.query(howToFindBrand);
+    });
+
+    it('should exist', () => {
+      expect(brand).toBeTruthy();
     });
 
   });

@@ -21,6 +21,10 @@ const howToFindBrand = findElement('p')
   .withClass('brand')
   .please();
 
+const howToFindText = findElement('p')
+  .withClass('text')
+  .please();
+
 const comment = <ArticleComment>{
   brandPhoto: '/fake/img/url.png',
   brand: 'oiweionvladsif',
@@ -97,6 +101,20 @@ describe('CommentComponent', () => {
       expect(brand).toBeTruthy();
     });
 
+  });
+
+  describe('text', () => {
+
+    let text: DebugElement;
+
+    beforeEach(() => {
+      text = fixture.debugElement.query(howToFindText);
+    });
+
+    it('should exist', () => {
+      expect(text).toBeTruthy();
+    });
+    
   });
 
   describe('footer', () => {

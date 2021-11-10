@@ -1,1 +1,12 @@
-<p *ngIf='comment'>{{ comment.text }}</p>
+<ng-container *ngIf='comment'>
+  <header class='comment'>
+    comment header
+  </header>
+  <img [src]='comment.brandPhoto' class='brand-photo' />
+  <p class='brand'>{{ comment.brand }}</p>
+  <p class='text'>{{ comment.text }}</p>
+  <p class='when'>{{ comment.when }}</p>
+  <footer class='comment'>
+    comment footer
+  </footer>
+</ng-container>

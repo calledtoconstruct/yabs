@@ -101,6 +101,10 @@ describe('CommentComponent', () => {
       expect(brand).toBeTruthy();
     });
 
+    it('should contain the correct text', () => {
+      expect(brand.nativeElement.innerText).toBe(comment.brand);
+    });
+
   });
 
   describe('text', () => {
@@ -113,6 +117,10 @@ describe('CommentComponent', () => {
 
     it('should exist', () => {
       expect(text).toBeTruthy();
+    });
+
+    it('should contain the correct text', () => {
+      expect(text.nativeElement.innerText).toBe(comment.text);
     });
     
   });

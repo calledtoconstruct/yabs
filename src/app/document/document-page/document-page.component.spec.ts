@@ -23,6 +23,10 @@ const howToFindArticleHeader = findElement('header')
   .withClass('article')
   .please();
 
+const howToFindArticleFooter = findElement('footer')
+  .withClass('article')
+  .please();
+
 const howToFindPageFooter = findElement('footer')
   .withClass('page')
   .please();
@@ -125,6 +129,24 @@ describe('Document -> Document Page', () => {
 
         it('should contain text', () => {
           expect(header.nativeElement.innerText).toBeTruthy();
+        });
+
+      });
+
+      describe('footer', () => {
+        
+        let footer: DebugElement;
+
+        beforeEach(() => {
+          footer = article.query(howToFindArticleFooter);
+        });
+
+        it('should exist', () => {
+          expect(footer).toBeTruthy();
+        });
+
+        it('should contain text', () => {
+          expect(footer.nativeElement.innerText).toBeTruthy();
         });
 
       });

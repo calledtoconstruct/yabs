@@ -15,6 +15,10 @@ const howToFindPageHeader = findElement('header')
   .withClass('page')
   .please();
 
+const howToFindPageFooter = findElement('footer')
+  .withClass('page')
+  .please();
+
 describe('Document -> Document Page', () => {
 
   let userService: FakeUserService;
@@ -83,6 +87,24 @@ describe('Document -> Document Page', () => {
 
       it('should contain text', () => {
         expect(pageHeader.nativeElement.innerText).toBeTruthy();
+      });
+
+    });
+
+    describe('page footer', () => {
+      
+      let pageFooter: DebugElement;
+
+      beforeEach(() => {
+        pageFooter = fixture.debugElement.query(howToFindPageFooter);
+      });
+
+      it('should exist', () => {
+        expect(pageFooter).toBeTruthy();
+      });
+
+      it('should contain text', () => {
+        expect(pageFooter.nativeElement.innerText).toBeTruthy();
       });
 
     });

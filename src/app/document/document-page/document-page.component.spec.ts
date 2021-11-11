@@ -189,6 +189,20 @@ describe('Document -> Document Page', () => {
 
     });
 
+    describe('page footer', () => {
+      
+      let pageFooter: DebugElement;
+
+      beforeEach(() => {
+        pageFooter = fixture.debugElement.query(howToFindPageHeader);
+      });
+
+      it('should not exist', () => {
+        expect(pageFooter).toBeFalsy();
+      });
+
+    });
+
   });
 
 });

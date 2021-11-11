@@ -15,6 +15,10 @@ const howToFindPageHeader = findElement('header')
   .withClass('page')
   .please();
 
+const howToFindArticle = findElement('article')
+  .withClass('document')
+  .please();
+
 const howToFindPageFooter = findElement('footer')
   .withClass('page')
   .please();
@@ -87,6 +91,20 @@ describe('Document -> Document Page', () => {
 
       it('should contain text', () => {
         expect(pageHeader.nativeElement.innerText).toBeTruthy();
+      });
+
+    });
+
+    describe('article', () => {
+      
+      let article: DebugElement;
+
+      beforeEach(() => {
+        article = fixture.debugElement.query(howToFindArticle);
+      });
+
+      it('should exist', () => {
+        expect(article).toBeTruthy();
       });
 
     });

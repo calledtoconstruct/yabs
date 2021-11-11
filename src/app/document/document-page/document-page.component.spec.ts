@@ -19,6 +19,10 @@ const howToFindArticle = findElement('article')
   .withClass('document')
   .please();
 
+const howToFindArticleHeader = findElement('header')
+  .withClass('article')
+  .please();
+
 const howToFindPageFooter = findElement('footer')
   .withClass('page')
   .please();
@@ -78,7 +82,7 @@ describe('Document -> Document Page', () => {
   FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
 
     describe('page header', () => {
-      
+
       let pageHeader: DebugElement;
 
       beforeEach(() => {
@@ -96,7 +100,7 @@ describe('Document -> Document Page', () => {
     });
 
     describe('article', () => {
-      
+
       let article: DebugElement;
 
       beforeEach(() => {
@@ -107,10 +111,28 @@ describe('Document -> Document Page', () => {
         expect(article).toBeTruthy();
       });
 
+      describe('header', () => {
+
+        let header: DebugElement;
+
+        beforeEach(() => {
+          header = article.query(howToFindArticleHeader);
+        });
+
+        it('should exist', () => {
+          expect(header).toBeTruthy();
+        });
+
+        it('should contain text', () => {
+          expect(header.nativeElement.innerText).toBeTruthy();
+        });
+
+      });
+
     });
 
     describe('page footer', () => {
-      
+
       let pageFooter: DebugElement;
 
       beforeEach(() => {

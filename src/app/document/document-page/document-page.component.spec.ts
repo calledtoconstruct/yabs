@@ -189,6 +189,20 @@ describe('Document -> Document Page', () => {
 
     });
 
+    describe('article', () => {
+      
+      let article: DebugElement;
+
+      beforeEach(() => {
+        article = fixture.debugElement.query(howToFindArticle);
+      });
+
+      it('should not exist', () => {
+        expect(article).toBeFalsy();
+      });
+
+    });
+
     describe('page footer', () => {
       
       let pageFooter: DebugElement;

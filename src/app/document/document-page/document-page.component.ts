@@ -17,7 +17,7 @@ export class DocumentPageComponent {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly documentService: DocumentService,
-    private readonly userService: UserService,
+    public readonly userService: UserService,
     private readonly formBuilder: FormBuilder
   ) { }
 

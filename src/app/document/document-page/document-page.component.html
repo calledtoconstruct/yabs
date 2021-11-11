@@ -1,8 +1,10 @@
-<header class='page'>page header</header>
+<ng-container *ngIf='userService.loggedIn$ | async'>
+  <header class='page'>page header</header>
 
-<article class='document'>
-  <header class='article'>article header</header>
-  <footer class='article'>article footer</footer>
-</article>
+  <article class='document'>
+    <header class='article'>article header</header>
+    <footer class='article'>article footer</footer>
+  </article>
 
-<footer class='page'>page footer</footer>
+  <footer class='page'>page footer</footer>
+</ng-container>

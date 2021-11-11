@@ -173,4 +173,22 @@ describe('Document -> Document Page', () => {
 
   });
 
+  FakeUserService.whenUserIsNotLoggedIn(() => [userService, fixture], () => {
+
+    describe('page header', () => {
+      
+      let pageHeader: DebugElement;
+
+      beforeEach(() => {
+        pageHeader = fixture.debugElement.query(howToFindPageHeader);
+      });
+
+      it('should not exist', () => {
+        expect(pageHeader).toBeFalsy();
+      });
+
+    });
+
+  });
+
 });

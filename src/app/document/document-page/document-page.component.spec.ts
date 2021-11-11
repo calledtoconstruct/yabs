@@ -1,12 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { DebugElement } from '@angular/core';
 import { DocumentPageComponent } from './document-page.component';
 import { DocumentService } from '../document.service';
 import { FakeActivatedRoute } from 'src/app/fake/activated-route.fake';
 import { FakeDocumentService } from '../fake/document-service.fake';
 import { FakeUserService } from 'src/app/fake/user-service.fake';
+import { findElement } from 'src/app/find-elements-helper';
 import { ReactiveFormsModule } from '@angular/forms';
+import { User } from '@firebase/auth';
 import { UserService } from 'src/app/user.service';
+
+const howToFindPageHeader = findElement('header')
+  .withClass('page')
+  .please();
 
 describe('Document -> Document Page', () => {
 
@@ -48,12 +55,38 @@ describe('Document -> Document Page', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should exist', () => {
     expect(component).toBeTruthy();
   });
 
   it('should provide form group', () => {
     expect(component.formGroup).toBeTruthy();
+  });
+
+  const user = <User>{
+    displayName: 'avbhuiashedf'
+  };
+
+  FakeUserService.whenUserIsLoggedIn(() => [userService, fixture], user, () => {
+
+    describe('page header', () => {
+      
+      let pageHeader: DebugElement;
+
+      beforeEach(() => {
+        pageHeader = fixture.debugElement.query(howToFindPageHeader);
+      });
+
+      it('should exist', () => {
+        expect(pageHeader).toBeTruthy();
+      });
+
+      it('should contain text', () => {
+        expect(pageHeader.nativeElement.innerText).toBeTruthy();
+      });
+
+    });
+
   });
 
 });
